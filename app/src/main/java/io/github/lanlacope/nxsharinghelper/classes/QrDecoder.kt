@@ -3,7 +3,7 @@ package io.github.lanlacope.nxsharinghelper.classes
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCAL_HOST
 import io.github.lanlacope.nxsharinghelper.SwitchConfig
 
-class QrDecoder() {
+class QrDecoder {
     
     object DecordingStates {
         val SUCCESED_CREAR: Int = 1
@@ -35,11 +35,10 @@ class QrDecoder() {
     fun startDecode(contents: String) {
 
         try {
-
             creditScore = 0
             decordingState = DecordingStates.SUCCESED_CREAR
 
-            decordingResult = parseQr(contents)
+            parseQr(contents)
 
             println(
                 "SSID : ${decordingResult.ssid}\n" +
@@ -61,16 +60,15 @@ class QrDecoder() {
         }
     }
 
-    private fun parseQr(contents: String): SwitchConfig {
-        val config = SwitchConfig()
+    private fun parseQr(contents: String) {
 
         if (!contents.startsWith("WIFI:")) {
-            if (contents == SWITCH_LOCAL_HOST) {
+            if (contents == SWITCH_LOCAL_HOST.INDEX) {
                 decordingState = DecordingStates.FAILED_LOCALHOST
-                return config
+                return
             }
             decordingState = DecordingStates.FAILED_NOTWIFI
-            return config
+            return
         }
 
         val parts = contents.substring(5).split(";").toTypedArray()
@@ -78,23 +76,23 @@ class QrDecoder() {
         for (part in parts) {
             when {
                 part.startsWith("S:") -> {
-                    config.ssid = part.substring(2)
+                    decordingResult.ssid = part.substring(2)
 
-                    if (!config.ssid.startsWith("switch_")) {
+                    if (!decordingResult.ssid.startsWith("switch_")) {
                         creditScore += 25
                     }
                 }
 
                 part.startsWith("P:") -> {
-                    config.password = part.substring(2)
+                    decordingResult.password = part.substring(2)
 
-                    if (config.password.length != 8) {
+                    if (decordingResult.password.length != 8) {
                         creditScore += 5
                     }
                 }
 
                 part.startsWith("T") -> {
-                    if (part.substring(2) != config.encryptionType) {
+                    if (part.substring(2) != decordingResult.encryptionType) {
                         creditScore += 10
                     }
                 }
@@ -108,6 +106,5 @@ class QrDecoder() {
                 }
             }
         }
-        return config
     }
 }

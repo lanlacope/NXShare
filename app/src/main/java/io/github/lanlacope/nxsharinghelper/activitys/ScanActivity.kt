@@ -19,6 +19,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.NavigationView
 import io.github.lanlacope.nxsharinghelper.classes.QrDecoder
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.classes.DataDownloader
 import io.github.lanlacope.nxsharinghelper.classes.SwitchConnector
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 
@@ -29,6 +30,8 @@ class ScanActivity : ComponentActivity() {
     }
 
     private val qrDecoder = QrDecoder()
+
+    private val dataDownloader = DataDownloader()
 
     private val switchConnector by lazy {
         SwitchConnector(this)
@@ -48,7 +51,7 @@ class ScanActivity : ComponentActivity() {
                     switchConnector.startConnect(qrDecoder.decordingResult)
                     if (comfirmConnectResult()) {
                         println("Succeed Connecting")
-                        startDownload()
+                        dataDownloader.startDownload()
                     }
                 }
             } else {
@@ -161,10 +164,6 @@ class ScanActivity : ComponentActivity() {
                 return false
             }
         }
-    }
-
-    private fun startDownload() {
-        // TODO :
     }
 
     override fun onDestroy() {
