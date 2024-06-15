@@ -62,7 +62,6 @@ class QrDecoder() {
     }
 
     private fun parseQr(contents: String): SwitchConfig {
-
         val config = SwitchConfig()
 
         if (!contents.startsWith("WIFI:")) {
