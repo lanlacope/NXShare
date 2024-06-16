@@ -1,6 +1,6 @@
 package io.github.lanlacope.nxsharinghelper.classes
 
-import io.github.lanlacope.nxsharinghelper.SWITCH_LOCAL_HOST
+import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
 
 class QrDecoder {
 
@@ -37,12 +37,14 @@ class QrDecoder {
      * WIFI:S:switch_型番号;T:WPA;P:八桁のワンタイムパスワード;;
      */
 
-    fun startDecode(contents: String) {
+    fun start(contents: String) {
 
         // 初期化
         creditScore = 0
         decordingState = DecordingStates.SUCCESSFUL_CARER
         decordingResult = SwitchConfig()
+
+        //creditScore = 100
 
         try {
             parseQr(contents)
@@ -73,7 +75,7 @@ class QrDecoder {
         var password = ""
 
         if (!contents.startsWith("WIFI:")) {
-            if (contents == SWITCH_LOCAL_HOST.INDEX) {
+            if (contents == SWITCH_LOCALHOST.INDEX) {
                 decordingState = DecordingStates.FAILED_LOCALHOST
                 return
             }
@@ -88,7 +90,7 @@ class QrDecoder {
                 part.startsWith("S:") -> {
                     ssid = part.substring(2)
 
-                    if (!decordingResult.ssid.startsWith("switch_")) {
+                    if (!ssid.startsWith("switch_")) {
                         creditScore += 25
                     }
                 }
@@ -96,7 +98,7 @@ class QrDecoder {
                 part.startsWith("P:") -> {
                     password = part.substring(2)
 
-                    if (decordingResult.password.length != 8) {
+                    if (password.length != 8) {
                         creditScore += 5
                     }
                 }

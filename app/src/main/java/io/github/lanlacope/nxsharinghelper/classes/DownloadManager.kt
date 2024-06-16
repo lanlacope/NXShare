@@ -2,7 +2,7 @@ package io.github.lanlacope.nxsharinghelper.classes
 
 import android.content.Context
 import android.os.Environment
-import io.github.lanlacope.nxsharinghelper.SWITCH_LOCAL_HOST
+import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -13,7 +13,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class DataDownloader(val context: Context) {
+class DownloadManager(val context: Context) {
 
     data class DownloadData(
         val fileType: String = "",
@@ -32,7 +32,7 @@ class DataDownloader(val context: Context) {
     var downloadState = DownloadStates.FAILED
         private set
 
-    fun startDownload() {
+    fun start() {
 
         // 初期化
         clearCashe()
@@ -58,7 +58,7 @@ class DataDownloader(val context: Context) {
         runBlocking {
             try {
                 val connection: HttpURLConnection =
-                    URL(SWITCH_LOCAL_HOST.DATA).openConnection() as HttpURLConnection
+                    URL(SWITCH_LOCALHOST.DATA).openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
@@ -127,7 +127,7 @@ class DataDownloader(val context: Context) {
             try {
                 for (fileName in downloadData.fileNames) {
                     val connection: HttpURLConnection =
-                        URL(SWITCH_LOCAL_HOST.IMAGE + fileName).openConnection() as HttpURLConnection
+                        URL(SWITCH_LOCALHOST.IMAGE + fileName).openConnection() as HttpURLConnection
                     connection.requestMethod = "GET"
 
                     if (connection.responseCode == HttpURLConnection.HTTP_OK) {
@@ -149,7 +149,7 @@ class DataDownloader(val context: Context) {
             try {
                 val filename = downloadData.fileNames[0]
                 val connection: HttpURLConnection =
-                    URL(SWITCH_LOCAL_HOST.IMAGE + filename).openConnection() as HttpURLConnection
+                    URL(SWITCH_LOCALHOST.IMAGE + filename).openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
@@ -185,7 +185,6 @@ class DataDownloader(val context: Context) {
     private var isSaving = false
 
     fun saveFileToStorage() {
-
         run {
             isSaving = true
             try {

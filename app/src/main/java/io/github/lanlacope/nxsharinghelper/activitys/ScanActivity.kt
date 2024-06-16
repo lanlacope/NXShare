@@ -3,7 +3,6 @@ package io.github.lanlacope.nxsharinghelper.activitys
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,8 +17,9 @@ import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.NavigationView
 import io.github.lanlacope.nxsharinghelper.classes.QrDecoder
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.classes.DataDownloader
-import io.github.lanlacope.nxsharinghelper.classes.SwitchConnector
+import io.github.lanlacope.nxsharinghelper.classes.DownloadManager
+import io.github.lanlacope.nxsharinghelper.classes.ConnectionManager
+import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 
 class ScanActivity : ComponentActivity() {
@@ -34,10 +34,11 @@ class ScanActivity : ComponentActivity() {
 
     private val qrDecoder = QrDecoder()
 
-    private val dataDownloader = DataDownloader(this)
-
-    private val switchConnector by lazy {
-        SwitchConnector(this)
+    private val downloadManager by lazy {
+        DownloadManager(this)
+    }
+    private val connectionManager by lazy {
+        ConnectionManager(this)
     }
 
     private val scanLouncher by lazy {
@@ -48,16 +49,16 @@ class ScanActivity : ComponentActivity() {
 
                 isScanned.value = false
                 navigationMessage.value = getString(R.string.app_name)
-                qrDecoder.startDecode(result.contents)
+                qrDecoder.start(result.contents)
 
                 if (confirmDecoderResult()) {
                     println("Succeed Decoding")
-                    switchConnector.startConnect(qrDecoder.decordingResult)
+                    startConnect()
                     if (comfirmConnectResult()) {
                         println("Succeed Connecting")
                         navigationMessage.value = getString(R.string.waiting_download)
-                        dataDownloader.startDownload()
-                        switchConnector.endConnection()
+                        downloadManager.start()
+                        connectionManager.disConnection()
                         isScanned.value = true
                         navigationMessage.value = getString(R.string.succesful_download)
                     }
@@ -109,15 +110,28 @@ class ScanActivity : ComponentActivity() {
         }
     }
 
+    fun startConnect() {
+        if (isAfterAndroidX()) {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_SETTINGS)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                connectionManager.start(qrDecoder.decordingResult)
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_SETTINGS), 1)
+            }
+        }
+    }
+
     fun startSave() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            dataDownloader.saveFileToStorage()
+        if (isAfterAndroidX()) {
+            downloadManager.saveFileToStorage()
         } else {
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED
             ) {
-                dataDownloader.saveFileToStorage()
+                downloadManager.saveFileToStorage()
             } else {
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
                 return
@@ -126,8 +140,8 @@ class ScanActivity : ComponentActivity() {
     }
 
     private fun confirmDecoderResult() :Boolean {
+        println(qrDecoder.decordingState)
 
-        println("conf: ${qrDecoder.decordingResult}")
         when (qrDecoder.decordingState) {
             QrDecoder.DecordingStates.SUCCESSFUL_CARER ->
                 return true
@@ -165,6 +179,8 @@ class ScanActivity : ComponentActivity() {
 
     private fun showDialog(message: String): Boolean {
 
+        println("dialog")
+
         var isPositive = false
 
         AlertDialog.Builder(this)
@@ -182,16 +198,19 @@ class ScanActivity : ComponentActivity() {
                     return@setNegativeButton
                 }
             )
+            .show()
+
+        println("dialogend")
 
         return isPositive
     }
 
     private fun comfirmConnectResult():Boolean {
-        when (switchConnector.connectingState) {
-            SwitchConnector.ConnectingStates.SUCCESSFUL ->
+        when (connectionManager.connectingState) {
+            ConnectionManager.ConnectingStates.SUCCESSFUL ->
                 return true
 
-            SwitchConnector.ConnectingStates.FAILED -> {
+            ConnectionManager.ConnectingStates.FAILED -> {
                 navigationMessage.value = getString(R.string.failed_connect)
                 return false
             }
@@ -205,7 +224,7 @@ class ScanActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        dataDownloader.clearCashe()
+        downloadManager.clearCashe()
         finish()
     }
 

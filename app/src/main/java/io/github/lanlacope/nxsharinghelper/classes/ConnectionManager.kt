@@ -11,8 +11,9 @@ import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 
-class SwitchConnector(val context: Context) {
+class ConnectionManager(val context: Context) {
 
     object ConnectingStates {
         const val SUCCESSFUL: Int = 1
@@ -26,7 +27,7 @@ class SwitchConnector(val context: Context) {
         return connectingState >= ConnectingStates.SUCCESSFUL
     }
 
-    fun startConnect(config: QrDecoder.SwitchConfig) {
+    fun start(config: QrDecoder.SwitchConfig) {
 
         println("start connect")
 
@@ -34,7 +35,7 @@ class SwitchConnector(val context: Context) {
         connectingState = ConnectingStates.SUCCESSFUL
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (isAfterAndroidX()) {
                 connectSwitch(config.ssid, config.password)
             } else {
                 connectSwitchLegacy(config.ssid, config.password)
@@ -84,7 +85,7 @@ class SwitchConnector(val context: Context) {
         )
     }
 
-    fun endConnection() {
+    fun disConnection() {
 
         connectivityManager.bindProcessToNetwork(null)
     }
