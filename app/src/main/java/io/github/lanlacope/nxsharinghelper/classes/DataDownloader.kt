@@ -15,7 +15,6 @@ import java.net.URL
 
 class DataDownloader(val context: Context) {
 
-
     data class DownloadData(
         var fileType: String = "",
         var consoleName: String = "",
@@ -23,8 +22,8 @@ class DataDownloader(val context: Context) {
     )
 
     object DownloadStates {
-        val SUCCESED: Int = 1
-        val FAILED: Int = -1
+        const val SUCCESSFUL: Int = 1
+        const val FAILED: Int = -1
     }
 
     var downloadData = DownloadData()
@@ -36,7 +35,7 @@ class DataDownloader(val context: Context) {
     fun startDownload() {
 
         // 初期化
-        downloadState = DownloadStates.SUCCESED
+        downloadState = DownloadStates.SUCCESSFUL
         downloadData = DownloadData()
 
         val jsonData = getData()

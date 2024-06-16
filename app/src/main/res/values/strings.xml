@@ -18,6 +18,13 @@
         Failed connecting Switch\n
         Please retry
     </string>
+    <string name="succesful_download">
+        Successful download!
+    </string>
+    <string name="waiting_download">
+        Now download\n
+        Please wait…
+    </string>
 
     <!-- Confirmation Dialog -->
     <string name="action_yes">Done</string>

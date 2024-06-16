@@ -11,13 +11,13 @@ class QrDecoder {
     )
 
     object DecordingStates {
-        val SUCCESED_CREAR: Int = 1
-        val SUCCESED_FAIR: Int = 2
-        val SUCCESED_POOR: Int = 3
-        val SUCCESED_BAD: Int = 4
-        val FAILED_UNKNOWN: Int = -1
-        val FAILED_NOTWIFI: Int = -2
-        val FAILED_LOCALHOST: Int = -3
+        const val SUCCESSFUL_CARER: Int = 1
+        const val SUCCESSFUL_FAIR: Int = 2
+        const val SUCCESSFUL_POOR: Int = 3
+        const val SUCCESSFUL_BAD: Int = 4
+        const val FAILED_UNKNOWN: Int = -1
+        const val FAILED_NOTWIFI: Int = -2
+        const val FAILED_LOCALHOST: Int = -3
     }
 
     var decordingResult = SwitchConfig()
@@ -29,7 +29,7 @@ class QrDecoder {
     private var creditScore: Int = 0
 
     fun isSuccesed(): Boolean {
-        return decordingState >= DecordingStates.SUCCESED_CREAR
+        return decordingState >= DecordingStates.SUCCESSFUL_CARER
     }
 
     /*
@@ -41,7 +41,7 @@ class QrDecoder {
 
         // 初期化
         creditScore = 0
-        decordingState = DecordingStates.SUCCESED_CREAR
+        decordingState = DecordingStates.SUCCESSFUL_CARER
         decordingResult = SwitchConfig()
 
         try {
@@ -55,10 +55,10 @@ class QrDecoder {
             if (isSuccesed()) {
                 decordingState =
                     when (creditScore) {
-                        0 -> DecordingStates.SUCCESED_CREAR
-                        in 1..15 -> DecordingStates.SUCCESED_FAIR
-                        in 16..20 -> DecordingStates.SUCCESED_POOR
-                        else -> DecordingStates.SUCCESED_BAD
+                        0 -> DecordingStates.SUCCESSFUL_CARER
+                        in 1..15 -> DecordingStates.SUCCESSFUL_FAIR
+                        in 16..20 -> DecordingStates.SUCCESSFUL_POOR
+                        else -> DecordingStates.SUCCESSFUL_BAD
                     }
 
             }

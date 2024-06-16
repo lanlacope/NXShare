@@ -18,6 +18,13 @@
         Switchと接続できませんでした\n
         もう一度試してください
     </string>
+    <string name="succesful_download">
+        ダウンロードに成功しました！
+    </string>
+    <string name="waiting_download">
+        ダウンロード中です\n
+        しばらく待ってください
+    </string>
 
     <!-- Confirmation Dialog -->
     <string name="action_yes">接続する</string>

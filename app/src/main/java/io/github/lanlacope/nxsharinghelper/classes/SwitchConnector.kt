@@ -15,21 +15,21 @@ import androidx.annotation.RequiresApi
 class SwitchConnector(val context: Context) {
 
     object ConnectingStates {
-        val SUCCESED: Int = 1
-        val FAILED: Int = -1
+        const val SUCCESSFUL: Int = 1
+        const val FAILED: Int = -1
     }
 
     var connectingState = ConnectingStates.FAILED
         private set
 
     fun isSuccesed(): Boolean {
-        return connectingState >= ConnectingStates.SUCCESED
+        return connectingState >= ConnectingStates.SUCCESSFUL
     }
 
     fun startConnect(config: QrDecoder.SwitchConfig) {
 
         // 初期化
-        connectingState = ConnectingStates.SUCCESED
+        connectingState = ConnectingStates.SUCCESSFUL
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -65,7 +65,7 @@ class SwitchConnector(val context: Context) {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                     connectivityManager.bindProcessToNetwork(network)
-                    connectingState = ConnectingStates.SUCCESED
+                    connectingState = ConnectingStates.SUCCESSFUL
                     Toast.makeText(context, "Connecting to Wi-Fi", Toast.LENGTH_SHORT)
                         .show()
 
@@ -103,7 +103,7 @@ class SwitchConnector(val context: Context) {
             wifiManager.disconnect()
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
-            connectingState = ConnectingStates.SUCCESED
+            connectingState = ConnectingStates.SUCCESSFUL
             Toast.makeText(context, "Connecting to Wi-Fi", Toast.LENGTH_SHORT)
                 .show()
 

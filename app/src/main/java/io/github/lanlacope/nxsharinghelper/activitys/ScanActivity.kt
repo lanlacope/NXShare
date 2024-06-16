@@ -3,14 +3,13 @@ package io.github.lanlacope.nxsharinghelper.activitys
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
@@ -48,6 +47,7 @@ class ScanActivity : ComponentActivity() {
                 println("Succeed Scanning : ${result.contents}")
 
                 isScanned.value = false
+                navigationMessage.value = getString(R.string.app_name)
                 qrDecoder.startDecode(result.contents)
 
                 if (confirmDecoderResult()) {
@@ -55,9 +55,11 @@ class ScanActivity : ComponentActivity() {
                     switchConnector.startConnect(qrDecoder.decordingResult)
                     if (comfirmConnectResult()) {
                         println("Succeed Connecting")
+                        navigationMessage.value = getString(R.string.waiting_download)
                         dataDownloader.startDownload()
                         switchConnector.endConnection()
                         isScanned.value = true
+                        navigationMessage.value = getString(R.string.succesful_download)
                     }
                 }
             } else {
@@ -72,11 +74,11 @@ class ScanActivity : ComponentActivity() {
         startScan()
 
         val share: () -> Unit = {
-            startScan()
+            // TODO :
         }
 
         val save: () -> Unit = {
-            dataDownloader.saveFileToStorage()
+            startSave()
         }
 
         val scan: () -> Unit = {
@@ -101,25 +103,40 @@ class ScanActivity : ComponentActivity() {
         ) {
             val scanOption = ScanOptions().setOrientationLocked(false)
             scanLouncher.launch(scanOption)
-        }
-        else {
+        } else {
             requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
             return
         }
     }
 
+    fun startSave() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            dataDownloader.saveFileToStorage()
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                dataDownloader.saveFileToStorage()
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                return
+            }
+        }
+    }
+
     private fun confirmDecoderResult() :Boolean {
         when (qrDecoder.decordingState) {
-            QrDecoder.DecordingStates.SUCCESED_CREAR ->
+            QrDecoder.DecordingStates.SUCCESSFUL_CARER ->
                 return true
 
-            QrDecoder.DecordingStates.SUCCESED_FAIR ->
+            QrDecoder.DecordingStates.SUCCESSFUL_FAIR ->
                 return showDialog(getString(R.string.warning_low))
 
-            QrDecoder.DecordingStates.SUCCESED_POOR ->
+            QrDecoder.DecordingStates.SUCCESSFUL_POOR ->
                 return showDialog(getString(R.string.warning_middle))
 
-            QrDecoder.DecordingStates.SUCCESED_BAD ->
+            QrDecoder.DecordingStates.SUCCESSFUL_BAD ->
                 return showDialog(getString(R.string.warning_high))
 
             QrDecoder.DecordingStates.FAILED_UNKNOWN -> {
@@ -169,7 +186,7 @@ class ScanActivity : ComponentActivity() {
 
     private fun comfirmConnectResult():Boolean {
         when (switchConnector.connectingState) {
-            SwitchConnector.ConnectingStates.SUCCESED ->
+            SwitchConnector.ConnectingStates.SUCCESSFUL ->
                 return true
 
             SwitchConnector.ConnectingStates.FAILED -> {
@@ -186,6 +203,7 @@ class ScanActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        dataDownloader.clearCashe()
         finish()
     }
 
