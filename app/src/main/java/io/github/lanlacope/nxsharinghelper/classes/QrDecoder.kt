@@ -1,10 +1,15 @@
 package io.github.lanlacope.nxsharinghelper.classes
 
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCAL_HOST
-import io.github.lanlacope.nxsharinghelper.SwitchConfig
 
 class QrDecoder {
-    
+
+    data class SwitchConfig(
+        var ssid: String = "",
+        var password: String = "",
+        val encryptionType: String = "WPA" // not used
+    )
+
     object DecordingStates {
         val SUCCESED_CREAR: Int = 1
         val SUCCESED_FAIR: Int = 2
@@ -34,10 +39,12 @@ class QrDecoder {
 
     fun startDecode(contents: String) {
 
-        try {
-            creditScore = 0
-            decordingState = DecordingStates.SUCCESED_CREAR
+        // 初期化
+        creditScore = 0
+        decordingState = DecordingStates.SUCCESED_CREAR
+        decordingResult = SwitchConfig()
 
+        try {
             parseQr(contents)
 
             println(

@@ -1,18 +1,26 @@
 package io.github.lanlacope.nxsharinghelper.classes
 
+import android.content.Context
 import android.os.Environment
-import io.github.lanlacope.nxsharinghelper.DownloadData
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCAL_HOST
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class DataDownloader {
+class DataDownloader(val context: Context) {
+
+
+    data class DownloadData(
+        var fileType: String = "",
+        var consoleName: String = "",
+        val fileNames: MutableList<String> = mutableListOf()
+    )
 
     object DownloadStates {
         val SUCCESED: Int = 1
@@ -20,14 +28,16 @@ class DataDownloader {
     }
 
     var downloadData = DownloadData()
+        private set
 
     var downloadState = DownloadStates.FAILED
         private set
 
-
     fun startDownload() {
 
+        // 初期化
         downloadState = DownloadStates.SUCCESED
+        downloadData = DownloadData()
 
         val jsonData = getData()
         parseJson(jsonData)
@@ -116,7 +126,7 @@ class DataDownloader {
 
                     if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                         val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                        saveFile(fileName, connection.inputStream)
+                        saveFileToCashe(fileName, connection.inputStream)
                     } else {
                         downloadState = DownloadStates.FAILED
                     }
@@ -137,7 +147,7 @@ class DataDownloader {
                 connection.requestMethod = "GET"
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                    saveFile(filename, connection.inputStream)
+                    saveFileToCashe(filename, connection.inputStream)
                 } else{
                     downloadState = DownloadStates.FAILED
                 }
@@ -148,24 +158,59 @@ class DataDownloader {
         }
     }
 
-    private fun saveFile(fileName: String, imputStream: InputStream) {
-        val directory =
-            Environment.getExternalStorageDirectory().toString() +
-                    "/" + choiseDirectory() +
-                    "/" + downloadData.consoleName +
-                    "/" + fileName
-        imputStream.use { input ->
-            FileOutputStream(directory).use { output ->
-                input.copyTo(output)
+
+
+    private fun saveFileToCashe(fileName: String, imputStream: InputStream) {
+        try {
+            val directory =
+                context.cacheDir.path +
+                        "/" + fileName
+
+            imputStream.use { input ->
+                FileOutputStream(directory).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        } catch (e: Exception) {
+            downloadState = DownloadStates.FAILED
+        }
+    }
+
+    fun saveFileToStorage() {
+        runBlocking {
+            try {
+                for (fileName in downloadData.fileNames) {
+                    val inputDirectory =
+                        context.cacheDir.path +
+                                "/" + fileName
+
+                    val outputDirectory =
+                        Environment.getExternalStorageDirectory().path +
+                                "/" + selectDirectory() +
+                                "/" + downloadData.consoleName +
+                                "/" + fileName
+
+                    FileInputStream(inputDirectory).use { input ->
+                        FileOutputStream(outputDirectory).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+            }catch (e: Exception) {
+                e.printStackTrace() // TODO : ...
             }
         }
     }
 
-    private fun choiseDirectory(): String {
+    private fun selectDirectory(): String {
         return if (downloadData.fileType == "photo") {
             Environment.DIRECTORY_PICTURES
         } else { // == movie
             Environment.DIRECTORY_MOVIES
         }
+    }
+
+    fun clearCashe() {
+        context.cacheDir.delete()
     }
 }

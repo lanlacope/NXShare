@@ -29,9 +29,13 @@ class ScanActivity : ComponentActivity() {
         mutableStateOf(getString(R.string.app_name))
     }
 
+    private val isScanned by lazy {
+        mutableStateOf(false)
+    }
+
     private val qrDecoder = QrDecoder()
 
-    private val dataDownloader = DataDownloader()
+    private val dataDownloader = DataDownloader(this)
 
     private val switchConnector by lazy {
         SwitchConnector(this)
@@ -41,10 +45,10 @@ class ScanActivity : ComponentActivity() {
         registerForActivityResult(ScanContract()) { result ->
             if (!result.contents.isNullOrEmpty()) {
 
-                println(result.contents)
-                println("Succeed Scanning")
+                println("Succeed Scanning : ${result.contents}")
+
+                isScanned.value = false
                 qrDecoder.startDecode(result.contents)
-                println(qrDecoder.decordingState)
 
                 if (confirmDecoderResult()) {
                     println("Succeed Decoding")
@@ -52,6 +56,8 @@ class ScanActivity : ComponentActivity() {
                     if (comfirmConnectResult()) {
                         println("Succeed Connecting")
                         dataDownloader.startDownload()
+                        switchConnector.endConnection()
+                        isScanned.value = true
                     }
                 }
             } else {
@@ -65,13 +71,25 @@ class ScanActivity : ComponentActivity() {
 
         startScan()
 
+        val share: () -> Unit = {
+            startScan()
+        }
+
+        val save: () -> Unit = {
+            dataDownloader.saveFileToStorage()
+        }
+
+        val scan: () -> Unit = {
+            startScan()
+        }
+
         setContent {
             NXSharingHelperTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationView(navigationMessage)
+                    NavigationView(navigationMessage, share, save, scan, isScanned)
                 }
             }
         }

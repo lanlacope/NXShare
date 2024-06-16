@@ -11,7 +11,6 @@ import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import io.github.lanlacope.nxsharinghelper.SwitchConfig
 
 class SwitchConnector(val context: Context) {
 
@@ -27,8 +26,9 @@ class SwitchConnector(val context: Context) {
         return connectingState >= ConnectingStates.SUCCESED
     }
 
-    fun startConnect(config: SwitchConfig) {
+    fun startConnect(config: QrDecoder.SwitchConfig) {
 
+        // 初期化
         connectingState = ConnectingStates.SUCCESED
 
         try {
