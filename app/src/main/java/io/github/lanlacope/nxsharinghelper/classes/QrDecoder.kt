@@ -5,8 +5,8 @@ import io.github.lanlacope.nxsharinghelper.SWITCH_LOCAL_HOST
 class QrDecoder {
 
     data class SwitchConfig(
-        var ssid: String = "",
-        var password: String = "",
+        val ssid: String = "",
+        val password: String = "",
         val encryptionType: String = "WPA" // not used
     )
 
@@ -69,6 +69,9 @@ class QrDecoder {
 
     private fun parseQr(contents: String) {
 
+        var ssid = ""
+        var password = ""
+
         if (!contents.startsWith("WIFI:")) {
             if (contents == SWITCH_LOCAL_HOST.INDEX) {
                 decordingState = DecordingStates.FAILED_LOCALHOST
@@ -83,7 +86,7 @@ class QrDecoder {
         for (part in parts) {
             when {
                 part.startsWith("S:") -> {
-                    decordingResult.ssid = part.substring(2)
+                    ssid = part.substring(2)
 
                     if (!decordingResult.ssid.startsWith("switch_")) {
                         creditScore += 25
@@ -91,7 +94,7 @@ class QrDecoder {
                 }
 
                 part.startsWith("P:") -> {
-                    decordingResult.password = part.substring(2)
+                    password = part.substring(2)
 
                     if (decordingResult.password.length != 8) {
                         creditScore += 5
@@ -113,5 +116,10 @@ class QrDecoder {
                 }
             }
         }
+
+        decordingResult = SwitchConfig(
+            ssid = ssid,
+            password = password
+        )
     }
 }

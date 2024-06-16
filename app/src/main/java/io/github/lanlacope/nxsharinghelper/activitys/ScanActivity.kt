@@ -126,6 +126,8 @@ class ScanActivity : ComponentActivity() {
     }
 
     private fun confirmDecoderResult() :Boolean {
+
+        println("conf: ${qrDecoder.decordingResult}")
         when (qrDecoder.decordingState) {
             QrDecoder.DecordingStates.SUCCESSFUL_CARER ->
                 return true

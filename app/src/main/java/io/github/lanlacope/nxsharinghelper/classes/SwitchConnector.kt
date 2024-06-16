@@ -28,6 +28,8 @@ class SwitchConnector(val context: Context) {
 
     fun startConnect(config: QrDecoder.SwitchConfig) {
 
+        println("start connect")
+
         // 初期化
         connectingState = ConnectingStates.SUCCESSFUL
 
@@ -38,6 +40,7 @@ class SwitchConnector(val context: Context) {
                 connectSwitchLegacy(config.ssid, config.password)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             connectingState = ConnectingStates.FAILED
         }
     }

@@ -16,9 +16,9 @@ import java.net.URL
 class DataDownloader(val context: Context) {
 
     data class DownloadData(
-        var fileType: String = "",
-        var consoleName: String = "",
-        val fileNames: MutableList<String> = mutableListOf()
+        val fileType: String = "",
+        val consoleName: String = "",
+        val fileNames: List<String> = listOf()
     )
 
     object DownloadStates {
@@ -35,6 +35,7 @@ class DataDownloader(val context: Context) {
     fun startDownload() {
 
         // 初期化
+        clearCashe()
         downloadState = DownloadStates.SUCCESSFUL
         downloadData = DownloadData()
 
@@ -105,14 +106,20 @@ class DataDownloader(val context: Context) {
      */
     private fun parseJson(originalData: JSONObject) {
 
-        downloadData.fileType = originalData.getString("FileType")
-        downloadData.consoleName = originalData.getString("ConsoleName")
+        val fileType = originalData.getString("FileType")
+        val consoleName = originalData.getString("ConsoleName")
 
-        val fileNames = originalData.getJSONArray("FileNames")
-
-        for (index in 0..fileNames.length()) {
-            downloadData.fileNames.add(fileNames.getString(index))
+        val fileNames: MutableList<String> = mutableListOf()
+        val jsonArray = originalData.getJSONArray("FileNames")
+        for (index in 0..jsonArray.length()) {
+            fileNames.add(jsonArray.getString(index))
         }
+
+        downloadData = DownloadData(
+            fileType = fileType,
+            consoleName = consoleName,
+            fileNames = fileNames
+        )
     }
 
     private fun getPhotos() {
@@ -175,8 +182,12 @@ class DataDownloader(val context: Context) {
         }
     }
 
+    private var isSaving = false
+
     fun saveFileToStorage() {
-        runBlocking {
+
+        run {
+            isSaving = true
             try {
                 for (fileName in downloadData.fileNames) {
                     val inputDirectory =
@@ -195,8 +206,10 @@ class DataDownloader(val context: Context) {
                         }
                     }
                 }
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace() // TODO : ...
+            } finally {
+                isSaving = false
             }
         }
     }
@@ -210,6 +223,8 @@ class DataDownloader(val context: Context) {
     }
 
     fun clearCashe() {
-        context.cacheDir.delete()
+        if (!isSaving) {
+            context.cacheDir.delete()
+        }
     }
 }

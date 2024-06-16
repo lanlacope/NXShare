@@ -1,5 +1,6 @@
 package io.github.lanlacope.nxsharinghelper
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,8 @@ fun NavigationView(
 ) {
 
     val BUTTON_SIZE = 80.dp
-    val scanActivity = LocalContext.current as? ScanActivity
+    val BUTTON_PADDING = 30.dp
+    val IMAGE_PADDING = 8.dp
 
     ConstraintLayout (
         modifier = Modifier.fillMaxSize()
@@ -60,27 +63,30 @@ fun NavigationView(
             FloatingActionButton(
                 modifier = Modifier
                     .padding(
-                        end = 30.dp,
-                        bottom = 30.dp
-                    )
+                        end = BUTTON_PADDING,
+                        bottom = BUTTON_PADDING)
                     .constrainAs(shareButton) {
                         end.linkTo(parent.end)
                         bottom.linkTo(saveButton.top)
                         width = Dimension.value(BUTTON_SIZE)
                         height = Dimension.value(BUTTON_SIZE)
                     },
-
                 onClick = share
             ) {
-
+                Image(
+                    painter = painterResource(R.drawable.baseline_share_24),
+                    contentDescription = "Share",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(all = IMAGE_PADDING)
+                )
             }
 
             FloatingActionButton(
                 modifier = Modifier
                     .padding(
-                        end = 30.dp,
-                        bottom = 30.dp
-                    )
+                        end = BUTTON_PADDING,
+                        bottom = BUTTON_PADDING)
                     .constrainAs(saveButton) {
                         end.linkTo(parent.end)
                         bottom.linkTo(scanButton.top)
@@ -89,15 +95,21 @@ fun NavigationView(
                     },
                 onClick = save
             ) {
-
+                Image(
+                    painter = painterResource(R.drawable.baseline_download_24),
+                    contentDescription = "Save",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(all = IMAGE_PADDING)
+                )
             }
         }
 
         FloatingActionButton(
             modifier = Modifier
                 .padding(
-                    end = 30.dp,
-                    bottom = 30.dp
+                    end = BUTTON_PADDING,
+                    bottom = BUTTON_PADDING
                 )
                 .constrainAs(scanButton) {
                     end.linkTo(parent.end)
@@ -105,10 +117,15 @@ fun NavigationView(
                     width = Dimension.value(BUTTON_SIZE)
                     height = Dimension.value(BUTTON_SIZE)
                 },
-            
             onClick = scan
         ) {
-
+            Image(
+                painter = painterResource(R.drawable.baseline_qr_code_24),
+                contentDescription = "Scan",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(all = IMAGE_PADDING)
+            )
         }
     }
 }
