@@ -135,14 +135,14 @@ class DownloadManager(val context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     suspend fun saveFileToStorage() = withContext(Dispatchers.IO) {
-        // NOTE: 削除される可能性がある
+        // NOTE: 削除される可能性があるため
         val data = downloadData.copy()
         isSaving = true
         try {
             for (fileName in data.fileNames) {
                 val inputUri = Uri.fromFile(File(context.cacheDir, fileName))
                 val collection: Uri = createCollection(data.fileType)
-                val values: ContentValues = createContentsValue(data.fileType, fileName, data.consoleName)
+                val values: ContentValues = createContentsValue(data.fileType, fileName, removeAscii(data.consoleName))
                 val redsober: ContentResolver = context.contentResolver
                 val outputUri = redsober.insert(collection, values)
 
@@ -177,6 +177,13 @@ class DownloadManager(val context: Context) {
         } finally {
             isSaving = false
         }
+    }
+
+    /*
+     * _@以外のascii記号を削除
+     */
+    private fun removeAscii(value: String): String {
+        return value.replace("""[\x21-\x2f\x3a-\x3f\x5b-\x5e\x60\x7b-\x7e\\]""".toRegex(), "")
     }
 
     private object MINETYPE {
@@ -253,7 +260,7 @@ class DownloadManager(val context: Context) {
             if (!appFolder.exists()) {
                 appFolder.mkdir()
             }
-            val consoleFolder = File(appFolder, data.consoleName)
+            val consoleFolder = File(appFolder, removeAscii(data.consoleName))
             if (!consoleFolder.exists()) {
                 consoleFolder.mkdir()
             }
