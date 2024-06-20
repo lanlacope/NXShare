@@ -1,13 +1,12 @@
 # NX Share
-For Android Application.
-Support sharing for NintendoSwitch.
+For Android Application.<br>
+Support sharing for NintendoSwitch.<br>
 
 # Note
-This application is an unofficial app.
-It is not affiliated with Nintendo Co., Ltd., or any other officials.
-
+This application is an unofficial app.<br>
+It is not affiliated with Nintendo Co., Ltd., or any other officials.<br>
+<br>
 # License
-ライセンスを明示する
 Licensed under the [Apache License 2.0][999]
 
 	Copyright (C) 2012-2022 pecolan
@@ -23,11 +22,10 @@ Licensed under the [Apache License 2.0][999]
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
-
-
-
+<br>
+<br>
+<br>
 This application uses the following open source libraries:
-
 [zxing-android-embedded][1001]
 
     Copyright (C) 2012-2022 ZXing authors, Journey Mobile\n
