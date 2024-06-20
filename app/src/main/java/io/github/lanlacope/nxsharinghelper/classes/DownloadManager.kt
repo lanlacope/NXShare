@@ -165,13 +165,6 @@ class DownloadManager(val context: Context) {
                 ).show()
             }
         } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    context,
-                    e.toString().substring(10),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
             throw e
         } finally {
             isSaving = false
