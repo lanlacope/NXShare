@@ -9,7 +9,7 @@ It is not affiliated with Nintendo Co., Ltd., or any other officials.<br>
 # License
 Licensed under the [Apache License 2.0][999]
 
-	Copyright (C) 2012-2022 pecolan
+	Copyright (C) 2024 pecolan
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ This application uses the following open source libraries:
 
     Copyright (C) 2012-2022 ZXing authors, Journey Mobile\n
     Licensed under the Apache License, Version 2.0.
-    https://www.apache.org/licenses/LICENSE-2.0
+    
+        https://www.apache.org/licenses/LICENSE-2.0
 
 [999]: http://www.apache.org/licenses/LICENSE-2.0
 [1001]: https://github.com/journeyapps/zxing-android-embedded
