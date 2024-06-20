@@ -1,50 +1,34 @@
 <resources>
-    <string name="app_name">NXSharingHelper</string>
+    <string name="app_name">NXシェア</string>
 
     <!-- Navigation Message -->
-    <string name="faild_decode_some">
-        QRコードの読み取りに失敗しました\n
-        もう一度試してください
-    </string>
     <string name="failed_decode_islocalhost">
         QRコードの読み取りに失敗しました\n
         二つ目のQRコードではなく、一つ目のものを読み取ってください
     </string>
-    <string name="failed_decode_notwifi">
+    <string name="failed_decode_notswitch">
         QRコードの読み取りに失敗しました\n
         Switch内に表示されているQRコードを読み取ってください
-    </string>
-    <string name="failed_decode_notswitch">
-        Failed scanning QR\n
-        Please scan QR in Switch
     </string>
     <string name="failed_connect">
         Switchと接続できませんでした\n
         もう一度試してください
     </string>
-    <string name="succesful_download">
-        ダウンロードに成功しました！
+    <string name="waiting_connection">
+        接続中です\n
+        しばらく待ってください
     </string>
     <string name="waiting_download">
         ダウンロード中です\n
         しばらく待ってください
     </string>
-
-    <!-- Confirmation Dialog -->
-    <string name="action_yes">接続する</string>
-    <string name="action_no">キャンセル</string>
-
-    <string name="warning_title">警告</string>
-    <string name="warning_low">
-        このQRコードはSwitchのものでない可能性があります\n
-        接続しますか？
+    <string name="succesful_download">
+        ダウンロードに成功しました！
     </string>
-    <string name="warning_middle">
-        このQRコードはSwitchのものでない可能性が高いです\n
-        接続しますか？
+    <string name="failed_download">
+        ダウンロードに失敗しました……
     </string>
-    <string name="warning_high">
-        このQRコードはSwitchのものでない可能性が非序に高いです\n
-        接続しますか？
+    <string name="saved_notification">
+        件のファイルを保存しました
     </string>
 </resources>

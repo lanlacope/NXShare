@@ -9,6 +9,7 @@ import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 
@@ -54,8 +55,15 @@ class ConnectionManager(val context: Context) {
             object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                    connectivityManager.bindProcessToNetwork(network)
-                    onConnect()
+                    if (connectivityManager.bindProcessToNetwork(network)) {
+                        Toast.makeText(context, "connect", Toast.LENGTH_LONG).show()
+                        onConnect()
+                    }
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    connectivityManager.unregisterNetworkCallback(this)
                 }
             }
         )
@@ -65,6 +73,10 @@ class ConnectionManager(val context: Context) {
         connectivityManager.bindProcessToNetwork(null)
     }
 
+    /*
+     *    FOR UNDER API 28
+     */
+    // TODO: create
     @Suppress("DEPRECATION")
     private fun connectSwitchLegacy(
         ssid: String,

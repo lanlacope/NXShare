@@ -1,6 +1,7 @@
 package io.github.lanlacope.nxsharinghelper
 
 import android.os.Build
+import androidx.lifecycle.viewmodel.viewModelFactory
 
 object SWITCH_LOCALHOST {
     val INDEX: String = "http://192.168.0.1/index.html"

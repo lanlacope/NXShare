@@ -63,12 +63,11 @@ class ResultActivity : ComponentActivity() {
         val captureLancher =
             registerForActivityResult(SwitchCaptureActivity.Contract()) { result ->
                 if (result != null) {
-                    println("Succeed Scanning : ${result.first} / ${result.second}")
                     val connectionManager = managerHolder.getConnectionManager(applicationContext)
                     isScanned.value = false
                     navigationMessage.value = getString(R.string.app_name)
-                    println("Succeed Decoding")
                     connectionManager.start(result, onConnection)
+                    navigationMessage.value = getString(R.string.waiting_connection)
                 }
             }
 
@@ -116,45 +115,51 @@ class ResultActivity : ComponentActivity() {
 
     val onConnection: () -> Unit = {
         managerHolder.viewModelScope.launch {
-            println("Succeed Connecting")
-            val connectionManager = managerHolder.getConnectionManager(applicationContext)
-            val downloadManager = managerHolder.getDownloadManager(applicationContext)
-
-            navigationMessage.value = getString(R.string.waiting_download)
-            downloadManager.start()
-            Toast.makeText(applicationContext, "inLounch", Toast.LENGTH_LONG).show()
-            connectionManager.disConnection()
-            isScanned.value = true
-            navigationMessage.value = getString(R.string.succesful_download)
+            try {
+                println("Succeed Connecting")
+                val connectionManager = managerHolder.getConnectionManager(applicationContext)
+                val downloadManager = managerHolder.getDownloadManager(applicationContext)
+                navigationMessage.value = getString(R.string.waiting_download)
+                downloadManager.start()
+                connectionManager.disConnection()
+                isScanned.value = true
+                navigationMessage.value = getString(R.string.succesful_download)
+            } catch (e: Exception) {
+                navigationMessage.value = getString(R.string.failed_download)
+            }
         }
     }
 
     fun startSave() {
-        val downloadManager = managerHolder.getDownloadManager(applicationContext)
-        if (isAfterAndroidX()) {
-            managerHolder.viewModelScope.launch {
-                downloadManager.saveFileToStorage()
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
+        try {
+            val downloadManager = managerHolder.getDownloadManager(applicationContext)
+            if (isAfterAndroidX()) {
                 managerHolder.viewModelScope.launch {
                     downloadManager.saveFileToStorage()
                 }
             } else {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-                return
+                if (ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    managerHolder.viewModelScope.launch {
+                        downloadManager.saveFileToStorage()
+                    }
+                } else {
+                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                    return
+                }
             }
+        } catch (e: Exception) {
+            Toast.makeText(applicationContext, "in SAVE : ${e.toString()}", Toast.LENGTH_LONG).show()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         val downloadManager = managerHolder.getDownloadManager(applicationContext)
-        downloadManager.clearCashe()
+        downloadManager.clearCache()
         finish()
     }
 }

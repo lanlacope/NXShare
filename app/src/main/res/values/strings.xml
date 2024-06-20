@@ -1,18 +1,10 @@
 <resources>
-    <string name="app_name">NXSharingHelper</string>
+    <string name="app_name">NXShare</string>
 
     <!-- Navigation Message -->
-    <string name="faild_decode_some">
-        Failed scanning QR\n
-        Please retry
-    </string>
     <string name="failed_decode_islocalhost">
         Failed scanning QR\n
         Don\'t scan second QR, scan first QR
-    </string>
-    <string name="failed_decode_notwifi">
-        Failed scanning QR\n
-        Please scan QR in Switch
     </string>
     <string name="failed_decode_notswitch">
         Failed scanning QR\n
@@ -22,29 +14,21 @@
         Failed connecting Switch\n
         Please retry
     </string>
-    <string name="succesful_download">
-        Successful download!
+    <string name="waiting_connection">
+        Now connection\n
+        Please wait…
     </string>
     <string name="waiting_download">
         Now download\n
         Please wait…
     </string>
-
-    <!-- Confirmation Dialog -->
-    <string name="action_yes">Done</string>
-    <string name="action_no">Cancel</string>
-
-    <string name="warning_title">WARNING</string>
-    <string name="warning_low">
-        This QR might not be Switch\n
-        Do connection?
+    <string name="succesful_download">
+        Successful download!
     </string>
-    <string name="warning_middle">
-        This QR may not be Switch\n
-        Do connection?
+    <string name="failed_download">
+        Failed download…
     </string>
-    <string name="warning_high">
-        This QR must not be Switch\n
-        Do connection?
+    <string name="saved_notification">
+         files were saved
     </string>
 </resources>
