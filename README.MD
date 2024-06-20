@@ -23,9 +23,8 @@ Licensed under the [Apache License 2.0][999]
 	See the License for the specific language governing permissions and
 	limitations under the License.
 <br>
-<br>
-<br>
-This application uses the following open source libraries:
+This application uses the following open source libraries: 
+
 [zxing-android-embedded][1001]
 
     Copyright (C) 2012-2022 ZXing authors, Journey Mobile\n
