@@ -35,8 +35,8 @@ import kotlin.reflect.KClass
  * Modifications:
  * - Modified by pecolan.
  */
+
 class SwitchCaptureActivity : Activity() {
-    private val activity: SwitchCaptureActivity = this
     private lateinit var capture: SwitchCaptureManager
     private lateinit var barcodeScannerView: DecoratedBarcodeView
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NXシェア</string>
 
@@ -6,23 +7,23 @@
         QRコードの読み取りに失敗しました\n
         二つ目のQRコードではなく、一つ目のものを読み取ってください
     </string>
-    <string name="failed_decode_notswitch">
+        <string name="failed_decode_notswitch">
         QRコードの読み取りに失敗しました\n
         Switch内に表示されているQRコードを読み取ってください
     </string>
-    <string name="failed_connect">
+        <string name="failed_connect">
         Switchと接続できませんでした\n
         もう一度試してください
     </string>
-    <string name="waiting_connection">
+        <string name="waiting_connection">
         接続中です\n
         しばらく待ってください
     </string>
-    <string name="waiting_download">
+        <string name="waiting_download">
         ダウンロード中です\n
         しばらく待ってください
     </string>
-    <string name="succesful_download">
+        <string name="succesful_download">
         ダウンロードに成功しました！
     </string>
     <string name="failed_download">

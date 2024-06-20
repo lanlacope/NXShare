@@ -155,6 +155,7 @@ class DownloadManager(val context: Context) {
                         }
                     }
                     redsober.update(outputUri, updateContentsValue(data.fileType), null, null)
+                    redsober.delete(outputUri, null, null)
                 }
             }
             withContext(Dispatchers.Main) {
@@ -212,7 +213,7 @@ class DownloadManager(val context: Context) {
                     put(MediaStore.Video.Media.MIME_TYPE, MINETYPE.MP4)
                     put(MediaStore.Video.Media.IS_PENDING, true)
                     put(MediaStore.Video.VideoColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_PICTURES}/$APP_FOLDER/$consoleName/")
+                        "${Environment.DIRECTORY_MOVIES}/$APP_FOLDER/$consoleName/")
                 }
             }
         }
@@ -242,7 +243,7 @@ class DownloadManager(val context: Context) {
      *    FOR UNDER API 28
      */
     // TODO: create
-    suspend fun saveFileToStorageRegasy() = withContext(Dispatchers.IO) {
+    suspend fun saveFileToStorageLegasy() = withContext(Dispatchers.IO) {
         // NOTE: 削除される可能性がある
         val data = downloadData.copy()
         isSaving = true

@@ -29,6 +29,19 @@
         Failed download…
     </string>
     <string name="saved_notification">
-         files were saved
+        \sfiles are saved
+    </string>
+
+    <!-- License -->
+    <string name="license_cover" translatable="false">
+        <u><font color="#800080">License</font></u>
+    </string>
+    <string name="license" translatable="false">
+        \n
+        This application uses the following open source libraries:\n
+        &#32;- zxing-android-embedded by ZXing authors, Journey Mobile.\n
+        Copyright (C) 2012-2022 ZXing authors, Journey Mobile\n
+        Licensed under the Apache License, Version 2.0.\n
+        &#32;&#32;&#32;&#32;<a href="https://www.apache.org/licenses/LICENSE-2.0"><u><font color="#800080">https://www.apache.org/licenses/LICENSE-2.0</font></u></a>\n
     </string>
 </resources>
