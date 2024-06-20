@@ -155,7 +155,6 @@ class DownloadManager(val context: Context) {
                         }
                     }
                     redsober.update(outputUri, updateContentsValue(data.fileType), null, null)
-                    redsober.delete(outputUri, null, null)
                 }
             }
             withContext(Dispatchers.Main) {
