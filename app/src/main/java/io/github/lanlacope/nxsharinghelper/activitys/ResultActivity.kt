@@ -93,6 +93,7 @@ class ResultActivity : ComponentActivity() {
 
         val share: () -> Unit = {
             // TODO :
+            Toast.makeText(applicationContext, "Unimplemented", Toast.LENGTH_LONG).show()
         }
 
         val save: () -> Unit = {
