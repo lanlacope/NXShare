@@ -2,20 +2,25 @@ package io.github.lanlacope.nxsharinghelper.classes
 
 import android.content.Context
 import android.os.Environment
+import android.widget.Toast
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import java.io.BufferedReader
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
+// HACK: launch周りを見直す
+
 class DownloadManager(val context: Context) {
 
-    data class DownloadData(
+    private data class DownloadData(
         val fileType: String = "",
         val consoleName: String = "",
         val fileNames: List<String> = listOf()
@@ -26,55 +31,50 @@ class DownloadManager(val context: Context) {
         const val FAILED: Int = -1
     }
 
-    var downloadData = DownloadData()
+    private var downloadData = DownloadData()
         private set
 
     var downloadState = DownloadStates.FAILED
         private set
 
-    fun start() {
+    private val downloadLaunch = CoroutineScope(Dispatchers.IO)
+
+    private val saveLaunch = CoroutineScope(Dispatchers.IO)
+
+    suspend fun start() {
+        Toast.makeText(context, "stt dl", Toast.LENGTH_LONG).show()
 
         // 初期化
         clearCashe()
         downloadState = DownloadStates.SUCCESSFUL
         downloadData = DownloadData()
 
+        Toast.makeText(context, "js get", Toast.LENGTH_LONG).show()
         val jsonData = getData()
+        Toast.makeText(context, "js get $jsonData", Toast.LENGTH_LONG).show()
         parseJson(jsonData)
 
-        when (downloadData.fileType) {
-            "phote" -> getPhotos()
-            "movie" -> getMovie()
-            else -> {
-                downloadState = DownloadStates.FAILED
-                return
-            }
-        }
+        Toast.makeText(context, downloadData.fileType, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, downloadData.fileNames[0], Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "getpm", Toast.LENGTH_LONG).show()
+
+        getContents()
+
+        Toast.makeText(context, "getpm2", Toast.LENGTH_LONG).show()
     }
 
-    private fun getData(): JSONObject {
-
+    private suspend fun getData(): JSONObject = withContext(Dispatchers.IO) {
         var result = JSONObject()
-        runBlocking {
-            try {
-                val connection: HttpURLConnection =
-                    URL(SWITCH_LOCALHOST.DATA).openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
-
-                if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                    val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                    result = JSONObject(
-                        reader.use { it.readText() }
-                    )
-                } else{
-                    downloadState = DownloadStates.FAILED
-                }
-                connection.disconnect()
-            } catch (e: Exception) {
-                downloadState = DownloadStates.FAILED
-            }
+        try {
+            val rawJson = URL(SWITCH_LOCALHOST.INDEX).readText()
+            result = JSONObject(rawJson)
+        } catch (e: Exception) {
+            Toast.makeText(context, "getjs_httpb ${e.toString()}", Toast.LENGTH_LONG).show()
+            downloadState = DownloadStates.FAILED
         }
-        return result
+
+        Toast.makeText(context, "js get $result", Toast.LENGTH_LONG).show()
+        return@withContext result
     }
 
     /*
@@ -105,77 +105,56 @@ class DownloadManager(val context: Context) {
      * }
      */
     private fun parseJson(originalData: JSONObject) {
+        try {
+            val fileType = originalData.getString("FileType")
+            val consoleName = originalData.getString("ConsoleName")
 
-        val fileType = originalData.getString("FileType")
-        val consoleName = originalData.getString("ConsoleName")
-
-        val fileNames: MutableList<String> = mutableListOf()
-        val jsonArray = originalData.getJSONArray("FileNames")
-        for (index in 0..jsonArray.length()) {
-            fileNames.add(jsonArray.getString(index))
-        }
-
-        downloadData = DownloadData(
-            fileType = fileType,
-            consoleName = consoleName,
-            fileNames = fileNames
-        )
-    }
-
-    private fun getPhotos() {
-        runBlocking {
-            try {
-                for (fileName in downloadData.fileNames) {
-                    val connection: HttpURLConnection =
-                        URL(SWITCH_LOCALHOST.IMAGE + fileName).openConnection() as HttpURLConnection
-                    connection.requestMethod = "GET"
-
-                    if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                        val reader = BufferedReader(InputStreamReader(connection.inputStream))
-                        saveFileToCashe(fileName, connection.inputStream)
-                    } else {
-                        downloadState = DownloadStates.FAILED
-                    }
-                    connection.disconnect()
-                }
-            } catch (e: Exception) {
-                downloadState = DownloadStates.FAILED
+            val fileNames: MutableList<String> = mutableListOf()
+            val jsonArray = originalData.getJSONArray("FileNames")
+            for (index in 0..jsonArray.length()) {
+                fileNames.add(jsonArray.getString(index))
             }
+
+            downloadData = DownloadData(
+                fileType = fileType,
+                consoleName = consoleName,
+                fileNames = fileNames
+            )
+        } catch (e: Exception) {
+            downloadState = DownloadStates.FAILED
         }
     }
 
-    private fun getMovie() {
-        runBlocking {
-            try {
-                val filename = downloadData.fileNames[0]
+    private suspend fun getContents() = withContext(Dispatchers.IO) {
+        try {
+            Toast.makeText(context, "getp2", Toast.LENGTH_LONG).show()
+            for (fileName in downloadData.fileNames) {
                 val connection: HttpURLConnection =
-                    URL(SWITCH_LOCALHOST.IMAGE + filename).openConnection() as HttpURLConnection
+                    URL(SWITCH_LOCALHOST.IMAGE + fileName).openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                    saveFileToCashe(filename, connection.inputStream)
-                } else{
+                    Toast.makeText(context, "httpok", Toast.LENGTH_LONG).show()
+                    saveFileToCashe(fileName, connection.inputStream)
+                } else {
                     downloadState = DownloadStates.FAILED
                 }
+                Toast.makeText(context, "getp3", Toast.LENGTH_LONG).show()
                 connection.disconnect()
-            } catch (e: Exception) {
-                downloadState = DownloadStates.FAILED
             }
+        } catch (e: Exception) {
+            Toast.makeText(context, "getp-e ${e.toString()}", Toast.LENGTH_LONG).show()
+            downloadState = DownloadStates.FAILED
+            this.cancel()
         }
     }
 
-
-
     private fun saveFileToCashe(fileName: String, imputStream: InputStream) {
         try {
-            val directory =
-                context.cacheDir.path +
-                        "/" + fileName
+            val file = File("${context.cacheDir.path}/${fileName}")
 
-            imputStream.use { input ->
-                FileOutputStream(directory).use { output ->
-                    input.copyTo(output)
-                }
+            FileOutputStream(file).use { output ->
+                imputStream.copyTo(output)
             }
         } catch (e: Exception) {
             downloadState = DownloadStates.FAILED
@@ -184,46 +163,45 @@ class DownloadManager(val context: Context) {
 
     private var isSaving = false
 
-    fun saveFileToStorage() {
-        run {
+    suspend fun saveFileToStorage() = withContext(Dispatchers.IO) {
+            // NOTE: 削除される可能性がある
+            val data = downloadData.copy()
             isSaving = true
             try {
-                for (fileName in downloadData.fileNames) {
-                    val inputDirectory =
-                        context.cacheDir.path +
-                                "/" + fileName
-
-                    val outputDirectory =
+                for (fileName in data.fileNames) {
+                    val inputFile = File("${context.cacheDir.path}/${fileName}")
+                    val outputFile = File(
                         Environment.getExternalStorageDirectory().path +
-                                "/" + selectDirectory() +
-                                "/" + downloadData.consoleName +
-                                "/" + fileName
+                                "/${selectDirectory(data.fileType)}" +
+                                "/${data.consoleName}" +
+                                "/${fileName}")
 
-                    FileInputStream(inputDirectory).use { input ->
-                        FileOutputStream(outputDirectory).use { output ->
+                    FileInputStream(inputFile).use { input ->
+                        FileOutputStream(outputFile).use { output ->
                             input.copyTo(output)
                         }
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace() // TODO : ...
+                this.cancel()
             } finally {
                 isSaving = false
             }
         }
-    }
 
-    private fun selectDirectory(): String {
-        return if (downloadData.fileType == "photo") {
-            Environment.DIRECTORY_PICTURES
-        } else { // == movie
-            Environment.DIRECTORY_MOVIES
+    private fun selectDirectory(type: String): String {
+        when (type) {
+            "photo" -> return Environment.DIRECTORY_PICTURES
+            "movie" -> return Environment.DIRECTORY_MOVIES
         }
+        return ""
     }
 
     fun clearCashe() {
         if (!isSaving) {
             context.cacheDir.delete()
         }
+
+        URL("").file
     }
 }

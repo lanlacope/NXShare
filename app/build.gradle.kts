@@ -66,6 +66,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }

@@ -14,6 +14,10 @@
         QRコードの読み取りに失敗しました\n
         Switch内に表示されているQRコードを読み取ってください
     </string>
+    <string name="failed_decode_notswitch">
+        Failed scanning QR\n
+        Please scan QR in Switch
+    </string>
     <string name="failed_connect">
         Switchと接続できませんでした\n
         もう一度試してください

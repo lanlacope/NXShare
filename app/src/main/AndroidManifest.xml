@@ -8,22 +8,20 @@
         android:required="true" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29"
         tools:ignore="ScopedStorage" />
 
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -32,7 +30,7 @@
         android:theme="@style/Theme.NXSharingHelper"
         tools:targetApi="34">
         <activity
-            android:name=".activitys.ScanActivity"
+            android:name=".activitys.ResultActivity"
             android:exported="true"
             android:theme="@style/Theme.NXSharingHelper">
             <intent-filter>
@@ -41,8 +39,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:name=".activitys.SwitchCaptureActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation" />
+            android:configChanges="orientation|screenSize"
+            tools:ignore="DiscouragedApi" />
     </application>
 </manifest>

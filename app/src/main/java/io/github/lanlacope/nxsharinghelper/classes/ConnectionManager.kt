@@ -9,40 +9,22 @@ import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 
 class ConnectionManager(val context: Context) {
 
-    object ConnectingStates {
-        const val SUCCESSFUL: Int = 1
-        const val FAILED: Int = -1
-    }
-
-    var connectingState = ConnectingStates.FAILED
-        private set
-
-    fun isSuccesed(): Boolean {
-        return connectingState >= ConnectingStates.SUCCESSFUL
-    }
-
-    fun start(config: QrDecoder.SwitchConfig) {
+    fun start(config: Pair<String, String>, onConnect: () -> Unit) {
 
         println("start connect")
-
-        // 初期化
-        connectingState = ConnectingStates.SUCCESSFUL
-
         try {
             if (isAfterAndroidX()) {
-                connectSwitch(config.ssid, config.password)
+                connectSwitch(config.first, config.second, onConnect)
             } else {
-                connectSwitchLegacy(config.ssid, config.password)
+                connectSwitchLegacy(config.first, config.second, onConnect)
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            connectingState = ConnectingStates.FAILED
         }
     }
 
@@ -51,7 +33,11 @@ class ConnectionManager(val context: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun connectSwitch(ssid: String, password: String) {
+    private fun connectSwitch(
+        ssid: String,
+        password: String,
+        onConnect: () -> Unit
+    ) {
 
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
@@ -69,30 +55,22 @@ class ConnectionManager(val context: Context) {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                     connectivityManager.bindProcessToNetwork(network)
-                    connectingState = ConnectingStates.SUCCESSFUL
-                    Toast.makeText(context, "Connecting to Wi-Fi", Toast.LENGTH_SHORT)
-                        .show()
-
-                }
-                override fun onUnavailable() {
-                    super.onUnavailable()
-                    connectingState = ConnectingStates.FAILED
-                    Toast.makeText(context, "Failed to add Wi-Fi network", Toast.LENGTH_SHORT)
-                        .show()
-
+                    onConnect()
                 }
             }
         )
     }
 
     fun disConnection() {
-
         connectivityManager.bindProcessToNetwork(null)
     }
 
     @Suppress("DEPRECATION")
-    private fun connectSwitchLegacy(ssid: String, password: String) {
-
+    private fun connectSwitchLegacy(
+        ssid: String,
+        password: String,
+        onConnect: () -> Unit
+    ) {
         val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         val wifiConfig = WifiConfiguration().apply {
@@ -107,15 +85,7 @@ class ConnectionManager(val context: Context) {
             wifiManager.disconnect()
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
-            connectingState = ConnectingStates.SUCCESSFUL
-            Toast.makeText(context, "Connecting to Wi-Fi", Toast.LENGTH_SHORT)
-                .show()
-
-        } else {
-            connectingState = ConnectingStates.FAILED
-            Toast.makeText(context, "Failed to add Wi-Fi network", Toast.LENGTH_SHORT)
-                .show()
-
+            onConnect()
         }
     }
 }
