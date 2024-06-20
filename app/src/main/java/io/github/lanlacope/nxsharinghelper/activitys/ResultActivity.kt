@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -39,6 +39,8 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.classes.ConnectionManager
 import io.github.lanlacope.nxsharinghelper.classes.DownloadManager
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
+import io.github.lanlacope.nxsharinghelper.ui.theme.BlueDark
+import io.github.lanlacope.nxsharinghelper.ui.theme.BlueLight
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import kotlinx.coroutines.launch
 
@@ -195,8 +197,9 @@ fun NavigationView(
     checkLicense: () -> Unit
 ) {
 
-    val BUTTON_SIZE = 80.dp
+    val SOMEBUTTON_SIZE = 80.dp
     val BUTTON_PADDING = 30.dp
+    val MAIN_BUTTON_SIZE = 90.dp
     val IMAGE_PADDING = 8.dp
 
     ConstraintLayout (
@@ -221,6 +224,8 @@ fun NavigationView(
         }
 
         Text(
+            textAlign = TextAlign.Center,
+            text = message.value,
             modifier = Modifier
                 .wrapContentSize()
                 .constrainAs(navigation) {
@@ -230,13 +235,14 @@ fun NavigationView(
                     bottom.linkTo(parent.bottom)
                     width = Dimension.matchParent
                     height = Dimension.wrapContent
-                },
-            textAlign = TextAlign.Center,
-            text = message.value
+                }
+
         )
 
         if (isScanned.value) {
             FloatingActionButton(
+                onClick = share,
+                containerColor = BlueLight,
                 modifier = Modifier
                     .padding(
                         end = BUTTON_PADDING,
@@ -245,10 +251,10 @@ fun NavigationView(
                     .constrainAs(shareButton) {
                         end.linkTo(parent.end)
                         bottom.linkTo(saveButton.top)
-                        width = Dimension.value(BUTTON_SIZE)
-                        height = Dimension.value(BUTTON_SIZE)
-                    },
-                onClick = share
+                        width = Dimension.value(SOMEBUTTON_SIZE)
+                        height = Dimension.value(SOMEBUTTON_SIZE)
+                    }
+
             ) {
                 Image(
                     painter = painterResource(R.drawable.baseline_share_24),
@@ -260,6 +266,8 @@ fun NavigationView(
             }
 
             FloatingActionButton(
+                onClick = save,
+                containerColor = BlueLight,
                 modifier = Modifier
                     .padding(
                         end = BUTTON_PADDING,
@@ -268,10 +276,10 @@ fun NavigationView(
                     .constrainAs(saveButton) {
                         end.linkTo(parent.end)
                         bottom.linkTo(scanButton.top)
-                        width = Dimension.value(BUTTON_SIZE)
-                        height = Dimension.value(BUTTON_SIZE)
-                    },
-                onClick = save
+                        width = Dimension.value(SOMEBUTTON_SIZE)
+                        height = Dimension.value(SOMEBUTTON_SIZE)
+                    }
+
             ) {
                 Image(
                     painter = painterResource(R.drawable.baseline_download_24),
@@ -285,6 +293,8 @@ fun NavigationView(
         }
 
         FloatingActionButton(
+            onClick = scan,
+            containerColor = BlueDark,
             modifier = Modifier
                 .padding(
                     end = BUTTON_PADDING,
@@ -293,10 +303,10 @@ fun NavigationView(
                 .constrainAs(scanButton) {
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                    width = Dimension.value(BUTTON_SIZE)
-                    height = Dimension.value(BUTTON_SIZE)
-                },
-            onClick = scan
+                    width = Dimension.value(MAIN_BUTTON_SIZE)
+                    height = Dimension.value(MAIN_BUTTON_SIZE)
+                }
+
         ) {
             Image(
                 painter = painterResource(R.drawable.baseline_qr_code_24),
