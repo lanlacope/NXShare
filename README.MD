@@ -23,6 +23,7 @@ Licensed under the [Apache License 2.0][999]
 	See the License for the specific language governing permissions and
 	limitations under the License.
 <br>
+# Credit
 This application uses the following open source libraries: 
 
 [zxing-android-embedded][1001]
