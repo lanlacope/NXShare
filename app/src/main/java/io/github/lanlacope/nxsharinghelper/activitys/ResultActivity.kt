@@ -65,6 +65,8 @@ class ManagerHolder : ViewModel() {
 
 class ResultActivity : ComponentActivity() {
 
+    private val managerHolder: ManagerHolder by viewModels()
+
     private val navigationMessage by lazy {
         mutableStateOf(getString(R.string.app_name))
     }
@@ -72,8 +74,6 @@ class ResultActivity : ComponentActivity() {
     private val isScanned by lazy {
         mutableStateOf(false)
     }
-
-    private val managerHolder: ManagerHolder by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +105,7 @@ class ResultActivity : ComponentActivity() {
         }
 
         val checkLicense: () -> Unit = {
-            val intent = Intent(applicationContext, LicenceActivity::class.java)
+            val intent = Intent(this, LicenceActivity::class.java)
             startActivity(intent)
         }
 
