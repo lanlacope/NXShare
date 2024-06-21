@@ -247,18 +247,14 @@ class DownloadManager(val context: Context) {
         val data = downloadData.copy()
         isSaving = true
 
-        try { // HACK:
+        try {
             val appFolder = File(Environment.getExternalStorageDirectory(), APP_FOLDER)
-            if (!appFolder.exists()) {
-                appFolder.mkdir()
-            }
+
             val consoleFolder = File(appFolder, removeAscii(data.consoleName))
-            if (!consoleFolder.exists()) {
-                consoleFolder.mkdir()
-            }
+
             val contentsFolder = File(consoleFolder, selectDirectory(data.fileType))
-            if (!contentsFolder.exists()) {
-                contentsFolder.mkdir()
+            if (!consoleFolder.exists()) {
+                consoleFolder.mkdirs()
             }
 
             for (fileName in data.fileNames) {
@@ -274,18 +270,11 @@ class DownloadManager(val context: Context) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     context,
-                    "${data.fileNames.size}\${context.getString(R.string.saved_notification)",
+                    "${data.fileNames.size}/${context.getString(R.string.saved_notification)}",
                     Toast.LENGTH_LONG
                 ).show()
             }
         } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                Toast.makeText(
-                    context,
-                    e.toString().substring(10),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
             throw e
         } finally {
             isSaving = false
