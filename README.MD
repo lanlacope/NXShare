@@ -22,7 +22,8 @@ Licensed under the [Apache License 2.0][999]
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
-<br>
+
+
 # Credit
 This application uses the following open source libraries: 
 
