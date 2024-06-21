@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
+import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -133,8 +134,16 @@ class DownloadManager(val context: Context) {
 
     private var isSaving = false
 
+    suspend fun save() {
+        if (isAfterAndroidX()) {
+            saveFileToStorage()
+        } else {
+            saveFileToStorageLegasy()
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
-    suspend fun saveFileToStorage() = withContext(Dispatchers.IO) {
+    private suspend fun saveFileToStorage() = withContext(Dispatchers.IO) {
         // NOTE: 削除される可能性があるため
         val data = downloadData.copy()
         isSaving = true
@@ -241,7 +250,7 @@ class DownloadManager(val context: Context) {
     /*
      *    FOR BEFORE API 28
      */
-    suspend fun saveFileToStorageLegasy() = withContext(Dispatchers.IO) {
+    private suspend fun saveFileToStorageLegasy() = withContext(Dispatchers.IO) {
         // NOTE: 削除される可能性がある
         val data = downloadData.copy()
         isSaving = true

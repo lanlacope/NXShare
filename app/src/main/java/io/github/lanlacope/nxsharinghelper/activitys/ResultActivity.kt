@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Button
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -123,14 +123,11 @@ class ResultActivity : ComponentActivity() {
 
     fun startScan(louncher: ActivityResultLauncher<ScanOptions>) {
         try {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                val scanOption = ScanOptions().setOrientationLocked(false)
-                louncher.launch(scanOption)
-            } else {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
-                return
+            if (checkCameraPermition()) {
+                if (checkWifiEnabled()) {
+                    val scanOption = ScanOptions().setOrientationLocked(false)
+                    louncher.launch(scanOption)
+                }
             }
         } catch (e: Exception) {
             Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_LONG).show()
@@ -154,29 +151,59 @@ class ResultActivity : ComponentActivity() {
         }
     }
 
-    fun startSave() {
+    private fun startSave() {
         try {
-            val downloadManager = managerHolder.getDownloadManager(applicationContext)
-            if (isAfterAndroidX()) {
+            if (ckeckStoragePermission()) {
                 managerHolder.viewModelScope.launch {
-                    downloadManager.saveFileToStorage()
-                }
-            } else {
-                if (ContextCompat.checkSelfPermission(
-                        this, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                    == PackageManager.PERMISSION_GRANTED
-                ) {
-                    managerHolder.viewModelScope.launch {
-                        downloadManager.saveFileToStorageLegasy()
-                    }
-                } else {
-                    requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-                    return
+                    val downloadManager = managerHolder.getDownloadManager(applicationContext)
+                    downloadManager.save()
                 }
             }
         } catch (e: Exception) {
-            Toast.makeText(applicationContext, "in SAVE : ${e.toString()}", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "in SAVE : ${e.toString()}", Toast.LENGTH_LONG)
+                .show()
+        }
+    }
+
+    private fun checkCameraPermition(): Boolean {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        } else {
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
+            return false
+        }
+    }
+
+    private fun ckeckStoragePermission(): Boolean {
+        if (isAfterAndroidX()) {
+            return true
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                return true
+            } else {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                return false
+            }
+        }
+    }
+
+    private fun checkWifiEnabled(): Boolean {
+        if (isAfterAndroidX()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                return true
+            } else {
+                val intent = Intent(Settings.Panel.ACTION_WIFI)
+                startActivity(intent)
+                return false
+            }
+        } else {
+            return true
         }
     }
 
