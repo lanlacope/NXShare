@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
@@ -193,9 +195,8 @@ class ResultActivity : ComponentActivity() {
 
     private fun checkWifiEnabled(): Boolean {
         if (isAfterAndroidX()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
+            val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            if (wifiManager.isWifiEnabled) {
                 return true
             } else {
                 val intent = Intent(Settings.Panel.ACTION_WIFI)
