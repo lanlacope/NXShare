@@ -6,14 +6,11 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.WifiConfiguration
-import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
-import kotlin.properties.Delegates
 
 class ConnectionManager(val context: Context) {
 

@@ -10,12 +10,10 @@ import androidx.activity.result.contract.ActivityResultContract
 import com.google.zxing.client.android.Intents
 import com.google.zxing.client.android.R
 import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.CaptureActivity
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
-import kotlin.reflect.KClass
 
 /*
  * Copyright (C) 2012-2022 ZXing authors, Journey Mobile
