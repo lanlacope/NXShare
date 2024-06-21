@@ -168,7 +168,7 @@ class ResultActivity : ComponentActivity() {
                     == PackageManager.PERMISSION_GRANTED
                 ) {
                     managerHolder.viewModelScope.launch {
-                        downloadManager.saveFileToStorage()
+                        downloadManager.saveFileToStorageLegasy()
                     }
                 } else {
                     requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
