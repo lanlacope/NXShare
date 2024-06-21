@@ -93,12 +93,15 @@ class ConnectionManager(val context: Context) {
 
         lastNetworkId = wifiManager.connectionInfo.networkId
 
+        if (!wifiManager.isWifiEnabled) {
+            wifiManager.isWifiEnabled = true
+        }
+
         val wifiConfig = WifiConfiguration().apply {
             SSID = "\"$ssid\""
             preSharedKey = "\"$password\""
             allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK)
         }
-
 
         val networkId = wifiManager.addNetwork(wifiConfig)
 
