@@ -239,9 +239,8 @@ class DownloadManager(val context: Context) {
     }
 
     /*
-     *    FOR UNDER API 28
+     *    FOR BEFORE API 28
      */
-    // TODO: create
     suspend fun saveFileToStorageLegasy() = withContext(Dispatchers.IO) {
         // NOTE: 削除される可能性がある
         val data = downloadData.copy()

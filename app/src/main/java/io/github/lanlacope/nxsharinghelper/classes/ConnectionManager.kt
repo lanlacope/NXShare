@@ -6,12 +6,14 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.WifiConfiguration
+import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
+import kotlin.properties.Delegates
 
 class ConnectionManager(val context: Context) {
 
@@ -70,26 +72,38 @@ class ConnectionManager(val context: Context) {
     }
 
     fun disConnection() {
-        connectivityManager.bindProcessToNetwork(null)
+        if (isAfterAndroidX()) {
+            connectivityManager.bindProcessToNetwork(null)
+        } else {
+            disConnectionLegasy()
+        }
     }
 
     /*
      *    FOR UNDER API 28
      */
-    // TODO: create
+
+    private val wifiManager by lazy {
+        context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    }
+
+    private var lastNetworkId = -1
+
     @Suppress("DEPRECATION")
     private fun connectSwitchLegacy(
         ssid: String,
         password: String,
         onConnect: () -> Unit
     ) {
-        val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
+
+        lastNetworkId = wifiManager.connectionInfo.networkId
 
         val wifiConfig = WifiConfiguration().apply {
             SSID = "\"$ssid\""
             preSharedKey = "\"$password\""
             allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK)
         }
+
 
         val networkId = wifiManager.addNetwork(wifiConfig)
 
@@ -98,6 +112,15 @@ class ConnectionManager(val context: Context) {
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
             onConnect()
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    fun disConnectionLegasy() {
+        if (lastNetworkId != -1) {
+            wifiManager.disconnect()
+            wifiManager.enableNetwork(lastNetworkId, true)
+            wifiManager.reconnect()
         }
     }
 }
