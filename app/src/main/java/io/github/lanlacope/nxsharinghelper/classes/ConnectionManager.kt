@@ -58,7 +58,6 @@ class ConnectionManager(val context: Context) {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                     if (connectivityManager.bindProcessToNetwork(network)) {
-                        Toast.makeText(context, "connect", Toast.LENGTH_LONG).show()
                         onConnect()
                     }
                 }
