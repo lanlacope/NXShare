@@ -79,9 +79,8 @@ class ConnectionManager(val context: Context) {
     }
 
     /*
-     *    FOR UNDER API 28
+     *    FOR BEFORE API 28
      */
-
     private val wifiManager by lazy {
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     }
