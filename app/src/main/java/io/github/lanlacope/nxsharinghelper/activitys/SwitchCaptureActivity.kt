@@ -6,14 +6,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import com.google.zxing.ResultPoint
 import com.google.zxing.client.android.Intents
-import com.google.zxing.client.android.R
+import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.ScanOptions
+import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
+import com.google.zxing.client.android.R as zR
 
 /*
  * Copyright (C) 2012-2022 ZXing authors, Journey Mobile
@@ -41,8 +45,6 @@ class SwitchCaptureActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        println("\n\n\ncreate\n\n\n")
-
         barcodeScannerView = initializeContent()
 
         capture = SwitchCaptureManager(this, barcodeScannerView)
@@ -51,8 +53,8 @@ class SwitchCaptureActivity : Activity() {
     }
 
     protected fun initializeContent(): DecoratedBarcodeView {
-        setContentView(R.layout.zxing_capture)
-        return findViewById<View>(R.id.zxing_barcode_scanner) as DecoratedBarcodeView
+        setContentView(zR.layout.zxing_capture)
+        return findViewById<View>(zR.id.zxing_barcode_scanner) as DecoratedBarcodeView
     }
 
     override fun onResume() {
@@ -145,11 +147,21 @@ class SwitchCaptureManager(
 
         val parcedResult = parceQr(_rawResult)
 
-        if (parcedResult.second == ResultState.SUCCESSFUL_CARER) {
-            activity.setResult(Activity.RESULT_OK, Intent(parcedResult.first))
-            closeAndFinish()
-        } else {
-            barcodeView.resume()
+        when (parcedResult.second ) {
+            ResultState.SUCCESSFUL_CARER -> {
+                activity.setResult(Activity.RESULT_OK, Intent(parcedResult.first))
+                closeAndFinish()
+            }
+            ResultState.FAILED_NOTSWITCH -> {
+                Toast.makeText(activity, activity.getString(R.string.failed_decode_notswitch), Toast.LENGTH_SHORT).show()
+                barcodeView.resume()
+                decode()
+            }
+            ResultState.FAILED_LOCALHOST -> {
+                Toast.makeText(activity, activity.getString(R.string.failed_decode_islocalhost), Toast.LENGTH_SHORT).show()
+                barcodeView.resume()
+                decode()
+            }
         }
     }
 
