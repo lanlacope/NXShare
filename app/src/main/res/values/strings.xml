@@ -29,7 +29,16 @@
         Failed download…
     </string>
     <string name="saved_notification">
-        \sfiles are saved
+        \sFiles are saved
+    </string>
+
+    <!-- Permission Message -->
+    <string name="permission_share_photo">
+        Share photos
+    </string>
+
+    <string name="permission_share_movie">
+        Share movie
     </string>
 
     <!-- License -->

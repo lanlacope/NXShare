@@ -32,4 +32,12 @@
     <string name="saved_notification">
         件のファイルを保存しました
     </string>
+
+    <string name="permission_share_photo">
+        Share photos
+    </string>
+
+    <string name="permission_share_movie">
+        Share movie
+    </string>
 </resources>

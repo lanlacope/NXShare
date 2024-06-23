@@ -93,8 +93,7 @@ class ResultActivity : ComponentActivity() {
         startScan(captureLancher)
 
         val share: () -> Unit = {
-            // TODO :
-            Toast.makeText(applicationContext, "Unimplemented", Toast.LENGTH_LONG).show()
+            startShare()
         }
 
         val save: () -> Unit = {
@@ -168,7 +167,8 @@ class ResultActivity : ComponentActivity() {
 
     private fun startShare() {
         val downloadManager = managerHolder.getDownloadManager(applicationContext)
-
+        val intent = downloadManager.createShareIntent(this)
+        startActivity(intent)
     }
 
     private fun checkCameraPermition(): Boolean {

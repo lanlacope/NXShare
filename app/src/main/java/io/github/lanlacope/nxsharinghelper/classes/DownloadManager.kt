@@ -1,14 +1,19 @@
 package io.github.lanlacope.nxsharinghelper.classes
 
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ShareCompat
+import androidx.core.app.ShareCompat.IntentBuilder
+import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
@@ -148,7 +153,8 @@ class DownloadManager(val context: Context) {
         isSaving = true
         try {
             for (fileName in data.fileNames) {
-                val inputUri = Uri.fromFile(File(context.cacheDir, fileName))
+                val inputFile = File(context.cacheDir, fileName)
+                val inputUri = Uri.fromFile(inputFile)
                 val collection: Uri = createCollection(data.fileType)
                 val values: ContentValues = createContentsValue(data.fileType, fileName, removeAscii(data.consoleName))
                 val redsober: ContentResolver = context.contentResolver
@@ -291,9 +297,50 @@ class DownloadManager(val context: Context) {
 
     /*****FOR BEFORE API 28 *****/
 
+    fun createShareIntent(activityContext: Context): Intent {
+
+        val intent = ShareCompat.IntentBuilder(activityContext).apply {
+            when(downloadData.fileType) {
+                JSON_PROPATY.FILETYPE_PHOTO -> {
+                    setType(MINETYPE.JPG)
+                    setChooserTitle(activityContext.getString(R.string.permission_share_photo))
+                }
+                JSON_PROPATY.FILETYPE_MOVIE -> {
+                    setType(MINETYPE.MP4)
+                    setChooserTitle(activityContext.getString(R.string.permission_share_movie))
+                }
+            }
+
+            if (downloadData.fileNames.size == 1) {
+                val file = File(context.cacheDir, downloadData.fileNames[0])
+                val uri = FileProvider.getUriForFile(activityContext, "${activityContext.packageName}.fileProvider", file)
+                setStream(uri)
+                    .createChooserIntent()
+                    .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+            } else {
+                val uri: ArrayList<Uri> = arrayListOf()
+                for (fileName in downloadData.fileNames) {
+                    val file = File(context.cacheDir, fileName)
+                    uri.add(FileProvider.getUriForFile(activityContext, "${activityContext.packageName}.fileProvider", file))
+                }
+                setStream(uri[0])
+                    .createChooserIntent()
+                    .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uri)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+            }
+        }
+
+        return intent.createChooserIntent()
+    }
+
+
     fun clearCache() {
         if (!isSaving) {
-            context.cacheDir.listFiles()?.forEach { it.delete() }
+            context.cacheDir.listFiles()?.forEach { file ->
+                file.delete()
+            }
         }
     }
 }
