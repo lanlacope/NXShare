@@ -75,9 +75,8 @@ class ConnectionManager(val context: Context) {
         }
     }
 
-    /*
-     *    FOR BEFORE API 28
-     */
+    /*****FOR BEFORE API 28 *****/
+
     private val wifiManager by lazy {
         context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     }
@@ -121,4 +120,6 @@ class ConnectionManager(val context: Context) {
             wifiManager.reconnect()
         }
     }
+
+    /*****FOR BEFORE API 28 *****/
 }

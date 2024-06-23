@@ -52,5 +52,15 @@
             android:theme="@style/Theme.NXSharingHelper"
             android:noHistory="true" />
 
+        <provider
+            android:authorities="${applicationID}.fileProvider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/cashe_path" />
+        </provider>
+
     </application>
 </manifest>

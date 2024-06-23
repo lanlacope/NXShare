@@ -43,7 +43,6 @@ class DownloadManager(val context: Context) {
     }
 
     private var downloadData = DownloadData()
-        private set
 
     suspend fun start() {
         // 初期化
@@ -241,15 +240,8 @@ class DownloadManager(val context: Context) {
         }
     }
 
-    fun clearCache() {
-        if (!isSaving) {
-            context.cacheDir.listFiles()?.forEach { it.delete() }
-        }
-    }
+    /*****}FOR BEFORE API 28 *****/
 
-    /*
-     *    FOR BEFORE API 28
-     */
     private suspend fun saveFileToStorageLegasy() = withContext(Dispatchers.IO) {
         // NOTE: 削除される可能性がある
         val data = downloadData.copy()
@@ -294,6 +286,14 @@ class DownloadManager(val context: Context) {
             JSON_PROPATY.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
             JSON_PROPATY.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
             else -> throw IllegalAccessException()
+        }
+    }
+
+    /*****FOR BEFORE API 28 *****/
+
+    fun clearCache() {
+        if (!isSaving) {
+            context.cacheDir.listFiles()?.forEach { it.delete() }
         }
     }
 }

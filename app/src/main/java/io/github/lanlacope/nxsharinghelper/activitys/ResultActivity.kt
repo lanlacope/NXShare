@@ -166,6 +166,11 @@ class ResultActivity : ComponentActivity() {
         }
     }
 
+    private fun startShare() {
+        val downloadManager = managerHolder.getDownloadManager(applicationContext)
+
+    }
+
     private fun checkCameraPermition(): Boolean {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
