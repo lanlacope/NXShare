@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -137,7 +138,7 @@ class ResultActivity : ComponentActivity() {
     val onConnection: () -> Unit = {
         managerHolder.viewModelScope.launch {
             try {
-                println("Succeed Connecting")
+                Log.println(Log.INFO, "NXShare", "Successful Connecting")
                 val connectionManager = managerHolder.getConnectionManager(applicationContext)
                 val downloadManager = managerHolder.getDownloadManager(applicationContext)
                 navigationMessage.value = getString(R.string.waiting_download)
