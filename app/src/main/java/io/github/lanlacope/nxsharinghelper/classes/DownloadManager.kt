@@ -1,6 +1,5 @@
 package io.github.lanlacope.nxsharinghelper.classes
 
-import android.app.Activity
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -12,7 +11,6 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ShareCompat
-import androidx.core.app.ShareCompat.IntentBuilder
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.SWITCH_LOCALHOST
@@ -26,8 +24,6 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-
-// TODO: 読み取りの高速化
 
 class DownloadManager(val context: Context) {
 
