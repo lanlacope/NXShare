@@ -1,3 +1,7 @@
+[日本語][1]
+
+[1]: https://github.com/lanlacope/NXShare/blob/master/README-ja.MD
+
 # NX Share
 For Android Application.<br>
 Support sharing for NintendoSwitch.<br>
