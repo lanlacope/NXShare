@@ -82,10 +82,15 @@ class ResultActivity : ComponentActivity() {
         mutableStateOf(false)
     }
 
+    private lateinit var  captureLancher: ActivityResultLauncher<ScanOptions>
+    private lateinit var cameraParemissionLauncher: ActivityResultLauncher<String>
+    private lateinit var strageParemissionLauncher: ActivityResultLauncher<String>
+    private lateinit var wifiPanelLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val captureLancher =
+        captureLancher =
             registerForActivityResult(SwitchCaptureActivity.Contract()) { result ->
                 if (result != null) {
                     val connectionManager = managerHolder.getConnectionManager(applicationContext)
@@ -96,7 +101,27 @@ class ResultActivity : ComponentActivity() {
                 }
             }
 
-        startScan(captureLancher)
+        cameraParemissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGrant ->
+                if (isGrant) {
+                    startScan()
+                }
+            }
+
+        wifiPanelLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (wifiManager.isWifiEnabled) {
+                startScan()
+            }
+        }
+
+        strageParemissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGrant ->
+                if (isGrant) {
+                    startSave()
+                }
+            }
+
+        startScan()
 
         val share: () -> Unit = {
             startShare()
@@ -107,7 +132,7 @@ class ResultActivity : ComponentActivity() {
         }
 
         val scan: () -> Unit = {
-            startScan(captureLancher)
+            startScan()
         }
 
         val checkLicense: () -> Unit = {
@@ -127,28 +152,15 @@ class ResultActivity : ComponentActivity() {
         }
     }
 
-    fun startScan(launcher: ActivityResultLauncher<ScanOptions>) {
-        val cameraParemissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGrant ->
-                if (isGrant) {
-                    startScan(launcher)
-                }
-            }
-
-        val wifiPanelLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (wifiManager.isWifiEnabled) {
-                startScan(launcher)
-            }
-        }
-
+    fun startScan() {
         try {
-            if (checkCameraPermition(cameraParemissionLauncher)) {
-                if (checkWifiEnabled(wifiPanelLauncher)) {
+            if (checkCameraPermition()) {
+                if (checkWifiEnabled()) {
                     val scanOption = ScanOptions()
                         .setOrientationLocked(false)
                         .setBeepEnabled(false)
 
-                    launcher.launch(scanOption)
+                    captureLancher.launch(scanOption)
                 }
             }
         } catch (e: Exception) {
@@ -174,14 +186,8 @@ class ResultActivity : ComponentActivity() {
     }
 
     private fun startSave() {
-        val strageParemissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGrant ->
-                if (isGrant) {
-                    startSave()
-                }
-            }
         try {
-            if (ckeckStoragePermission(strageParemissionLauncher)) {
+            if (ckeckStoragePermission()) {
                 managerHolder.viewModelScope.launch {
                     val downloadManager = managerHolder.getDownloadManager(applicationContext)
                     downloadManager.save()
@@ -199,18 +205,18 @@ class ResultActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-    private fun checkCameraPermition(launcher: ActivityResultLauncher<String>): Boolean {
+    private fun checkCameraPermition(): Boolean {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
         ) {
             return true
         } else {
-            launcher.launch(Manifest.permission.CAMERA)
+            cameraParemissionLauncher.launch(Manifest.permission.CAMERA)
             return false
         }
     }
 
-    private fun ckeckStoragePermission(launcher: ActivityResultLauncher<String>): Boolean {
+    private fun ckeckStoragePermission(): Boolean {
         if (isAfterAndroidX()) {
             return true
         } else {
@@ -219,20 +225,19 @@ class ResultActivity : ComponentActivity() {
             ) {
                 return true
             } else {
-                launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                strageParemissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 return false
             }
         }
     }
 
-    private fun checkWifiEnabled(launcher: ActivityResultLauncher<Intent>): Boolean {
+    private fun checkWifiEnabled(): Boolean {
         if (isAfterAndroidX()) {
-            val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             if (wifiManager.isWifiEnabled) {
                 return true
             } else {
                 val intent = Intent(Settings.Panel.ACTION_WIFI)
-                launcher.launch(intent)
+                wifiPanelLauncher.launch(intent)
                 return false
             }
         } else {
