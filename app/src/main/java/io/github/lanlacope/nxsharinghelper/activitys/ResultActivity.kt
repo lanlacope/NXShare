@@ -45,6 +45,7 @@ import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.BlueDark
 import io.github.lanlacope.nxsharinghelper.ui.theme.BlueLight
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.PaupleDark
 import kotlinx.coroutines.launch
 
 class ManagerHolder : ViewModel() {
@@ -269,7 +270,8 @@ fun NavigationView(
     val IMAGE_PADDING = 8.dp
 
     ConstraintLayout (
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         val (license, navigation, scanButton, shareButton, saveButton) = createRefs()
 
@@ -285,6 +287,7 @@ fun NavigationView(
         ) {
             Text(
                 text = stringResource(id = R.string.license_cover),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.wrapContentSize()
             )
         }
