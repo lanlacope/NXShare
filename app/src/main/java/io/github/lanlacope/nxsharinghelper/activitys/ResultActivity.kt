@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
@@ -69,6 +70,10 @@ class ResultActivity : ComponentActivity() {
 
     private val managerHolder: ManagerHolder by viewModels()
 
+    val wifiManager by lazy {
+        applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    }
+
     private val navigationMessage by lazy {
         mutableStateOf(getString(R.string.app_name))
     }
@@ -122,12 +127,28 @@ class ResultActivity : ComponentActivity() {
         }
     }
 
-    fun startScan(louncher: ActivityResultLauncher<ScanOptions>) {
+    fun startScan(launcher: ActivityResultLauncher<ScanOptions>) {
+        val cameraParemissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGrant ->
+                if (isGrant) {
+                    startScan(launcher)
+                }
+            }
+
+        val wifiPanelLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (wifiManager.isWifiEnabled) {
+                startScan(launcher)
+            }
+        }
+
         try {
-            if (checkCameraPermition()) {
-                if (checkWifiEnabled()) {
-                    val scanOption = ScanOptions().setOrientationLocked(false)
-                    louncher.launch(scanOption)
+            if (checkCameraPermition(cameraParemissionLauncher)) {
+                if (checkWifiEnabled(wifiPanelLauncher)) {
+                    val scanOption = ScanOptions()
+                        .setOrientationLocked(false)
+                        .setBeepEnabled(false)
+
+                    launcher.launch(scanOption)
                 }
             }
         } catch (e: Exception) {
@@ -153,8 +174,14 @@ class ResultActivity : ComponentActivity() {
     }
 
     private fun startSave() {
+        val strageParemissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGrant ->
+                if (isGrant) {
+                    startSave()
+                }
+            }
         try {
-            if (ckeckStoragePermission()) {
+            if (ckeckStoragePermission(strageParemissionLauncher)) {
                 managerHolder.viewModelScope.launch {
                     val downloadManager = managerHolder.getDownloadManager(applicationContext)
                     downloadManager.save()
@@ -172,18 +199,18 @@ class ResultActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-    private fun checkCameraPermition(): Boolean {
+    private fun checkCameraPermition(launcher: ActivityResultLauncher<String>): Boolean {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED
         ) {
             return true
         } else {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), 1)
+            launcher.launch(Manifest.permission.CAMERA)
             return false
         }
     }
 
-    private fun ckeckStoragePermission(): Boolean {
+    private fun ckeckStoragePermission(launcher: ActivityResultLauncher<String>): Boolean {
         if (isAfterAndroidX()) {
             return true
         } else {
@@ -192,20 +219,20 @@ class ResultActivity : ComponentActivity() {
             ) {
                 return true
             } else {
-                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 return false
             }
         }
     }
 
-    private fun checkWifiEnabled(): Boolean {
+    private fun checkWifiEnabled(launcher: ActivityResultLauncher<Intent>): Boolean {
         if (isAfterAndroidX()) {
             val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             if (wifiManager.isWifiEnabled) {
                 return true
             } else {
                 val intent = Intent(Settings.Panel.ACTION_WIFI)
-                startActivity(intent)
+                launcher.launch(intent)
                 return false
             }
         } else {
