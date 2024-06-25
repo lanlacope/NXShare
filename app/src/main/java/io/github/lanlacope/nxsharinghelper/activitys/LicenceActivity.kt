@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +48,7 @@ private fun LicenceView() {
     val context = LocalContext.current
 
     val rawText = stringResource(id = R.string.license)
+    val textColor = MaterialTheme.colorScheme.onBackground
     val linkColor = MaterialTheme.colorScheme.primary
     val text = remember(rawText) {
         val parsedText = HtmlCompat.fromHtml(
@@ -81,6 +83,9 @@ private fun LicenceView() {
     ClickableText(
         text = text,
         modifier = Modifier.fillMaxSize(),
+        style = TextStyle(
+            color = textColor
+        ),
         onClick = {
             text.getStringAnnotations(
                 tag = "URL",
