@@ -389,9 +389,26 @@ fun NavigationView(
     }
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+fun NavigationViewPreviewLight(
+    message: MutableState<String> = mutableStateOf("Message is here"),
+    unit: () -> Unit = {},
+    isScanned: MutableState<Boolean> = mutableStateOf(true)
+) {
+    NXSharingHelperTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            NavigationView(message, unit, unit, unit, isScanned, unit)
+        }
+    }
+}
+
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NavigationViewPreview(
+fun NavigationViewPreviewDark(
     message: MutableState<String> = mutableStateOf("Message is here"),
     unit: () -> Unit = {},
     isScanned: MutableState<Boolean> = mutableStateOf(true)

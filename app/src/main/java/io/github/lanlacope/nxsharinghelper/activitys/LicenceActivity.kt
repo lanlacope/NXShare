@@ -1,6 +1,7 @@
 package io.github.lanlacope.nxsharinghelper.activitys
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.text.style.CharacterStyle
@@ -41,7 +42,6 @@ class LicenceActivity : ComponentActivity() {
     }
 }
 
-@Preview
 @Composable
 private fun LicenceView() {
     val context = LocalContext.current
@@ -94,4 +94,30 @@ private fun LicenceView() {
                 }
         }
     )
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun LicenseViewPreViewLight() {
+    NXSharingHelperTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            LicenceView()
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun LicenseViewPreViewDark() {
+    NXSharingHelperTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            LicenceView()
+        }
+    }
 }
