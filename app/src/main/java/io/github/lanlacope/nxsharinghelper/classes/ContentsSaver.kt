@@ -35,20 +35,18 @@ class ContentsSaver(val context: Context) {
                 val inputFile = File(context.cacheDir, fileName)
                 val inputUri = Uri.fromFile(inputFile)
                 val collection: Uri = createCollection(data.fileType)
-                val values: ContentValues = createContentsValue(data.fileType, fileName, removeAscii(data.consoleName))
+                val values: ContentValues =
+                    createContentsValue(data.fileType, fileName, removeAscii(data.consoleName))
                 val redsober: ContentResolver = context.contentResolver
                 val outputUri = redsober.insert(collection, values)
 
-                if (outputUri != null) { // HACK: null check
-                    redsober.openInputStream(inputUri).use { input ->
-                        redsober.openOutputStream(outputUri, "w").use { output ->
-                            if (output != null) {
-                                input!!.copyTo(output)
-                            }
-                        }
+                // HACK: null check
+                redsober.openInputStream(inputUri).use { input ->
+                    redsober.openOutputStream(outputUri!!, "w").use { output ->
+                        input!!.copyTo(output!!)
                     }
-                    redsober.update(outputUri, updateContentsValue(data.fileType), null, null)
                 }
+                redsober.update(outputUri!!, updateContentsValue(data.fileType), null, null)
             }
             withContext(Dispatchers.Main) {
                 Toast.makeText(
