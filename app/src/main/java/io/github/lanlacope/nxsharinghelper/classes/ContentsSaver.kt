@@ -40,7 +40,6 @@ class ContentsSaver(val context: Context) {
                 val redsober: ContentResolver = context.contentResolver
                 val outputUri = redsober.insert(collection, values)
 
-                // HACK: null check
                 redsober.openInputStream(inputUri).use { input ->
                     redsober.openOutputStream(outputUri!!, "w").use { output ->
                         input!!.copyTo(output!!)
