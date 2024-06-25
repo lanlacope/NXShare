@@ -56,23 +56,18 @@ class ConnectionManager(val context: Context) {
                     super.onAvailable(network)
                     if (connectivityManager.bindProcessToNetwork(network)) {
                         onConnect()
+                        connectivityManager.bindProcessToNetwork(null)
+                        connectivityManager.unregisterNetworkCallback(this)
                     }
                 }
 
                 override fun onLost(network: Network) {
                     super.onLost(network)
+                    connectivityManager.bindProcessToNetwork(null)
                     connectivityManager.unregisterNetworkCallback(this)
                 }
             }
         )
-    }
-
-    fun disConnection() {
-        if (isAfterAndroidX()) {
-            connectivityManager.bindProcessToNetwork(null)
-        } else {
-            disConnectionLegasy()
-        }
     }
 
     /*****FOR BEFORE API 28 *****/
@@ -109,17 +104,12 @@ class ConnectionManager(val context: Context) {
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
             onConnect()
+            if (lastNetworkId != -1) {
+                wifiManager.disconnect()
+                wifiManager.enableNetwork(lastNetworkId, true)
+                wifiManager.reconnect()
+            }
         }
     }
-
-    @Suppress("DEPRECATION")
-    fun disConnectionLegasy() {
-        if (lastNetworkId != -1) {
-            wifiManager.disconnect()
-            wifiManager.enableNetwork(lastNetworkId, true)
-            wifiManager.reconnect()
-        }
-    }
-
     /*****FOR BEFORE API 28 *****/
 }

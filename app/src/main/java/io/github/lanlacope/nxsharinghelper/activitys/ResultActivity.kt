@@ -53,14 +53,6 @@ class ManagerHolder : ViewModel() {
 
     var downloadData: DownloadData = DownloadData()
 
-    private var connectionManager: ConnectionManager? = null
-
-    fun connectionManager(context: Context): ConnectionManager {
-        if (connectionManager == null) {
-            connectionManager = ConnectionManager(context)
-        }
-        return connectionManager as ConnectionManager
-    }
 }
 
 class ResultActivity : ComponentActivity() {
@@ -93,7 +85,7 @@ class ResultActivity : ComponentActivity() {
         captureLancher =
             registerForActivityResult(SwitchCaptureActivity.Contract()) { result ->
                 if (result != null) {
-                    val connectionManager = managerHolder.connectionManager(applicationContext)
+                    val connectionManager = ConnectionManager(applicationContext)
 
                     // ビューの更新
                     isScanned.value = false
@@ -187,7 +179,6 @@ class ResultActivity : ComponentActivity() {
             try {
                 Log.println(Log.INFO, "NXShare", "Successful Connecting")
 
-                val connectionManager = managerHolder.connectionManager(applicationContext)
                 val contentsDownloader = ContentsDownloader(applicationContext)
 
                 // ビューの更新
@@ -195,7 +186,6 @@ class ResultActivity : ComponentActivity() {
 
                 contentsDownloader.start()
                 managerHolder.downloadData = contentsDownloader.downloadData
-                connectionManager.disConnection()
 
                 // ビューの更新
                 isScanned.value = true
