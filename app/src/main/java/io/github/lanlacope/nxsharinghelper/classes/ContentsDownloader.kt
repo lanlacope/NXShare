@@ -58,11 +58,9 @@ class ContentsDownloader(val context: Context) {
     private fun parseJson(rawJson: JSONObject) {
         val fileType = rawJson.getString(JSON_PROPATY.FILETYPE)
         val consoleName = rawJson.getString(JSON_PROPATY.CONSOLENAME)
-        val fileNames: MutableList<String> = mutableListOf()
         val jsonArray = rawJson.getJSONArray(JSON_PROPATY.FILENAMES)
-
-        for (index in 0..<jsonArray.length()) {
-            fileNames.add(jsonArray.getString(index))
+        val fileNames = List(jsonArray.length()) { index ->
+            jsonArray.getString(index)
         }
 
         downloadData = DownloadData(
@@ -73,7 +71,7 @@ class ContentsDownloader(val context: Context) {
     }
 
     private suspend fun getContents() = withContext(Dispatchers.IO) {
-        for (fileName in downloadData.fileNames) {
+        downloadData.fileNames.forEach { fileName ->
             val connection: HttpURLConnection =
                 URL(SWITCH_LOCALHOST.IMAGE + fileName).openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
