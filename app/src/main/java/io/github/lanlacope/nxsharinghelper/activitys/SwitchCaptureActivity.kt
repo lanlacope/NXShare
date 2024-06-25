@@ -97,7 +97,6 @@ class SwitchCaptureActivity : Activity() {
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Pair<String, String>? {
-            println("returnnow")
             if (resultCode == RESULT_OK) {
                 println(intent?.action)
                 val rawResult = intent?.action ?: ";"
@@ -176,33 +175,33 @@ class SwitchCaptureManager(
             return Pair(null, ResultState.FAILED_NOTSWITCH)
         }
 
-        val parts = text.substring(5).split(";").toTypedArray()
+        val splits = text.substring(5).split(";").toTypedArray()
 
-        for (part in parts) {
+        splits.forEach() { split ->
             when {
-                part.startsWith("S:") -> {
-                    ssid = part.substring(2)
+                split.startsWith("S:") -> {
+                    ssid = split.substring(2)
 
-                    if (!ssid.startsWith("switch_")) {
+                    if (!ssid!!.startsWith("switch_")) {
                         return Pair(null, ResultState.FAILED_NOTSWITCH)
                     }
                 }
 
-                part.startsWith("P:") -> {
-                    password = part.substring(2)
+                split.startsWith("P:") -> {
+                    password = split.substring(2)
 
-                    if (password.length != 8) {
+                    if (password?.length != 8) {
                         return Pair(null, ResultState.FAILED_NOTSWITCH)
                     }
                 }
 
-                part.startsWith("T") -> {
-                    if (part.substring(2) != "WPA") {
+                split.startsWith("T") -> {
+                    if (split.substring(2) != "WPA") {
                         return Pair(null, ResultState.FAILED_NOTSWITCH)
                     }
                 }
 
-                part.isEmpty() -> {
+                split.isEmpty() -> {
                     // do nothing
                 }
 
