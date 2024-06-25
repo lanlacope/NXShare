@@ -41,30 +41,25 @@ import androidx.lifecycle.viewModelScope
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.classes.ConnectionManager
-import io.github.lanlacope.nxsharinghelper.classes.DownloadManager
+import io.github.lanlacope.nxsharinghelper.classes.ContentsDownloader
+import io.github.lanlacope.nxsharinghelper.classes.ContentsSaver
+import io.github.lanlacope.nxsharinghelper.classes.ContentsSharer
+import io.github.lanlacope.nxsharinghelper.classes.DownloadData
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
-import io.github.lanlacope.nxsharinghelper.ui.theme.BlueDark
-import io.github.lanlacope.nxsharinghelper.ui.theme.BlueLight
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
-import io.github.lanlacope.nxsharinghelper.ui.theme.PaupleDark
 import kotlinx.coroutines.launch
 
 class ManagerHolder : ViewModel() {
-    private var connectionManager: ConnectionManager? = null
-    private var downloadManager: DownloadManager? = null
 
-    fun getConnectionManager(context: Context): ConnectionManager {
+    var downloadData: DownloadData = DownloadData()
+
+    private var connectionManager: ConnectionManager? = null
+
+    fun connectionManager(context: Context): ConnectionManager {
         if (connectionManager == null) {
             connectionManager = ConnectionManager(context)
         }
         return connectionManager as ConnectionManager
-    }
-
-    fun getDownloadManager(context: Context): DownloadManager {
-        if (downloadManager == null) {
-            downloadManager = DownloadManager(context)
-        }
-        return downloadManager as DownloadManager
     }
 }
 
@@ -84,7 +79,9 @@ class ResultActivity : ComponentActivity() {
         mutableStateOf(false)
     }
 
-    private lateinit var  captureLancher: ActivityResultLauncher<ScanOptions>
+    private var isSaving = false
+
+    private lateinit var captureLancher: ActivityResultLauncher<ScanOptions>
     private lateinit var cameraParemissionLauncher: ActivityResultLauncher<String>
     private lateinit var strageParemissionLauncher: ActivityResultLauncher<String>
     private lateinit var wifiPanelLauncher: ActivityResultLauncher<Intent>
@@ -92,13 +89,19 @@ class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // ActivityResultLauncherを定義
         captureLancher =
             registerForActivityResult(SwitchCaptureActivity.Contract()) { result ->
                 if (result != null) {
-                    val connectionManager = managerHolder.getConnectionManager(applicationContext)
+                    val connectionManager = managerHolder.connectionManager(applicationContext)
+
+                    // ビューの更新
                     isScanned.value = false
                     navigationMessage.value = getString(R.string.app_name)
+
                     connectionManager.start(result, onConnection)
+
+                    // ビューの更新
                     navigationMessage.value = getString(R.string.waiting_connection)
                 }
             }
@@ -123,8 +126,10 @@ class ResultActivity : ComponentActivity() {
                 }
             }
 
+        // 初回起動
         startScan()
 
+        // ボタンの動作を定義
         val share: () -> Unit = {
             startShare()
         }
@@ -148,7 +153,14 @@ class ResultActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationView(navigationMessage, share, save, scan, isScanned, checkLicense)
+                    NavigationView(
+                        message = navigationMessage,
+                        share = share,
+                        save = save,
+                        scan = scan,
+                        isScanned = isScanned,
+                        checkLicense = checkLicense
+                    )
                 }
             }
         }
@@ -174,14 +186,22 @@ class ResultActivity : ComponentActivity() {
         managerHolder.viewModelScope.launch {
             try {
                 Log.println(Log.INFO, "NXShare", "Successful Connecting")
-                val connectionManager = managerHolder.getConnectionManager(applicationContext)
-                val downloadManager = managerHolder.getDownloadManager(applicationContext)
+
+                val connectionManager = managerHolder.connectionManager(applicationContext)
+                val contentsDownloader = ContentsDownloader(applicationContext)
+
+                // ビューの更新
                 navigationMessage.value = getString(R.string.waiting_download)
-                downloadManager.start()
+
+                contentsDownloader.start()
+                managerHolder.downloadData = contentsDownloader.downloadData
                 connectionManager.disConnection()
+
+                // ビューの更新
                 isScanned.value = true
                 navigationMessage.value = getString(R.string.succesful_download)
             } catch (e: Exception) {
+                // ビューの更新
                 navigationMessage.value = getString(R.string.failed_download)
             }
         }
@@ -191,8 +211,10 @@ class ResultActivity : ComponentActivity() {
         try {
             if (ckeckStoragePermission()) {
                 managerHolder.viewModelScope.launch {
-                    val downloadManager = managerHolder.getDownloadManager(applicationContext)
-                    downloadManager.save()
+                    isSaving = true
+                    val contentsSaver = ContentsSaver(applicationContext)
+                    contentsSaver.save(managerHolder.downloadData.copy())
+                    isSaving = false
                 }
             }
         } catch (e: Exception) {
@@ -202,9 +224,17 @@ class ResultActivity : ComponentActivity() {
     }
 
     private fun startShare() {
-        val downloadManager = managerHolder.getDownloadManager(applicationContext)
-        val intent = downloadManager.createShareIntent(this)
+        val contentsSharer = ContentsSharer(this)
+        val intent = contentsSharer.createShareIntent(managerHolder.downloadData.copy())
         startActivity(intent)
+    }
+
+    fun clearCache() {
+        if (!isSaving) {
+            this.cacheDir.listFiles()?.forEach { file ->
+                file.delete()
+            }
+        }
     }
 
     private fun checkCameraPermition(): Boolean {
@@ -249,14 +279,13 @@ class ResultActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        val downloadManager = managerHolder.getDownloadManager(applicationContext)
-        downloadManager.clearCache()
+        clearCache()
         finish()
     }
 }
 
 @Composable
-fun NavigationView(
+private fun NavigationView(
     message: MutableState<String>,
     share: () -> Unit,
     save: () -> Unit,
@@ -391,7 +420,7 @@ fun NavigationView(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun NavigationViewPreviewLight(
+private fun NavigationViewPreviewLight(
     message: MutableState<String> = mutableStateOf("Message is here"),
     unit: () -> Unit = {},
     isScanned: MutableState<Boolean> = mutableStateOf(true)
@@ -408,7 +437,7 @@ fun NavigationViewPreviewLight(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NavigationViewPreviewDark(
+private fun NavigationViewPreviewDark(
     message: MutableState<String> = mutableStateOf("Message is here"),
     unit: () -> Unit = {},
     isScanned: MutableState<Boolean> = mutableStateOf(true)
