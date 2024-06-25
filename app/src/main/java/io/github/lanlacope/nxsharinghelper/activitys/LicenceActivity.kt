@@ -1,6 +1,7 @@
 package io.github.lanlacope.nxsharinghelper.activitys
 
 import android.os.Bundle
+import android.text.Html
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize

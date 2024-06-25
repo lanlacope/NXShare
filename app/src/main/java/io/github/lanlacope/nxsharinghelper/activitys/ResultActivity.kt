@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
@@ -311,7 +312,7 @@ fun NavigationView(
         if (isScanned.value) {
             FloatingActionButton(
                 onClick = share,
-                containerColor = BlueLight,
+                containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
                         end = BUTTON_PADDING,
@@ -336,7 +337,7 @@ fun NavigationView(
 
             FloatingActionButton(
                 onClick = save,
-                containerColor = BlueLight,
+                containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
                         end = BUTTON_PADDING,
@@ -363,7 +364,7 @@ fun NavigationView(
 
         FloatingActionButton(
             onClick = scan,
-            containerColor = BlueDark,
+            containerColor = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .padding(
                     end = BUTTON_PADDING,
@@ -388,7 +389,7 @@ fun NavigationView(
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NavigationViewPreview(
     message: MutableState<String> = mutableStateOf("Message is here"),
