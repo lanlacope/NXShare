@@ -56,9 +56,9 @@ class ContentsDownloader(val context: Context) {
      * }
      */
     private fun parseJson(rawJson: JSONObject) {
-        val fileType = rawJson.getString(JSON_PROPATY.FILETYPE)
-        val consoleName = rawJson.getString(JSON_PROPATY.CONSOLENAME)
-        val jsonArray = rawJson.getJSONArray(JSON_PROPATY.FILENAMES)
+        val fileType = rawJson.getString(DOWNLOAD_JSON_PROPATY.FILETYPE)
+        val consoleName = rawJson.getString(DOWNLOAD_JSON_PROPATY.CONSOLENAME)
+        val jsonArray = rawJson.getJSONArray(DOWNLOAD_JSON_PROPATY.FILENAMES)
         val fileNames = List(jsonArray.length()) { index ->
             jsonArray.getString(index)
         }

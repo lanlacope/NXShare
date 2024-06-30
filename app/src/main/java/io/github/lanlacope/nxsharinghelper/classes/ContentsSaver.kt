@@ -70,10 +70,10 @@ class ContentsSaver(val context: Context) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun createCollection(type: String): Uri {
         when(type) {
-            JSON_PROPATY.FILETYPE_PHOTO -> {
+            DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
                 return MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
-            JSON_PROPATY.FILETYPE_MOVIE -> {
+            DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
                 return MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
         }
@@ -84,21 +84,21 @@ class ContentsSaver(val context: Context) {
     private fun createContentsValue(type: String, fileName: String, consoleName: String): ContentValues {
         return ContentValues().apply {
             when(type) {
-                JSON_PROPATY.FILETYPE_PHOTO -> {
+                DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, MINETYPE.JPG)
                     put(MediaStore.Images.Media.IS_PENDING, true)
                     put(
                         MediaStore.Images.ImageColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_PICTURES}/$APP_FOLDER/$consoleName/")
+                        "${Environment.DIRECTORY_PICTURES}/$FOLDER_THIS/$consoleName/")
                 }
-                JSON_PROPATY.FILETYPE_MOVIE -> {
+                DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Video.Media.MIME_TYPE, MINETYPE.MP4)
                     put(MediaStore.Video.Media.IS_PENDING, true)
                     put(
                         MediaStore.Video.VideoColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_MOVIES}/$APP_FOLDER/$consoleName/")
+                        "${Environment.DIRECTORY_MOVIES}/$FOLDER_THIS/$consoleName/")
                 }
             }
         }
@@ -108,10 +108,10 @@ class ContentsSaver(val context: Context) {
     private fun updateContentsValue(type: String): ContentValues {
         return ContentValues().apply {
             when(type) {
-                JSON_PROPATY.FILETYPE_PHOTO -> {
+                DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.IS_PENDING, false)
                 }
-                JSON_PROPATY.FILETYPE_MOVIE -> {
+                DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.IS_PENDING, false)
                 }
             }
@@ -123,7 +123,7 @@ class ContentsSaver(val context: Context) {
     private suspend fun saveFileToStorageLegasy(data: DownloadData) = withContext(Dispatchers.IO) {
 
         try {
-            val appFolder = File(Environment.getExternalStorageDirectory(), APP_FOLDER)
+            val appFolder = File(Environment.getExternalStorageDirectory(), FOLDER_THIS)
 
             val consoleFolder = File(appFolder, removeAscii(data.consoleName))
 
@@ -156,8 +156,8 @@ class ContentsSaver(val context: Context) {
 
     private fun selectDirectory(type: String): String {
         when (type) {
-            JSON_PROPATY.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
-            JSON_PROPATY.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
+            DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
+            DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
             else -> throw IllegalAccessException()
         }
     }

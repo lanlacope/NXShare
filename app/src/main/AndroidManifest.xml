@@ -52,6 +52,10 @@
             android:theme="@style/Theme.NXSharingHelper"
             android:noHistory="true" />
 
+        <receiver
+            android:name=".classes.ContentsSharer$ShareReceiver"
+            android:exported="false" />
+
         <provider
             android:authorities="${applicationId}.fileProvider"
             android:name="androidx.core.content.FileProvider"

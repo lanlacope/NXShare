@@ -215,7 +215,9 @@ class ResultActivity : ComponentActivity() {
 
     private fun startShare() {
         val contentsSharer = ContentsSharer(this)
-        val intent = contentsSharer.createShareIntent(managerHolder.downloadData.copy())
+        val chooserIntent = contentsSharer.createChooserIntent(managerHolder.downloadData.copy())
+        val pendingIntent = contentsSharer.createPendingIntent()
+        val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
         startActivity(intent)
     }
 
