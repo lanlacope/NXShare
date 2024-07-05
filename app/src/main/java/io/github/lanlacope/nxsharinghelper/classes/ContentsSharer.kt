@@ -10,12 +10,7 @@ import android.net.Uri
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.BufferedReader
 import java.io.File
-import java.io.FileInputStream
-import java.io.InputStreamReader
 
 class ContentsSharer(val context: Context) {
 
@@ -76,83 +71,18 @@ class ContentsSharer(val context: Context) {
 
     class ShareReceiver : BroadcastReceiver() {
 
-        lateinit var context: Context
+        override fun onReceive(context: Context, intent: Intent) {
 
-        override fun onReceive(_context: Context, intent: Intent) {
+            val fileEditer = FileEditer(context)
 
-            context = _context
+            val type = fileEditer.getShareType(intent.component?.packageName) ?: ""
 
-            val type = getType(intent.component?.packageName) ?: ""
-
-            val text = getText(intent.data.toString(), type)
+            val text = fileEditer.createCopyText(intent.data.toString(), type)
 
             if (text.isNullOrEmpty()) {
                 val clipboardManager =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("", text))
-            }
-        }
-
-        private fun getType(packageName: String?): String? {
-            try {
-                val folder = File(context.filesDir, FOLDER_SHARE)
-                val file = File(folder, FILE_OTHERAPPS)
-                var rawJson: JSONArray
-                FileInputStream(file).use { input ->
-                    InputStreamReader(input).use { reader ->
-                        BufferedReader(reader).use {
-                            rawJson = JSONArray(it.readText())
-                        }
-                    }
-                }
-
-                List(rawJson.length()) { index ->
-                    val partJson = rawJson.getJSONObject(index)
-                    if (partJson.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == packageName) {
-                        return partJson.getString(SHARE_JSON_PROPATY.PACKAGE_TYPE)
-                    }
-                }
-                return null
-            } catch (e: Exception) {
-                return null
-            }
-        }
-
-        private fun getText(hash: String, type: String): String? {
-            try {
-                val folder = File(context.filesDir, FOLDER_SHARE)
-                val file = File(folder, type)
-                var rawJson: JSONObject
-                FileInputStream(file).use { input ->
-                    InputStreamReader(input).use { reader ->
-                        BufferedReader(reader).use {
-                            rawJson = JSONObject(it.readText())
-                        }
-                    }
-                }
-
-                return StringBuilder().apply {
-                    try {
-                        val text = rawJson.getString(SHARE_JSON_PROPATY.COMMON_TEXT)
-                        append(text)
-                    } catch (e: Exception) {
-                        // do nothing
-                    }
-                    try {
-                        val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-                        List(arrayData.length()) { index ->
-                            val partJson = arrayData.getJSONObject(index)
-                            if (partJson.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
-                                val text = partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT)
-                                append(text)
-                            }
-                        }
-                    } catch (e: Exception) {
-                        // do nothing
-                    }
-                }.toString()
-            } catch (e: Exception) {
-                return null
             }
         }
     }

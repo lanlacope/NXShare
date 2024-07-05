@@ -1,0 +1,12 @@
+[
+  {
+    "PackageName": "com.example.app",
+    "PackageType": "game_text.json",
+    "PackageEnable": "true"
+  },
+  {
+    "PackageName": "アプリのパッケージ名",
+    "PackageType": "アプリに適用するデータセットのJSON",
+    "PackageEnabled": "アプリへの共有が有効か"
+  }
+]

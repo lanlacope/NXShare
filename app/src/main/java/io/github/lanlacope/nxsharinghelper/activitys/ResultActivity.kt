@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,8 +27,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.journeyapps.barcodescanner.ScanOptions
@@ -47,31 +54,26 @@ import io.github.lanlacope.nxsharinghelper.classes.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.classes.DownloadData
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ManagerHolder : ViewModel() {
+class ResultViewModel : ViewModel() {
 
     var downloadData: DownloadData = DownloadData()
-
+    val isScanned = mutableStateOf(false)
+    val navigationMessage = mutableStateOf("")
 }
 
 class ResultActivity : ComponentActivity() {
 
-    private val managerHolder: ManagerHolder by viewModels()
-
-    val wifiManager by lazy {
-        applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    }
-
-    private val navigationMessage by lazy {
-        mutableStateOf(getString(R.string.app_name))
-    }
-
-    private val isScanned by lazy {
-        mutableStateOf(false)
-    }
+    private val viewModel: ResultViewModel by viewModels()
 
     private var isSaving = false
+
+    private val wifiManager by lazy {
+        applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    }
 
     private lateinit var captureLancher: ActivityResultLauncher<ScanOptions>
     private lateinit var cameraParemissionLauncher: ActivityResultLauncher<String>
@@ -81,6 +83,8 @@ class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel.navigationMessage.value = getString(R.string.app_name)
+
         // ActivityResultLauncherを定義
         captureLancher =
             registerForActivityResult(SwitchCaptureActivity.Contract()) { result ->
@@ -88,13 +92,13 @@ class ResultActivity : ComponentActivity() {
                     val connectionManager = ConnectionManager(applicationContext)
 
                     // ビューの更新
-                    isScanned.value = false
-                    navigationMessage.value = getString(R.string.app_name)
+                    viewModel.isScanned.value = false
+                    viewModel.navigationMessage.value = getString(R.string.app_name)
 
                     connectionManager.start(result, onConnection)
 
                     // ビューの更新
-                    navigationMessage.value = getString(R.string.waiting_connection)
+                    viewModel.navigationMessage.value = getString(R.string.waiting_connection)
                 }
             }
 
@@ -134,24 +138,18 @@ class ResultActivity : ComponentActivity() {
             startScan()
         }
 
-        val checkLicense: () -> Unit = {
-            val intent = Intent(this, LicenceActivity::class.java)
-            startActivity(intent)
-        }
-
         setContent {
             NXSharingHelperTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationView(
-                        message = navigationMessage,
+                    Navigation(
+                        message = viewModel.navigationMessage,
                         share = share,
                         save = save,
                         scan = scan,
-                        isScanned = isScanned,
-                        checkLicense = checkLicense
+                        isScanned = viewModel.isScanned
                     )
                 }
             }
@@ -175,24 +173,24 @@ class ResultActivity : ComponentActivity() {
     }
 
     val onConnection: () -> Unit = {
-        managerHolder.viewModelScope.launch {
+        viewModel.viewModelScope.launch {
             try {
                 Log.println(Log.INFO, "NXShare", "Successful Connecting")
 
                 val contentsDownloader = ContentsDownloader(applicationContext)
 
                 // ビューの更新
-                navigationMessage.value = getString(R.string.waiting_download)
+                viewModel.navigationMessage.value = getString(R.string.waiting_download)
 
                 contentsDownloader.start()
-                managerHolder.downloadData = contentsDownloader.downloadData
+                viewModel.downloadData = contentsDownloader.downloadData
 
                 // ビューの更新
-                isScanned.value = true
-                navigationMessage.value = getString(R.string.succesful_download)
+                viewModel.isScanned.value = true
+                viewModel.navigationMessage.value = getString(R.string.succesful_download)
             } catch (e: Exception) {
                 // ビューの更新
-                navigationMessage.value = getString(R.string.failed_download)
+                viewModel.navigationMessage.value = getString(R.string.failed_download)
             }
         }
     }
@@ -200,10 +198,10 @@ class ResultActivity : ComponentActivity() {
     private fun startSave() {
         try {
             if (ckeckStoragePermission()) {
-                managerHolder.viewModelScope.launch {
+                viewModel.viewModelScope.launch {
                     isSaving = true
                     val contentsSaver = ContentsSaver(applicationContext)
-                    contentsSaver.save(managerHolder.downloadData.copy())
+                    contentsSaver.save(viewModel.downloadData.copy())
                     isSaving = false
                 }
             }
@@ -215,7 +213,7 @@ class ResultActivity : ComponentActivity() {
 
     private fun startShare() {
         val contentsSharer = ContentsSharer(this)
-        val chooserIntent = contentsSharer.createChooserIntent(managerHolder.downloadData.copy())
+        val chooserIntent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
         val pendingIntent = contentsSharer.createPendingIntent()
         val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
         startActivity(intent)
@@ -223,7 +221,7 @@ class ResultActivity : ComponentActivity() {
 
     fun clearCache() {
         if (!isSaving) {
-            this.cacheDir.listFiles()?.forEach { file ->
+            cacheDir.listFiles()?.forEach { file ->
                 file.delete()
             }
         }
@@ -277,14 +275,15 @@ class ResultActivity : ComponentActivity() {
 }
 
 @Composable
-private fun NavigationView(
+private fun Navigation(
     message: MutableState<String>,
     share: () -> Unit,
     save: () -> Unit,
     scan: () -> Unit,
-    isScanned: MutableState<Boolean>,
-    checkLicense: () -> Unit
+    isScanned: MutableState<Boolean>
 ) {
+
+    val context = LocalContext.current
 
     val SOMEBUTTON_SIZE = 80.dp
     val BUTTON_PADDING = 30.dp
@@ -295,7 +294,13 @@ private fun NavigationView(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val (license, navigation, scanButton, shareButton, saveButton) = createRefs()
+        val (
+            license,
+            navigation,
+            scanButton,
+            shareButton,
+            saveButton
+        ) = createRefs()
 
         TextButton(
             modifier = Modifier
@@ -305,7 +310,10 @@ private fun NavigationView(
                     width = Dimension.wrapContent
                     height = Dimension.wrapContent
                 },
-            onClick = checkLicense,
+            onClick = {
+                val intent = Intent(context, LicenceActivity::class.java)
+                context.startActivity(intent)
+            },
         ) {
             Text(
                 text = stringResource(id = R.string.license_cover),
@@ -412,7 +420,7 @@ private fun NavigationView(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun NavigationViewPreviewLight(
+private fun NavigationPreviewLight(
     message: MutableState<String> = mutableStateOf("Message is here"),
     unit: () -> Unit = {},
     isScanned: MutableState<Boolean> = mutableStateOf(true)
@@ -422,14 +430,14 @@ private fun NavigationViewPreviewLight(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            NavigationView(message, unit, unit, unit, isScanned, unit)
+            Navigation(message, unit, unit, unit, isScanned)
         }
     }
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun NavigationViewPreviewDark(
+private fun NavigationPreviewDark(
     message: MutableState<String> = mutableStateOf("Message is here"),
     unit: () -> Unit = {},
     isScanned: MutableState<Boolean> = mutableStateOf(true)
@@ -439,7 +447,7 @@ private fun NavigationViewPreviewDark(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            NavigationView(message, unit, unit, unit, isScanned, unit)
+            Navigation(message, unit, unit, unit, isScanned)
         }
     }
 }

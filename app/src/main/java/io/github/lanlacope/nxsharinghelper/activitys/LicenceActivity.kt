@@ -36,7 +36,7 @@ class LicenceActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LicenceView()
+                    Licence()
                 }
             }
         }
@@ -44,7 +44,7 @@ class LicenceActivity : ComponentActivity() {
 }
 
 @Composable
-private fun LicenceView() {
+private fun Licence() {
     val context = LocalContext.current
 
     val rawText = stringResource(id = R.string.license)
@@ -103,26 +103,26 @@ private fun LicenceView() {
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun LicenseViewPreViewLight() {
+private fun LicensePreViewLight() {
     NXSharingHelperTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            LicenceView()
+            Licence()
         }
     }
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun LicenseViewPreViewDark() {
+private fun LicensePreViewDark() {
     NXSharingHelperTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            LicenceView()
+            Licence()
         }
     }
 }

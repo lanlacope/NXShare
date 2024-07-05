@@ -36,7 +36,7 @@ class ContentsSaver(val context: Context) {
                 val inputUri = Uri.fromFile(inputFile)
                 val collection: Uri = createCollection(data.fileType)
                 val values: ContentValues =
-                    createContentsValue(data.fileType, fileName, removeAscii(data.consoleName))
+                    createContentsValue(data.fileType, fileName, removeStringsForFile(data.consoleName))
                 val redsober: ContentResolver = context.contentResolver
                 val outputUri = redsober.insert(collection, values)
 
@@ -58,13 +58,6 @@ class ContentsSaver(val context: Context) {
             throw e
         }
 
-    }
-
-    /**
-     * _@以外のascii記号を削除
-     */
-    private fun removeAscii(value: String): String {
-        return value.replace("""[\x21-\x2f\x3a-\x3f\x5b-\x5e\x60\x7b-\x7e\\]""".toRegex(), "")
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -125,7 +118,7 @@ class ContentsSaver(val context: Context) {
         try {
             val appFolder = File(Environment.getExternalStorageDirectory(), FOLDER_THIS)
 
-            val consoleFolder = File(appFolder, removeAscii(data.consoleName))
+            val consoleFolder = File(appFolder, removeStringsForFile(data.consoleName))
 
             val contentsFolder = File(consoleFolder, selectDirectory(data.fileType))
             if (!consoleFolder.exists()) {

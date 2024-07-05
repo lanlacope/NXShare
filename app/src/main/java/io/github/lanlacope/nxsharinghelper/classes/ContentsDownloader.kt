@@ -28,33 +28,6 @@ class ContentsDownloader(val context: Context) {
         return@withContext JSONObject(rawJson)
     }
 
-    /*
-     *  Switchから受け取るJSONデータは以下の形式
-     * {
-     * "FileType":"photo",
-     * "DownloadMes":"ダウンロード",
-     * "PhotoHelpMes":"画面写真を保存するには、画面写真を長押しして表示されたメニューから保存を選んでください｡\n※操作は端末やブラウザーによって異なります｡",
-     * "MovieHelpMes":"動画を保存するには、ダウンロードリンクをタップまたは長押しして表示されたメニューから保存を選んでください｡\n※操作は端末やブラウザーによって異なります｡",
-     * "ConsoleName":"userのSwitch",
-     * "FileNames":[
-     * "yyyyMMddhhmmsscc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.jpg",
-     * "yyyyMMddhhmmsscc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.jpg",
-     * "yyyyMMddhhmmsscc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.jpg"
-     * ]
-     * }
-     */
-    /*
-     * {
-     * "FileType":"movie",
-     * "DownloadMes":"ダウンロード",
-     * "PhotoHelpMes":"画面写真を保存するには、画面写真を長押しして表示されたメニューから保存を選んでください｡\n※操作は端末やブラウザーによって異なります｡",
-     * "MovieHelpMes":"動画を保存するには、ダウンロードリンクをタップまたは長押しして表示されたメニューから保存を選んでください｡\n※操作は端末やブラウザーによって異なります｡",
-     * "ConsoleName":"userのSwitch",
-     * "FileNames":[
-     * "yyyyMMddhhmmsscc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.mp4"
-     * ]
-     * }
-     */
     private fun parseJson(rawJson: JSONObject) {
         val fileType = rawJson.getString(DOWNLOAD_JSON_PROPATY.FILETYPE)
         val consoleName = rawJson.getString(DOWNLOAD_JSON_PROPATY.CONSOLENAME)
