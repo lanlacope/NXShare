@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,11 +39,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
-import androidx.lifecycle.ViewModel
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.classes.AppInfo
 import io.github.lanlacope.nxsharinghelper.classes.SHARE_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.classes.FileEditer
+import io.github.lanlacope.nxsharinghelper.classes.FileManager
 import io.github.lanlacope.nxsharinghelper.classes.ShareInfo
 import io.github.lanlacope.nxsharinghelper.createDummyResolveInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
@@ -57,75 +56,33 @@ class EditPackageInfoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val fileEditer = FileEditer(this)
-        val apps = fileEditer.getAppInfo()
-
         setContent {
             NXSharingHelperTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PackageList(
-                        apps = apps,
-                        onSwitchChange = onSwitchChange,
-                        onRadioButtonClick = onRadioButtonClick
-                    )
+                    PackageList()
                 }
 
             }
         }
-    }
-
-    private val onSwitchChange: (AppInfo, Boolean) -> Unit = { app, isEnable ->
-        val fileEditer = FileEditer(this)
-        val file = fileEditer.getAppSettingFile()
-        val jsonArray = JSONArray(file.readText())
-
-        if (isEnable) {
-            val jsonObject = JSONObject().apply {
-                put(SHARE_JSON_PROPATY.PACKAGE_NAME, app.packageName)
-                put(SHARE_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
-            }
-            jsonArray.put(jsonObject)
-        } else {
-            List(jsonArray.length()) { index ->
-                val jsonObject = jsonArray.getJSONObject(index)
-                if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == app.packageName) {
-                    jsonArray.remove(index)
-                }
-            }
-        }
-        file.writeText(jsonArray.toString())
-    }
-
-    private val onRadioButtonClick: (AppInfo, String) -> Unit = { app, name ->
-        val fileEditer = FileEditer(this)
-        val file = fileEditer.getAppSettingFile()
-        val jsonArray = JSONArray(file.readText())
-        List(jsonArray.length()) { index ->
-            val jsonObject = jsonArray.getJSONObject(index)
-            if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == app.packageName) {
-                jsonObject.put(SHARE_JSON_PROPATY.PACKAGE_TYPE, name)
-            }
-        }
-        file.writeText(jsonArray.toString())
     }
 }
 
 @Composable
-private fun PackageList(
-    apps: List<AppInfo>,
-    onSwitchChange: (AppInfo, Boolean) -> Unit,
-    onRadioButtonClick: (AppInfo, String) -> Unit
-) {
+private fun PackageList() {
+
+    val fileManager = FileManager(LocalContext.current)
+    val apps = fileManager.getAppInfo()
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
         items(apps) { app ->
             var isExpanded by remember {
-                mutableStateOf(true)
+                mutableStateOf(false)
             }
             Box(
                 modifier = Modifier
@@ -135,13 +92,12 @@ private fun PackageList(
                     }
             ) {
                 PackageCard(
-                    app = app)
+                    app = app
+                )
             }
             if (isExpanded) {
                 PackageSetting(
-                    app = app,
-                    onSwitchChange = onSwitchChange,
-                    _onRadioButtonClick = onRadioButtonClick
+                    app = app
                 )
             }
 
@@ -217,20 +173,26 @@ private fun PackageCard(app: AppInfo) {
 
 @Composable
 private fun PackageSetting(
-    app: AppInfo,
-    onSwitchChange: (AppInfo, Boolean) -> Unit,
-    _onRadioButtonClick: (AppInfo, String) -> Unit
+    app: AppInfo
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         val TEXT_PADDING = 10.dp
 
-        val shareInfo = ShareInfo(app, LocalContext.current)
+        val fileManager = FileManager(context)
+        val shareInfo = ShareInfo(app, context)
 
         var cheacked by remember {
             mutableStateOf(shareInfo.shareEnabled)
+        }
+
+        val onSwitchChange = {
+            fileManager.changeShareEnabled(app, cheacked)
+            cheacked = !cheacked
         }
 
         Box(
@@ -238,7 +200,7 @@ private fun PackageSetting(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .clickable {
-                    cheacked = !cheacked
+                    onSwitchChange()
                 }
 
         ) {
@@ -256,7 +218,7 @@ private fun PackageSetting(
             Switch(
                 checked = cheacked,
                 onCheckedChange = {
-                    onSwitchChange(app, cheacked)
+                    onSwitchChange()
                 },
                 modifier = Modifier
                     .wrapContentSize()
@@ -267,7 +229,7 @@ private fun PackageSetting(
         }
 
         var isExpanded by remember {
-            mutableStateOf(true)
+            mutableStateOf(false)
         }
         Box(
             modifier = Modifier
@@ -277,7 +239,7 @@ private fun PackageSetting(
                     isExpanded = !isExpanded
                 }
 
-            ) {
+        ) {
             Text(
                 text = "コピーを使う",
                 maxLines = 1,
@@ -289,43 +251,51 @@ private fun PackageSetting(
             )
         }
 
-        val selectedType by remember {
-            mutableStateOf(shareInfo.type)
+        if (isExpanded) {
+            val selectedType = remember {
+                mutableStateOf(shareInfo.type)
+            }
+            val typeNames = shareInfo.types
+
+            typeNames.forEach() { type ->
+                TypeSelector(
+                    app = app,
+                    type = type,
+                    selectedType = selectedType,
+                )
+            }
         }
-        val typeNames = shareInfo.types
-
-         typeNames.forEach() { type ->
-
-             val onRadioButtonClick = { _onRadioButtonClick(app, type) }
-
-             TypeSelector(
-                 type = type,
-                 selectedType = selectedType,
-                 onRadioButtonClick = onRadioButtonClick
-             )
-         }
-
     }
 }
 
 @Composable
 private fun TypeSelector(
+    app: AppInfo,
     type: String,
-    selectedType: String,
-    onRadioButtonClick: () -> Unit
+    selectedType: MutableState<String>
 ) {
+    val fileManager = FileManager(LocalContext.current)
+    val onClick = {
+        fileManager.changeShareType(app, type)
+        selectedType.value = type
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .clickable(
-                onClick = onRadioButtonClick
+                onClick = {
+                    onClick()
+                }
             )
 
     ) {
         RadioButton(
-            selected = type == selectedType,
-            onClick = onRadioButtonClick,
+            selected = type == selectedType.value,
+            onClick = {
+                onClick()
+            },
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.CenterVertically)
@@ -341,80 +311,6 @@ private fun TypeSelector(
                 .wrapContentSize()
                 .align(Alignment.CenterVertically)
         )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun PackageListPreviewLight() {
-    val context = LocalContext.current
-    val packageManager = context.packageManager
-    val resolveInfo = createDummyResolveInfo(
-        packageName = "com.example.app",
-        appName = "app",
-        appIcon = AppCompatResources.getDrawable(
-            context,
-            R.drawable.ic_launcher_background
-        )!!
-    )
-    val apps = mutableListOf<AppInfo>()
-    val onSwitchChange: (AppInfo, Boolean) -> Unit =  { _, _ -> }
-    val onRadioButtonClick: (AppInfo, String) -> Unit = { _, _ -> }
-
-    apps.add(
-        AppInfo(resolveInfo, packageManager)
-    )
-    apps.add(
-        AppInfo(resolveInfo, packageManager)
-    )
-    NXSharingHelperTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            PackageList(
-                apps = apps,
-                onSwitchChange = onSwitchChange,
-                onRadioButtonClick = onRadioButtonClick
-            )
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun PackageListPreviewDark() {
-    val context = LocalContext.current
-    val packageManager = context.packageManager
-    val resolveInfo = createDummyResolveInfo(
-        packageName = "com.example.app",
-        appName = "app",
-        appIcon = AppCompatResources.getDrawable(
-            context,
-            R.drawable.ic_launcher_background
-        )!!
-    )
-    val apps = mutableListOf<AppInfo>()
-    val onSwitchChange: (AppInfo, Boolean) -> Unit =  { _, _ -> }
-    val onRadioButtonClick: (AppInfo, String) -> Unit = { _, _ -> }
-
-    apps.add(
-        AppInfo(resolveInfo, packageManager)
-    )
-    apps.add(
-        AppInfo(resolveInfo, packageManager)
-    )
-    NXSharingHelperTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            PackageList(
-                apps = apps,
-                onSwitchChange = onSwitchChange,
-                onRadioButtonClick = onRadioButtonClick
-            )
-        }
     }
 }
 

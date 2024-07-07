@@ -67,16 +67,18 @@ data class ShareInfo(
     private val appInfo: AppInfo,
     private val context: Context
 ) {
-    private val fileEditer = FileEditer(context)
-    val shareEnabled = fileEditer.getShareEnabled(appInfo) ?: false
-    val type = fileEditer.getShareType(appInfo) ?: SHARE_JSON_PROPATY.TYPE_NONE
-    val types = fileEditer.getTypeNamesWithNone()
+    private val fileManager = FileManager(context)
+    val shareEnabled = fileManager.getShareEnabled(appInfo) ?: false
+    val type = fileManager.getShareType(appInfo) ?: SHARE_JSON_PROPATY.TYPE_NONE
+    val types = fileManager.getTypeNamesWithNone()
 }
 
-data class TypeInfo(private val context: Context) {
-    private val fileEditer = FileEditer(context)
-    val typeFiles = fileEditer.getTypeFiles()
-    val fileNames = fileEditer.getTypeNames()
+data class TypeInfo(
+    private val file: File,
+    private val name: String
+) {
+    val typeFile = file
+    val fileName = name
 }
 
 data class CommonInfo(

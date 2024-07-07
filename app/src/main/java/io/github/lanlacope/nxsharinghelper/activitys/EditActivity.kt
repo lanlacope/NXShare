@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,8 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import io.github.lanlacope.nxsharinghelper.classes.FileEditer
-import io.github.lanlacope.nxsharinghelper.classes.removeStringsForFile
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 
 class EditActivity: ComponentActivity() {
@@ -89,7 +86,7 @@ fun SettingList() {
             Switch(
                 checked = cheacked,
                 onCheckedChange = {
-                    // do nothing
+                    cheacked = !cheacked
                 },
                 modifier = Modifier
                     .wrapContentSize()

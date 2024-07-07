@@ -296,6 +296,7 @@ private fun Navigation(
     ) {
         val (
             license,
+            setting,
             navigation,
             scanButton,
             shareButton,
@@ -317,6 +318,25 @@ private fun Navigation(
         ) {
             Text(
                 text = stringResource(id = R.string.license_cover),
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.wrapContentSize()
+            )
+        }
+        TextButton(
+            modifier = Modifier
+                .constrainAs(setting) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                    width = Dimension.wrapContent
+                    height = Dimension.wrapContent
+                },
+            onClick = {
+                val intent = Intent(context, EditActivity::class.java)
+                context.startActivity(intent)
+            },
+        ) {
+            Text(
+                text = "setting",
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.wrapContentSize()
             )

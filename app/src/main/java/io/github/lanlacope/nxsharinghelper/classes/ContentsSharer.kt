@@ -73,11 +73,11 @@ class ContentsSharer(val context: Context) {
 
         override fun onReceive(context: Context, intent: Intent) {
 
-            val fileEditer = FileEditer(context)
+            val fileManager = FileManager(context)
 
-            val type = fileEditer.getShareType(intent.component?.packageName) ?: ""
+            val type = fileManager.getShareType(intent.component?.packageName) ?: ""
 
-            val text = fileEditer.createCopyText(intent.data.toString(), type)
+            val text = fileManager.createCopyText(intent.data.toString(), type)
 
             if (text.isNullOrEmpty()) {
                 val clipboardManager =

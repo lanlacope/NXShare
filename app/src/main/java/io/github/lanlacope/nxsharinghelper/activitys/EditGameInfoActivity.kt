@@ -9,12 +9,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -30,12 +28,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.classes.CommonInfo
-import io.github.lanlacope.nxsharinghelper.classes.FileEditer
+import io.github.lanlacope.nxsharinghelper.classes.FileManager
 import io.github.lanlacope.nxsharinghelper.classes.GameInfo
 import io.github.lanlacope.nxsharinghelper.classes.SHARE_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.classes.TypeInfo
@@ -67,66 +65,22 @@ class EditGameInfoActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MySetList(
-                        addMyset = addMySet,
-                        onApplyCommon = onApplyCommon,
-                        onApplyGame = onApplyGame
-                    )
+                    MySetList()
                 }
-
             }
         }
-    }
-    
-    private val addMySet: (String) -> Unit = { name ->
-        val fileEditer = FileEditer(this)
-        val folder = fileEditer.getTypeFolder()
-        val file = File(folder, "${removeStringsForFile(name)}.json")
-        if (!file.exists()) {
-            file.mkdirs()
-            val jsonObject = JSONObject().apply {
-                put(SHARE_JSON_PROPATY.DATA_NAME, name)
-                put(SHARE_JSON_PROPATY.COMMON_TEXT, "")
-                put(SHARE_JSON_PROPATY.GAME_DATA, JSONArray())
-            }
-            file.writeText(jsonObject.toString())
-        }
-    }
-
-    private val onApplyCommon: (String, String) -> Unit = { fileName, text ->
-        val fileEditer = FileEditer(this)
-        val file = fileEditer.getTypeFile(fileName)
-        val jsonObject = JSONObject(file.readText())
-        jsonObject.put(SHARE_JSON_PROPATY.COMMON_TEXT, text)
-        file.writeText(jsonObject.toString())
-    }
-
-    private val onApplyGame: (String, String, String, String) -> Unit = { fileName, title, hash, text ->
-        val fileEditer = FileEditer(this)
-        val file = fileEditer.getTypeFile(fileName)
-        val jsonObject = JSONObject(file.readText())
-        val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.DATA_NAME)
-
-        val gameData = JSONObject().apply {
-            put(SHARE_JSON_PROPATY.GAME_TITLE, title)
-            put(SHARE_JSON_PROPATY.GAME_HASH, hash)
-            put(SHARE_JSON_PROPATY.GAME_TEXT, text)
-        }
-        jsonArray.put(gameData)
-        jsonObject.put(SHARE_JSON_PROPATY.DATA_NAME, jsonArray)
-        file.writeText(jsonObject.toString())
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MySetList(
-    addMyset: (String) -> Unit,
-    onApplyCommon: (String, String) -> Unit,
-    onApplyGame: (String, String, String, String) -> Unit
 ) {
     val context = LocalContext.current
-    val typeInfo = TypeInfo(context)
+    val fileManager = FileManager(context)
+    var typeInfo by remember {
+        mutableStateOf(fileManager.getTypeInfo())
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -152,15 +106,13 @@ private fun MySetList(
         }
         HorizontalPager(
             state = rememberPagerState(
-                pageCount = { typeInfo.fileNames.size }
+                pageCount = { typeInfo.size }
             ),
             modifier = Modifier.fillMaxSize()
 
         ) { page ->
             MySet(
-                file = typeInfo.typeFiles[page],
-                onApplyCommon = onApplyCommon,
-                onApplyGame = onApplyGame
+                file = typeInfo[page].typeFile
             )
         }
 
@@ -190,16 +142,21 @@ private fun MySetList(
                     )
                     TextButton(
                         onClick = {
-                            shown = false
-                            addMyset(name)
+                            val result = fileManager.addMySet(name)
+                            if (result.isSuccess) {
+                                typeInfo = typeInfo + TypeInfo(result.getOrNull()!!, name)
+                                shown = false
+                            }
                         },
                         modifier = Modifier
                             .wrapContentSize()
+                            .align(Alignment.End)
                     ) {
                         Text(
                             text = "追加",
                             modifier = Modifier
                                 .wrapContentSize()
+
                         )
                     }
                 }
@@ -210,20 +167,17 @@ private fun MySetList(
 
 @Composable
 private fun MySet(
-    file: File,
-    onApplyCommon: (String, String) -> Unit,
-    onApplyGame: (String, String, String, String) -> Unit
+    file: File
 ) {
-    val fileEditer = FileEditer(LocalContext.current)
-    val common = fileEditer.getCommonInfo(file)
-    var games by remember {
-        mutableStateOf(fileEditer.getGameInfo(file))
+    val fileManager = FileManager(LocalContext.current)
+    val common = fileManager.getCommonInfo(file)
+    val games = remember {
+        mutableStateOf(fileManager.getGameInfo(file))
     }
 
-    var shown by remember {
+    val shown = remember {
         mutableStateOf(false)
     }
-
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -234,67 +188,88 @@ private fun MySet(
             item {
                 MySetCommon(
                     common = common,
-                    fileName = file.name,
-                    onApply = onApplyCommon
+                    fileName = file.name
                 )
             }
-            items(games) { game ->
+            items(games.value) { game ->
                 MySetItem(
                     gameInfo = game,
-                    fileName = file.name,
-                    onApply = onApplyGame
+                    fileName = file.name
                 )
             }
         }
 
+        val FAB_PADDING = 30.dp
+
         FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.secondary,
             onClick = {
-                shown = true
+                shown.value = true
             },
             modifier = Modifier
-                .size(80.dp)
-                .padding(30.dp)
+                .wrapContentSize()
+                .padding(
+                    end = FAB_PADDING,
+                    bottom = FAB_PADDING
+                )
                 .align(Alignment.BottomEnd)
 
         ) {
             Image(
                 painter = painterResource(id = R.drawable.baseline_add_24),
                 contentDescription = "Add",
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(all = 8.dp)
+
             )
         }
+    }
+    
+    MySetDialog(
+        shown = shown, 
+        fileName = file.name, 
+        games = games
+    ) 
+}
 
-        if (shown) {
-            Dialog(
-                onDismissRequest = {
-                    shown = false
-                }
+@Composable
+private fun MySetDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    games:  MutableState<List<GameInfo>>
+) {
+    val fileManager = FileManager(LocalContext.current)
+
+    var title by remember {
+        mutableStateOf("")
+    }
+    var hash by remember {
+        mutableStateOf("")
+    }
+    var text by remember {
+        mutableStateOf("")
+    }
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
             ) {
-                var title by remember {
-                    mutableStateOf("")
-                }
-                var hash by remember {
-                    mutableStateOf("")
-                }
-                var text by remember {
-                    mutableStateOf("")
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    OutlinedTextField(
-                        value = title,
-                        onValueChange = { title = it },
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
+                    val TEXT_PADDING = 8.dp
 
-                    )
                     OutlinedTextField(
                         value = hash,
                         onValueChange = { hash = it },
@@ -303,8 +278,22 @@ private fun MySet(
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
 
                     )
+
+                    OutlinedTextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+
                     OutlinedTextField(
                         value = text,
                         onValueChange = { text = it },
@@ -313,26 +302,27 @@ private fun MySet(
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
                     )
 
                     TextButton(
                         onClick = {
-                            shown = false
-                            onApplyGame(file.name, title, hash, text)
-                            val gameData = JSONObject().apply {
-                                put(SHARE_JSON_PROPATY.GAME_TITLE, title)
-                                put(SHARE_JSON_PROPATY.GAME_HASH, hash)
-                                put(SHARE_JSON_PROPATY.GAME_TEXT, text)
+                            val result = fileManager.addGameInfo(fileName, title, hash, text)
+                            if (result.isSuccess) {
+                                games.value += result.getOrNull()!!
+                                shown.value = false
                             }
-                            games = games + GameInfo(gameData)
                         },
                         modifier = Modifier
                             .wrapContentSize()
+                            .align(Alignment.End)
+
                     ) {
                         Text(
                             text = "追加",
                             modifier = Modifier
                                 .wrapContentSize()
+
                         )
                     }
                 }
@@ -344,27 +334,21 @@ private fun MySet(
 @Composable
 private fun MySetCommon(
     common: CommonInfo,
-    fileName: String,
-    onApply: (String, String) -> Unit
+    fileName: String
 ) {
-    var shown by remember {
+    val shown = remember {
         mutableStateOf(false)
     }
-    var text by remember {
+    val text = remember {
         mutableStateOf(common.text)
-    }
-
-    var _text by remember {
-        mutableStateOf(text)
     }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(130.dp)
+            .wrapContentHeight()
             .clickable {
-                _text = text
-                shown = true
+                shown.value = true
             }
     ) {
         Text(
@@ -376,7 +360,7 @@ private fun MySetCommon(
                 .align(Alignment.Start)
         )
         Text(
-            text = text,
+            text = text.value,
             fontSize = 12.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -385,84 +369,134 @@ private fun MySetCommon(
         )
     }
 
-    if (shown) {
+    MySetCommonDialog(
+        shown = shown,
+        fileName = fileName,
+        text = text
+    )
+}
+
+@Composable
+private fun MySetCommonDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    text: MutableState<String>
+) {
+    val fileManager = FileManager(LocalContext.current)
+
+    /*
+    var _title by remember {
+        mutableStateOf(title.value)
+    }
+
+     */
+    var _text by remember {
+        mutableStateOf(text.value)
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            // _title = title.value
+            _text = text.value
+        }
+    }
+
+    if (shown.value) {
         Dialog(
             onDismissRequest = {
-                shown = false
-                text = _text
-            }
+                shown.value = false
+                //title.value = _title
+                text.value = _text
+            },
         ) {
-            Column {
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    minLines = 1,
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .align(Alignment.Start)
-                )
-
-                TextButton(
-                    onClick = {
-                        onApply(fileName, text)
-                    },
-                    modifier = Modifier
-                        .wrapContentSize()
                 ) {
-                    Text(
-                        text = "適用",
+                    val TEXT_PADDING = 8.dp
+                    /*
+                    OutlinedTextField(
+                        value = title.value,
+                        onValueChange = { title.value = it },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+
+                     */
+                    OutlinedTextField(
+                        value = text.value,
+                        onValueChange = { text.value = it },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+                    )
+
+                    TextButton(
+                        onClick = {
+                            shown.value = false
+                            fileManager.editCommonInfo(fileName, text.value)
+                        },
                         modifier = Modifier
                             .wrapContentSize()
-                    )
+                            .align(Alignment.End)
+                    ) {
+                        Text(
+                            text = "適用",
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+
 @Composable
 private fun MySetItem(
     gameInfo: GameInfo,
-    fileName: String,
-    onApply: (String, String, String, String) -> Unit
+    fileName: String
 ) {
-    var title by remember {
+    val title = remember {
         mutableStateOf(gameInfo.title)
     }
-    var hash by remember {
-        mutableStateOf(gameInfo.hash)
-    }
-    var text by remember {
+    val hash = gameInfo.hash
+
+    val text = remember {
         mutableStateOf(gameInfo.text)
     }
 
-    var shown by remember {
+    val shown = remember {
         mutableStateOf(false)
-    }
-    var _title by remember {
-        mutableStateOf(title)
-    }
-    var _hash by remember {
-        mutableStateOf(hash)
-    }
-    var _text by remember {
-        mutableStateOf(text)
     }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .wrapContentHeight()
             .clickable {
-                _title = title
-                _hash = hash
-                _text = text
-                shown = true
+                shown.value = true
             }
+
     ) {
         Text(
-            text = title,
+            text = title.value,
             fontSize = 24.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -470,7 +504,7 @@ private fun MySetItem(
                 .align(Alignment.Start)
         )
         Text(
-            text = text,
+            text = text.value,
             fontSize = 12.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -480,62 +514,107 @@ private fun MySetItem(
         )
     }
 
-    if (shown) {
+    MySetItemDialog(
+        shown = shown,
+        fileName = fileName,
+        title = title,
+        hash = hash,
+        text = text
+    )
+}
+
+@Composable
+private fun MySetItemDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    title: MutableState<String>,
+    hash: String,
+    text: MutableState<String>
+) {
+    val fileManager = FileManager(LocalContext.current)
+
+    var _title by remember {
+        mutableStateOf(title.value)
+    }
+    var _text by remember {
+        mutableStateOf(text.value)
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            _title = title.value
+            _text = text.value
+        }
+    }
+
+    if (shown.value) {
         Dialog(
             onDismissRequest = {
-                shown = false
-                title = _title
-                hash = _hash
-                text = _text
-            }
+                shown.value = false
+                title.value = _title
+                text.value = _text
+            },
         ) {
-            Column(
+            Surface(
+                color = MaterialTheme.colorScheme.background,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
+                    .wrapContentSize()
+
             ) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    minLines = 1,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .align(Alignment.Start)
-
-                )
-                OutlinedTextField(
-                    value = hash,
-                    onValueChange = { hash = it },
-                    minLines = 1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .align(Alignment.Start)
-
-                )
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    minLines = 1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .align(Alignment.Start)
-                )
-
-                TextButton(
-                    onClick = {
-                    onApply(fileName, title, hash, text)
-                    },
-                    modifier = Modifier
-                        .wrapContentSize()
                 ) {
+                    val TEXT_PADDING = 8.dp
                     Text(
-                        text = "適用",
+                        text = hash,
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+
+                    OutlinedTextField(
+                        value = title.value,
+                        onValueChange = { title.value = it },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+                    OutlinedTextField(
+                        value = text.value,
+                        onValueChange = { text.value = it },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+                    )
+
+                    TextButton(
+                        onClick = {
+                            shown.value = false
+                            fileManager.editGameInfo(fileName, title.value, hash, text.value)
+                        },
                         modifier = Modifier
                             .wrapContentSize()
-                    )
+                            .align(Alignment.End)
+                    ) {
+                        Text(
+                            text = "適用",
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
                 }
             }
         }
@@ -544,46 +623,18 @@ private fun MySetItem(
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun MySetListPreViewLight() {
+private fun LicensePreViewLight() {
     NXSharingHelperTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            MySetList(
-                addMyset = { _ ->
-
-                },
-                onApplyCommon = { _,_, ->
-
-                },
-                onApplyGame =  { _,_,_,_, ->
-
-                }
-            )
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun MySetListPreViewDark() {
-    val onApply: (String, String, String, String) -> Unit = { _, _, _, _ -> }
-    NXSharingHelperTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            MySetList(
-                addMyset = { _ ->
-
-                },
-                onApplyCommon = { _,_, ->
-
-                },
-                onApplyGame =  { _,_,_,_, ->
-
-                }
+            MySetItemDialog(
+                shown = mutableStateOf(true),
+                fileName = "name",
+                title = mutableStateOf("title"),
+                hash = "hash",
+                text = mutableStateOf("text")
             )
         }
     }

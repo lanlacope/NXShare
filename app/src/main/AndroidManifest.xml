@@ -64,7 +64,15 @@
             android:theme="@style/Theme.NXSharingHelper"
             android:noHistory="true" />
         <activity
+            android:name=".activitys.EditActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NXSharingHelper" />
+        <activity
             android:name=".activitys.EditPackageInfoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NXSharingHelper" />
+        <activity
+            android:name=".activitys.EditGameInfoActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper" />
 
