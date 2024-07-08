@@ -4,11 +4,9 @@
 
     <!-- Navigation Message -->
     <string name="failed_decode_islocalhost">
-        QRコードの読み取りに失敗しました\n
-        二つ目のQRコードではなく、一つ目のものを読み取ってください
+        一つ目のQRコードを読み取ってください
     </string>
         <string name="failed_decode_notswitch">
-        QRコードの読み取りに失敗しました\n
         Switch内に表示されているQRコードを読み取ってください
     </string>
         <string name="failed_connect">
@@ -39,5 +37,34 @@
 
     <string name="permission_share_movie">
         Share movie
+    </string>
+
+    <!-- Setting -->
+    <string name="setting_app">
+        アプリ
+    </string>
+
+    <string name="setting_myset">
+        マイセット
+    </string>
+
+    <string name="button_apply">
+        適用
+    </string>
+
+    <string name="button_add">
+        追加
+    </string>
+
+    <string name="summary_title">
+        タイトル
+    </string>
+
+    <string name="summary_hash">
+        ハッシュ
+    </string>
+
+    <string name="summary_text">
+        テキスト
     </string>
 </resources>

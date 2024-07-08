@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,9 +77,8 @@ class EditGameInfoActivity : ComponentActivity() {
 @Composable
 private fun MySetList(
 ) {
-    val context = LocalContext.current
-    val fileManager = FileManager(context)
-    var typeInfo by remember {
+    val fileManager = FileManager(LocalContext.current)
+    val typeInfo = remember {
         mutableStateOf(fileManager.getTypeInfo())
     }
 
@@ -86,12 +86,12 @@ private fun MySetList(
         modifier = Modifier.fillMaxSize()
     ) {
         val BUTTON_PADDING = 20.dp
-        var shown by remember {
+        val shown = remember {
             mutableStateOf(false)
         }
         Button(
             onClick = {
-                shown = true
+                shown.value = true
             },
             modifier = Modifier
                 .width(200.dp)
@@ -102,50 +102,83 @@ private fun MySetList(
                     bottom = BUTTON_PADDING
                 )
         ) {
-            Text(text = "追加")
+            Text(
+                text = stringResource(id = R.string.button_add),
+                modifier = Modifier.wrapContentSize()
+            )
         }
         HorizontalPager(
             state = rememberPagerState(
-                pageCount = { typeInfo.size }
+                pageCount = { typeInfo.value.size }
             ),
             modifier = Modifier.fillMaxSize()
 
         ) { page ->
             MySet(
-                file = typeInfo[page].typeFile
+                file = typeInfo.value[page].typeFile
+            )
+
+            MySetListDialog(
+                shown = shown,
+                typeInfo = typeInfo
             )
         }
+    }
+}
 
-        if (shown) {
-            Dialog(
-                onDismissRequest = {
-                    shown = false
-                }
+@Composable
+private fun MySetListDialog(
+    shown: MutableState<Boolean>,
+    typeInfo: MutableState<List<TypeInfo>>
+) {
+    val fileManager = FileManager(LocalContext.current)
+
+    var name by remember {
+        mutableStateOf("")
+    }
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
             ) {
-                var name by remember {
-                    mutableStateOf("")
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
+                    val TEXT_PADDING = 8.dp
+
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_title),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
                     )
+
                     TextButton(
                         onClick = {
                             val result = fileManager.addMySet(name)
                             if (result.isSuccess) {
-                                typeInfo = typeInfo + TypeInfo(result.getOrNull()!!, name)
-                                shown = false
+                                typeInfo.value += TypeInfo(result.getOrNull()!!, name)
+                                shown.value = false
                             }
                         },
                         modifier = Modifier
@@ -153,10 +186,9 @@ private fun MySetList(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = "追加",
+                            text = stringResource(id = R.string.button_add),
                             modifier = Modifier
                                 .wrapContentSize()
-
                         )
                     }
                 }
@@ -273,6 +305,12 @@ private fun MySetDialog(
                     OutlinedTextField(
                         value = hash,
                         onValueChange = { hash = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_hash),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -285,6 +323,12 @@ private fun MySetDialog(
                     OutlinedTextField(
                         value = title,
                         onValueChange = { title = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_title),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -297,6 +341,12 @@ private fun MySetDialog(
                     OutlinedTextField(
                         value = text,
                         onValueChange = { text = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_text),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -425,6 +475,12 @@ private fun MySetCommonDialog(
                     OutlinedTextField(
                         value = title.value,
                         onValueChange = { title.value = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_title),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -438,6 +494,12 @@ private fun MySetCommonDialog(
                     OutlinedTextField(
                         value = text.value,
                         onValueChange = { text.value = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_text),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -456,7 +518,7 @@ private fun MySetCommonDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = "適用",
+                            text = stringResource(id = R.string.button_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -581,6 +643,12 @@ private fun MySetItemDialog(
                     OutlinedTextField(
                         value = title.value,
                         onValueChange = { title.value = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_title),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -592,6 +660,12 @@ private fun MySetItemDialog(
                     OutlinedTextField(
                         value = text.value,
                         onValueChange = { text.value = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.summary_text),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -610,7 +684,7 @@ private fun MySetItemDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = "適用",
+                            text = stringResource(id = R.string.button_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -629,12 +703,22 @@ private fun LicensePreViewLight() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val shown = remember {
+                mutableStateOf(true)
+            }
+            val title = remember {
+                mutableStateOf("")
+            }
+            val text = remember {
+                mutableStateOf("")
+            }
+
             MySetItemDialog(
-                shown = mutableStateOf(true),
+                shown = shown,
                 fileName = "name",
-                title = mutableStateOf("title"),
+                title = title,
                 hash = "hash",
-                text = mutableStateOf("text")
+                text = text
             )
         }
     }

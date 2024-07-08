@@ -3,6 +3,8 @@ package io.github.lanlacope.nxsharinghelper.classes
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import androidx.core.content.FileProvider
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -10,22 +12,26 @@ import java.io.File
 class FileManager(val context: Context) {
 
     fun getAppInfo(): List<AppInfo> {
-        val sendJpgIntent = Intent(Intent.ACTION_SEND).apply {
-            type = MINETYPE.JPG
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        val sendJpgsIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-            type = MINETYPE.JPG
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        val sendMp4Intent = Intent(Intent.ACTION_SEND).apply {
-            type = MINETYPE.MP4
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        val sendMp4sIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-            type = MINETYPE.MP4
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
+        val contentsSharer = ContentsSharer(context)
+
+        val sendJpgIntent = contentsSharer.createSendableIntent(
+            DownloadData(
+                fileType = DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO,
+                fileNames = listOf("a.jpg")
+            )
+        )
+        val sendJpgsIntent = contentsSharer.createSendableIntent(
+            DownloadData(
+                fileType = DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO,
+                fileNames = listOf("a.jpg", "b.jpg")
+            )
+        )
+        val sendMp4Intent = contentsSharer.createSendableIntent(
+                DownloadData(
+                    fileType = DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE,
+                    fileNames = listOf("a.mp4")
+                )
+        )
 
         val packageManager = context.packageManager
 
@@ -35,10 +41,8 @@ class FileManager(val context: Context) {
             packageManager.queryIntentActivities(sendJpgsIntent, PackageManager.MATCH_DEFAULT_ONLY)
         val receiveMp4Packages =
             packageManager.queryIntentActivities(sendMp4Intent, PackageManager.MATCH_DEFAULT_ONLY)
-        val receiveMp4sPackages =
-            packageManager.queryIntentActivities(sendMp4sIntent, PackageManager.MATCH_DEFAULT_ONLY)
 
-        val allPackages = receiveJpgPackages + receiveJpgsPackages + receiveMp4Packages + receiveMp4sPackages
+        val allPackages = receiveJpgPackages + receiveJpgsPackages + receiveMp4Packages
 
         val parsedPackageNames = allPackages.map { it.activityInfo.packageName }.toSet()
 
@@ -220,13 +224,16 @@ class FileManager(val context: Context) {
                     // do nothing
                 }
                 try {
+                    val texts = mutableListOf<String>()
                     val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
                     List(arrayData.length()) { index ->
                         val partJson = arrayData.getJSONObject(index)
                         if (partJson.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
-                            val text = partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT)
-                            append(text)
+                            texts.add(partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT))
                         }
+                    }
+                    texts.toSet().forEach() { text ->
+                        append(text)
                     }
                 } catch (e: Exception) {
                     // do nothing

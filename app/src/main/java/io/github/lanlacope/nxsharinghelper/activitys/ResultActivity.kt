@@ -11,12 +11,13 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -27,11 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.journeyapps.barcodescanner.ScanOptions
@@ -54,8 +50,6 @@ import io.github.lanlacope.nxsharinghelper.classes.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.classes.DownloadData
 import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ResultViewModel : ViewModel() {
@@ -126,9 +120,6 @@ class ResultActivity : ComponentActivity() {
         startScan()
 
         // ボタンの動作を定義
-        val share: () -> Unit = {
-            startShare()
-        }
 
         val save: () -> Unit = {
             startSave()
@@ -145,11 +136,9 @@ class ResultActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Navigation(
-                        message = viewModel.navigationMessage,
-                        share = share,
+                        viewModel = viewModel,
                         save = save,
-                        scan = scan,
-                        isScanned = viewModel.isScanned
+                        scan = scan
                     )
                 }
             }
@@ -211,14 +200,6 @@ class ResultActivity : ComponentActivity() {
         }
     }
 
-    private fun startShare() {
-        val contentsSharer = ContentsSharer(this)
-        val chooserIntent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
-        val pendingIntent = contentsSharer.createPendingIntent()
-        val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
-        startActivity(intent)
-    }
-
     fun clearCache() {
         if (!isSaving) {
             cacheDir.listFiles()?.forEach { file ->
@@ -274,13 +255,12 @@ class ResultActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Navigation(
-    message: MutableState<String>,
-    share: () -> Unit,
+    viewModel: ResultViewModel,
     save: () -> Unit,
-    scan: () -> Unit,
-    isScanned: MutableState<Boolean>
+    scan: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -336,7 +316,7 @@ private fun Navigation(
             },
         ) {
             Text(
-                text = "setting",
+                text = stringResource(id = R.string.setting_cover),
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.wrapContentSize()
             )
@@ -344,7 +324,7 @@ private fun Navigation(
 
         Text(
             textAlign = TextAlign.Center,
-            text = message.value,
+            text = viewModel.navigationMessage.value,
             modifier = Modifier
                 .wrapContentSize()
                 .constrainAs(navigation) {
@@ -358,9 +338,26 @@ private fun Navigation(
 
         )
 
-        if (isScanned.value) {
+        if (viewModel.isScanned.value) {
+
+            val onShareButtonClick = {
+                val contentsSharer = ContentsSharer(context)
+                val chooserIntent = contentsSharer.createCustomChooserIntrnt(viewModel.downloadData.copy())
+                val pendingIntent = contentsSharer.createPendingIntent()
+                val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
+                context.startActivity(intent)
+            }
+
+            val onShareButtonLongClick = {
+                val contentsSharer = ContentsSharer(context)
+                val chooserIntent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
+                val pendingIntent = contentsSharer.createPendingIntent()
+                val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
+                context.startActivity(intent)
+            }
+
             FloatingActionButton(
-                onClick = share,
+                onClick = onShareButtonClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -373,6 +370,10 @@ private fun Navigation(
                         width = Dimension.value(SOMEBUTTON_SIZE)
                         height = Dimension.value(SOMEBUTTON_SIZE)
                     }
+                    .combinedClickable(
+                        onClick = onShareButtonClick,
+                        onLongClick = onShareButtonLongClick
+                    )
 
             ) {
                 Image(
@@ -441,16 +442,12 @@ private fun Navigation(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun NavigationPreviewLight(
-    message: MutableState<String> = mutableStateOf("Message is here"),
-    unit: () -> Unit = {},
-    isScanned: MutableState<Boolean> = mutableStateOf(true)
 ) {
     NXSharingHelperTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Navigation(message, unit, unit, unit, isScanned)
         }
     }
 }
@@ -458,16 +455,12 @@ private fun NavigationPreviewLight(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NavigationPreviewDark(
-    message: MutableState<String> = mutableStateOf("Message is here"),
-    unit: () -> Unit = {},
-    isScanned: MutableState<Boolean> = mutableStateOf(true)
 ) {
     NXSharingHelperTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Navigation(message, unit, unit, unit, isScanned)
         }
     }
 }

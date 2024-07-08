@@ -45,6 +45,7 @@ import io.github.lanlacope.nxsharinghelper.classes.SHARE_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.classes.FileManager
 import io.github.lanlacope.nxsharinghelper.classes.ShareInfo
 import io.github.lanlacope.nxsharinghelper.createDummyResolveInfo
+import io.github.lanlacope.nxsharinghelper.isAfterAndroidVII
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import org.json.JSONArray
@@ -190,42 +191,44 @@ private fun PackageSetting(
             mutableStateOf(shareInfo.shareEnabled)
         }
 
-        val onSwitchChange = {
-            fileManager.changeShareEnabled(app, cheacked)
-            cheacked = !cheacked
-        }
+        if (isAfterAndroidVII()) {
+            val onSwitchChange = {
+                cheacked = !cheacked
+                fileManager.changeShareEnabled(app, cheacked)
+            }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clickable {
-                    onSwitchChange()
-                }
-
-        ) {
-            Text(
-                text = "アプリを使う",
-                maxLines = 1,
-                minLines = 1,
+            Box(
                 modifier = Modifier
-                    .wrapContentSize()
-                    .align(Alignment.CenterStart)
-                    .padding(all = TEXT_PADDING)
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .clickable {
+                        onSwitchChange()
+                    }
 
-            )
+            ) {
+                Text(
+                    text = "アプリを使う",
+                    maxLines = 1,
+                    minLines = 1,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .align(Alignment.CenterStart)
+                        .padding(all = TEXT_PADDING)
 
-            Switch(
-                checked = cheacked,
-                onCheckedChange = {
-                    onSwitchChange()
-                },
-                modifier = Modifier
-                    .wrapContentSize()
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 50.dp)
+                )
 
-            )
+                Switch(
+                    checked = cheacked,
+                    onCheckedChange = {
+                        onSwitchChange()
+                    },
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 50.dp)
+
+                )
+            }
         }
 
         var isExpanded by remember {
@@ -276,8 +279,8 @@ private fun TypeSelector(
 ) {
     val fileManager = FileManager(LocalContext.current)
     val onClick = {
-        fileManager.changeShareType(app, type)
         selectedType.value = type
+        fileManager.changeShareType(app, type)
     }
 
     Row(

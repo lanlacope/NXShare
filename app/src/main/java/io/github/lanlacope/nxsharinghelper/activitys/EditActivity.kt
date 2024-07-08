@@ -25,17 +25,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 
 class EditActivity: ComponentActivity() {
-
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
+        
         setContent {
             NXSharingHelperTheme {
                 Surface(
@@ -52,7 +52,6 @@ class EditActivity: ComponentActivity() {
 
 @Composable
 fun SettingList() {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -107,7 +106,7 @@ fun SettingList() {
 
         ) {
             Text(
-                text = "アプリ",
+                text = stringResource(id = R.string.setting_app),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier
@@ -129,7 +128,7 @@ fun SettingList() {
 
         ) {
             Text(
-                text = "マイセット",
+                text = stringResource(id = R.string.setting_myset),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier

@@ -10,6 +10,10 @@ fun isAfterAndroidX(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 }
 
+fun isAfterAndroidVII(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+}
+
 fun createDummyResolveInfo(
     packageName: String,
     appName: String,

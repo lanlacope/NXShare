@@ -3,11 +3,9 @@
 
     <!-- Navigation Message -->
     <string name="failed_decode_islocalhost">
-        Failed scanning QR\n
-        Don\'t scan second QR, scan first QR
+        Please scan first QR
     </string>
     <string name="failed_decode_notswitch">
-        Failed scanning QR\n
         Please scan QR in Switch
     </string>
     <string name="failed_connect">
@@ -40,6 +38,41 @@
     <string name="permission_share_movie">
         Share movie
     </string>
+
+    <!-- Setting -->
+    <string name="setting_cover"
+        translatable="false">
+        setting
+    </string>
+
+    <string name="setting_app">
+        Apps
+    </string>
+
+    <string name="setting_myset">
+        MySets
+    </string>
+
+    <string name="button_apply">
+        Apply
+    </string>
+
+    <string name="button_add">
+        Add
+    </string>
+
+    <string name="summary_title">
+        Title
+    </string>
+
+    <string name="summary_hash">
+        Hash
+    </string>
+
+    <string name="summary_text">
+        Text
+    </string>
+
 
     <!-- License -->
     <string name="license_cover"
