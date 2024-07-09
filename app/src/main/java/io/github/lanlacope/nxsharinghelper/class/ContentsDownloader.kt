@@ -47,6 +47,7 @@ class ContentsDownloader(val context: Context) {
     }
 
     private suspend fun getContents() = withContext(Dispatchers.IO) {
+
         downloadData.fileNames.forEach { fileName ->
             val connection: HttpURLConnection =
                 URL(SWITCH_LOCALHOST.IMAGE + fileName).openConnection() as HttpURLConnection

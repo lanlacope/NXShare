@@ -66,34 +66,6 @@ class ContentsSharer(val context: Context) {
 
     fun createCustomChooserIntrnt(data: DownloadData) : Intent {
 
-        val sendablentent = createSendableIntent(data)
-
-        val packageManager = context.packageManager
-        val fileManager = FileManager(context)
-
-        //
-            val sendablePackages =
-                packageManager.queryIntentActivities(
-                    sendablentent,
-                    PackageManager.MATCH_DEFAULT_ONLY
-                )
-
-        val filteredIntents = sendablePackages.filter { sendablePackage ->
-            val appInfo = AppInfo(sendablePackage, packageManager)
-            !fileManager.getShareEnabled(appInfo)
-        }
-
-        filteredIntents.map { filteredIntent ->
-            Intent(sendablentent).apply {
-                setComponent(
-                    ComponentName(
-                        filteredIntent.activityInfo.packageName,
-                        filteredIntent.activityInfo.name
-                    )
-                )
-            }
-        }
-
         val title = when (data.fileType) {
             DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
                 context.getString(R.string.permission_share_photo)
@@ -104,9 +76,73 @@ class ContentsSharer(val context: Context) {
             }
         }
 
-        val chooserIntent = Intent.createChooser(Intent(), title)
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, filteredIntents.toTypedArray<Parcelable>())
-        return chooserIntent
+        val sendablentent = createSendableIntent(data)
+
+        val packageManager = context.packageManager
+        val fileManager = FileManager(context)
+
+        val sendablePackages =
+            packageManager.queryIntentActivities(
+                sendablentent,
+                PackageManager.MATCH_DEFAULT_ONLY
+            )
+
+        if (isAfterAndroidX()) {
+
+            val chooserIntent = Intent.createChooser(sendablentent, title)
+
+            val filteredPackages = sendablePackages.filterNot { sendablePackage ->
+                val appInfo = AppInfo(sendablePackage, packageManager)
+                fileManager.getShareEnabled(appInfo)
+            }
+
+            val excludeComponents = arrayListOf<ComponentName>()
+
+            filteredPackages.forEach { filteredPackage ->
+                excludeComponents.add(
+                    ComponentName(
+                        filteredPackage.activityInfo.packageName,
+                        filteredPackage.activityInfo.name
+                    )
+                )
+            }
+
+            chooserIntent.putExtra(
+                Intent.EXTRA_EXCLUDE_COMPONENTS,
+                excludeComponents.toTypedArray<Parcelable>()
+            )
+
+            return chooserIntent
+        } else {
+
+            val chooserIntent = Intent.createChooser(Intent(), title)
+
+            val filteredPackages = sendablePackages.filter { sendablePackage ->
+                val appInfo = AppInfo(sendablePackage, packageManager)
+                !fileManager.getShareEnabled(appInfo)
+            }
+
+            val filteredIntents = arrayListOf<Intent>()
+
+            filteredPackages.forEach { filteredPackage ->
+                filteredIntents.add(
+                    Intent(sendablentent).apply {
+                        setComponent(
+                            ComponentName(
+                                filteredPackage.activityInfo.packageName,
+                                filteredPackage.activityInfo.name
+                            )
+                        )
+                    }
+                )
+            }
+
+            chooserIntent.putExtra(
+                Intent.EXTRA_INITIAL_INTENTS,
+                filteredIntents.toTypedArray<Parcelable>()
+            )
+            return chooserIntent
+        }
     }
 
     fun createSendableIntent(data: DownloadData): Intent {
@@ -154,7 +190,7 @@ class ContentsSharer(val context: Context) {
             context,
             1,
             Intent(context, ShareReceiver::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 

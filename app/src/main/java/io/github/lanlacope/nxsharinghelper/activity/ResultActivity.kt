@@ -14,7 +14,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -174,9 +176,12 @@ class ResultActivity : ComponentActivity() {
                 // ビューの更新
                 viewModel.isScanned.value = true
                 viewModel.navigationMessage.value = getString(R.string.succesful_download)
+
+                ConnectionManager(applicationContext).disconnection()
             } catch (e: Exception) {
                 // ビューの更新
                 viewModel.navigationMessage.value = getString(R.string.failed_download)
+                ConnectionManager(applicationContext).disconnection()
             }
         }
     }
@@ -252,6 +257,7 @@ class ResultActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Navigation(
     viewModel: ResultViewModel,
@@ -351,9 +357,10 @@ private fun Navigation(
                 context.startActivity(intent)
             }
 
+            // TODO: Longclickへの対応 
+
             FloatingActionButton(
                 onClick = onShareButtonClick,
-                onLongClick =onShareButtonLongClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -366,6 +373,10 @@ private fun Navigation(
                         width = Dimension.value(SOMEBUTTON_SIZE)
                         height = Dimension.value(SOMEBUTTON_SIZE)
                     }
+                    .combinedClickable(
+                        onClick = {},
+                        onLongClick = onShareButtonLongClick
+                    )
 
             ) {
                 Image(

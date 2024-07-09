@@ -112,12 +112,12 @@ private fun MySetList(
             MySet(
                 file = typeInfo.value[page].typeFile
             )
-
-            MySetListDialog(
-                shown = shown,
-                typeInfo = typeInfo
-            )
         }
+
+        MySetListDialog(
+            shown = shown,
+            typeInfo = typeInfo
+        )
     }
 }
 

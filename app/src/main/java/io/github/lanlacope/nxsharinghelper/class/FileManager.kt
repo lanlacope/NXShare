@@ -192,7 +192,7 @@ class FileManager(val context: Context) {
         val types = mutableListOf<String>()
         try {
             val files = FileManager(context).getTypeFiles()
-            files.forEach() { file ->
+            files.forEach { file ->
                 val jsonObject = JSONObject(file.readText())
                 types.add(jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME))
             }
@@ -209,7 +209,7 @@ class FileManager(val context: Context) {
         types.add(SHARE_JSON_PROPATY.TYPE_NONE)
         try {
             val files = FileManager(context).getTypeFiles()
-            files.forEach() { file ->
+            files.forEach { file ->
                 val jsonObject = JSONObject(file.readText())
                 types.add(jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME))
             }
@@ -241,7 +241,7 @@ class FileManager(val context: Context) {
                             texts.add(partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT))
                         }
                     }
-                    texts.toSet().forEach() { text ->
+                    texts.toSet().forEach { text ->
                         append(text)
                     }
                 } catch (e: Exception) {

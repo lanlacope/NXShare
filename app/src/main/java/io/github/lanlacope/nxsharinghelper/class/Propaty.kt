@@ -4,12 +4,21 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
 fun isAfterAndroidX(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
 }
+
+/*
+inline fun <T> JSONArray.forEach(action: (T) -> Unit): Unit {
+    for (index in 0 until length()) action(get(index))
+}
+
+ */
 
 fun removeStringsForFile(value: String): String {
     return value.replace(Regex("""[\x21-\x2f\x3a-\x3f\x5b-\x5e\x60\x7b-\x7e\\]"""), "")
