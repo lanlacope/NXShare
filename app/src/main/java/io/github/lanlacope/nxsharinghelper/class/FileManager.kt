@@ -70,7 +70,7 @@ class FileManager(val context: Context) {
     fun getGameInfo(file: File): List<GameInfo> {
         val jsonObject = JSONObject(file.readText())
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-        val info = jsonArray.mapNotNullIndexOnly { index ->
+        val info = jsonArray.mapIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
             GameInfo(gameData)
         }
@@ -229,14 +229,13 @@ class FileManager(val context: Context) {
                 }
                 try {
                     val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-                    arrayData.mapNotNullIndexOnly { index ->
-                        val partJson = arrayData.getJSONObject(index)
-                        if (partJson.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
-                            partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT)
+                    arrayData.mapIndexOnly { index ->
+                        arrayData.getJSONObject(index)
+                    }.forEach { jsonObject ->
+                        if (jsonObject.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
+                            val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
+                            append(text)
                         }
-                    }.distinct()
-                        .forEach { text ->
-                        append(text)
                     }
                 } catch (e: Exception) {
                     // do nothing

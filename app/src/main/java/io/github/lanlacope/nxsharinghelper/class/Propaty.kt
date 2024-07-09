@@ -17,8 +17,8 @@ inline fun JSONArray.forEachIndexOnly(action: (Int) -> Unit): Unit {
     for (index in 0 until length()) action(index)
 }
 
-inline fun <R> JSONArray.mapNotNullIndexOnly(action: (Int) -> R): List<R> {
-    return (0 until length()).mapNotNull { index -> action(index) }
+inline fun <R> JSONArray.mapIndexOnly(action: (Int) -> R): List<R> {
+    return (0 until length()).map { index -> action(index) }
 }
 
 fun removeStringsForFile(value: String): String {
