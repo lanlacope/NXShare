@@ -32,8 +32,11 @@ class ContentsDownloader(val context: Context) {
         val fileType = rawJson.getString(DOWNLOAD_JSON_PROPATY.FILETYPE)
         val consoleName = rawJson.getString(DOWNLOAD_JSON_PROPATY.CONSOLENAME)
         val jsonArray = rawJson.getJSONArray(DOWNLOAD_JSON_PROPATY.FILENAMES)
-        val fileNames = List(jsonArray.length()) { index ->
-            jsonArray.getString(index)
+        val fileNames = mutableListOf<String>()
+
+        List(jsonArray.length()) { index ->
+            val fileName = jsonArray.getString(index)
+            fileNames.add(fileName)
         }
 
         downloadData = DownloadData(
@@ -71,5 +74,4 @@ class ContentsDownloader(val context: Context) {
             throw e
         }
     }
-
 }
