@@ -41,22 +41,23 @@ class FileManager(val context: Context) {
 
         val allPackages = receiveJpgPackages + receiveJpgsPackages + receiveMp4Packages
 
-        val parsedPackageNames = allPackages.map { it.activityInfo.packageName }.toSet()
+        val parsedPackageNames = allPackages.map { _package ->
+            _package.activityInfo.packageName
+        }.distinct()
 
         val appInfo = parsedPackageNames.map { packageName ->
             val resolveInfo = allPackages.first { rawPackage ->
                 rawPackage.activityInfo.packageName == packageName
             }
             AppInfo(resolveInfo, packageManager)
-        }.toList()
+        }
 
         return appInfo
     }
 
     fun getTypeInfo(): List<TypeInfo> {
-        val typeInfo = arrayListOf<TypeInfo>()
-        getTypeFiles().forEach() { file ->
-            typeInfo.add(TypeInfo(file, getTypeName(file)))
+        val typeInfo = getTypeFiles().map { file ->
+            TypeInfo(file, getTypeName(file))
         }
         return typeInfo
     }
@@ -69,23 +70,20 @@ class FileManager(val context: Context) {
     fun getGameInfo(file: File): List<GameInfo> {
         val jsonObject = JSONObject(file.readText())
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-        val info = arrayListOf<GameInfo>()
-        List(jsonArray.length()) { index ->
+        val info = jsonArray.mapNotNullIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
-            info.add(GameInfo(gameData))
+            GameInfo(gameData)
         }
         return info
     }
 
     fun getGameHashs(rawHashs: List<String>): List<String> {
-        val hashs = arrayListOf<String>()
         val regex = Regex("""-(.*?)\.(.*?)$""")
-        rawHashs.forEach { rawHash ->
+        val hashs = rawHashs.map { rawHash ->
             val matchResult = regex.find(rawHash)
-            val hash = matchResult?.groupValues?.get(1) ?: ""
-            hashs.add(hash)
-        }
-        return hashs.toSet().toList()
+            matchResult?.groupValues?.get(1) ?: ""
+        }.distinct()
+        return hashs
     }
 
     fun getSettingFolder(): File {
@@ -115,7 +113,7 @@ class FileManager(val context: Context) {
         try {
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
-            List(jsonArray.length()) { index ->
+            jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
                 if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == appInfo.packageName) {
                     return jsonObject.getBoolean(SHARE_JSON_PROPATY.PAKCAGE_ENABLED)
@@ -131,7 +129,7 @@ class FileManager(val context: Context) {
         try {
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
-            List(jsonArray.length()) { index ->
+            jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
                 if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == appInfo.packageName) {
                     return jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_TYPE)
@@ -147,7 +145,7 @@ class FileManager(val context: Context) {
         try {
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
-            List(jsonArray.length()) { index ->
+            jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
                 if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == packageName) {
                     return jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_TYPE)
@@ -189,34 +187,31 @@ class FileManager(val context: Context) {
 
     // ファイルの表示用名
     fun getTypeNames(): List<String> {
-        val types = arrayListOf<String>()
         try {
             val files = FileManager(context).getTypeFiles()
-            files.forEach { file ->
+            val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
-                types.add(jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME))
+                jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
             }
             return types
         } catch (e: Exception) {
-            // do nothing
+            return listOf()
         }
-        return types
     }
 
-    // // ファイルの表示用名 + 非選択用名
+    // ファイルの表示用名 + 非選択用名
     fun getTypeNamesWithNone(): List<String> {
-        val types = arrayListOf<String>()
-        types.add(SHARE_JSON_PROPATY.TYPE_NONE)
+        val defaultType = listOf(SHARE_JSON_PROPATY.TYPE_NONE)
         try {
             val files = FileManager(context).getTypeFiles()
-            files.forEach { file ->
+            val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
-                types.add(jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME))
+                jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
             }
+            return defaultType + types
         } catch (e: Exception) {
-            // do nothing
+            return defaultType
         }
-        return types
     }
 
     fun createCopyText(rawHashs: List<String>, type: String): String? {
@@ -233,15 +228,14 @@ class FileManager(val context: Context) {
                     // do nothing
                 }
                 try {
-                    val texts = arrayListOf<String>()
                     val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-                    List(arrayData.length()) { index ->
+                    arrayData.mapNotNullIndexOnly { index ->
                         val partJson = arrayData.getJSONObject(index)
                         if (partJson.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
-                            texts.add(partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT))
+                            partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT)
                         }
-                    }
-                    texts.toSet().toList().forEach { text ->
+                    }.distinct()
+                        .forEach { text ->
                         append(text)
                     }
                 } catch (e: Exception) {
@@ -302,7 +296,7 @@ class FileManager(val context: Context) {
             put(SHARE_JSON_PROPATY.GAME_TEXT, text)
         }
 
-        List(jsonArray.length()) { index ->
+        jsonArray.forEachIndexOnly { index ->
             val parsedData = jsonArray.getJSONObject(index)
             if (parsedData.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
                 return Result.failure(Exception())
@@ -327,7 +321,7 @@ class FileManager(val context: Context) {
 
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
 
-        List(jsonArray.length()) { index ->
+        jsonArray.forEachIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
             if (gameData.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
                 gameData.apply {
@@ -352,7 +346,7 @@ class FileManager(val context: Context) {
 
         var isFound = false
 
-        List(jsonArray.length()) { index ->
+        jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
             if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == app.packageName) {
                 jsonObject.put(SHARE_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
@@ -383,7 +377,7 @@ class FileManager(val context: Context) {
 
         var isFound = false
 
-        List(jsonArray.length()) { index ->
+        jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
             if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == app.packageName) {
                 jsonObject.put(SHARE_JSON_PROPATY.PACKAGE_TYPE, name)

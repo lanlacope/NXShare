@@ -13,12 +13,13 @@ fun isAfterAndroidX(): Boolean {
 
 }
 
-/*
-inline fun <T> JSONArray.forEach(action: (T) -> Unit): Unit {
-    for (index in 0 until length()) action(get(index))
+inline fun JSONArray.forEachIndexOnly(action: (Int) -> Unit): Unit {
+    for (index in 0 until length()) action(index)
 }
 
- */
+inline fun <R> JSONArray.mapNotNullIndexOnly(action: (Int) -> R): List<R> {
+    return (0 until length()).mapNotNull { index -> action(index) }
+}
 
 fun removeStringsForFile(value: String): String {
     return value.replace(Regex("""[\x21-\x2f\x3a-\x3f\x5b-\x5e\x60\x7b-\x7e\\]"""), "")

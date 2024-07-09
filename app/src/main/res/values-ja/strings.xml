@@ -30,6 +30,9 @@
     <string name="saved_notification">
         件のファイルを保存しました
     </string>
+    <string name="copy_clipboard">
+        クリップボードにコピーしました
+    </string>
 
     <string name="permission_share_photo">
         Share photos

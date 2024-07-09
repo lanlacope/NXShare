@@ -48,7 +48,6 @@ import io.github.lanlacope.nxsharinghelper.`class`.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.`class`.DownloadData
 import io.github.lanlacope.nxsharinghelper.`class`.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
-import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import kotlinx.coroutines.launch
 
 class ResultViewModel : ViewModel() {
@@ -357,7 +356,7 @@ private fun Navigation(
                 context.startActivity(intent)
             }
 
-            // TODO: Longclickへの対応 
+            // TODO: Longclickへの対応
 
             FloatingActionButton(
                 onClick = onShareButtonClick,

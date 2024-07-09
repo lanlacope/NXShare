@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
+import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
@@ -46,11 +47,7 @@ class ContentsSharer(val context: Context) {
                 data.fileNames.forEach { fileName ->
                     val file = File(context.cacheDir, fileName)
                     uri.add(
-                        FileProvider.getUriForFile(
-                            context,
-                            "${context.packageName}.fileProvider",
-                            file
-                        )
+                        FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
                     )
                 }
                 setStream(uri[0])
@@ -96,14 +93,10 @@ class ContentsSharer(val context: Context) {
                 fileManager.getShareEnabled(appInfo)
             }
 
-            val excludeComponents = arrayListOf<ComponentName>()
-
-            filteredPackages.forEach { filteredPackage ->
-                excludeComponents.add(
-                    ComponentName(
-                        filteredPackage.activityInfo.packageName,
-                        filteredPackage.activityInfo.name
-                    )
+            val excludeComponents = filteredPackages.map { filteredPackage ->
+                ComponentName(
+                    filteredPackage.activityInfo.packageName,
+                    filteredPackage.activityInfo.name
                 )
             }
 
@@ -122,19 +115,15 @@ class ContentsSharer(val context: Context) {
                 !fileManager.getShareEnabled(appInfo)
             }
 
-            val filteredIntents = arrayListOf<Intent>()
-
-            filteredPackages.forEach { filteredPackage ->
-                filteredIntents.add(
-                    Intent(sendablentent).apply {
-                        setComponent(
-                            ComponentName(
-                                filteredPackage.activityInfo.packageName,
-                                filteredPackage.activityInfo.name
-                            )
+            val filteredIntents = filteredPackages.map { filteredPackage ->
+                Intent(sendablentent).apply {
+                    setComponent(
+                        ComponentName(
+                            filteredPackage.activityInfo.packageName,
+                            filteredPackage.activityInfo.name
                         )
-                    }
-                )
+                    )
+                }
             }
 
             chooserIntent.putExtra(
@@ -221,6 +210,9 @@ class ContentsSharer(val context: Context) {
                 val clipboardManager =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("", text))
+
+                Toast.makeText(context, context.getString(R.string.copy_clipboard), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

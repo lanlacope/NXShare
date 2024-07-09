@@ -34,7 +34,7 @@ class ContentsDownloader(val context: Context) {
         val jsonArray = rawJson.getJSONArray(DOWNLOAD_JSON_PROPATY.FILENAMES)
         val fileNames = arrayListOf<String>()
 
-        List(jsonArray.length()) { index ->
+        jsonArray.forEachIndexOnly { index ->
             val fileName = jsonArray.getString(index)
             fileNames.add(fileName)
         }

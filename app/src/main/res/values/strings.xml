@@ -29,6 +29,9 @@
     <string name="saved_notification">
         &#32;Files are saved
     </string>
+    <string name="copy_clipboard">
+        Copy for Clipboard
+    </string>
 
     <!-- Permission Message -->
     <string name="permission_share_photo">
