@@ -73,7 +73,7 @@ data class ShareInfo(
     private val context: Context
 ) {
     private val fileManager = FileManager(context)
-    val shareEnabled = fileManager.getShareEnabled(appInfo) ?: false
+    val shareEnabled = fileManager.getShareEnabled(appInfo)
     val type = fileManager.getShareType(appInfo) ?: SHARE_JSON_PROPATY.TYPE_NONE
     val types = fileManager.getTypeNamesWithNone()
 }
