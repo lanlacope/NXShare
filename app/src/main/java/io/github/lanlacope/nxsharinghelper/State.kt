@@ -6,13 +6,6 @@ import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.os.Build
 
-fun isAfterAndroidX(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-}
-
-fun isAfterAndroidVII(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
-}
 
 fun createDummyResolveInfo(
     packageName: String,

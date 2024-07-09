@@ -45,7 +45,7 @@
         android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
         <activity
-            android:name=".activitys.ResultActivity"
+            android:name=".activity.ResultActivity"
             android:exported="true"
             android:theme="@style/Theme.NXSharingHelper">
             <intent-filter>
@@ -54,30 +54,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activitys.SwitchCaptureActivity"
+            android:name=".activity.SwitchCaptureActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullSensor"
             tools:ignore="DiscouragedApi" />
         <activity
-            android:name=".activitys.LicenceActivity"
+            android:name=".activity.LicenceActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper"
             android:noHistory="true" />
         <activity
-            android:name=".activitys.EditActivity"
+            android:name=".activity.EditActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper" />
         <activity
-            android:name=".activitys.EditPackageInfoActivity"
+            android:name=".activity.EditPackageInfoActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper" />
         <activity
-            android:name=".activitys.EditGameInfoActivity"
+            android:name=".activity.EditGameInfoActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper" />
 
         <receiver
-            android:name=".classes.ContentsSharer$ShareReceiver"
+            android:name=".class.ContentsSharer$ShareReceiver"
             android:exported="false" />
 
         <provider

@@ -1,10 +1,7 @@
-package io.github.lanlacope.nxsharinghelper.classes
+package io.github.lanlacope.nxsharinghelper.`class`
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
-import androidx.core.content.FileProvider
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -80,6 +77,17 @@ class FileManager(val context: Context) {
         return info
     }
 
+    fun getGameHashs(rawHashs: List<String>): List<String> {
+        val hashs = mutableListOf<String>()
+        val regex = Regex("""-(.*?)\.(.*?)$""")
+        rawHashs.forEach { rawHash ->
+            val matchResult = regex.find(rawHash)
+            val hash = matchResult?.groupValues?.get(1) ?: ""
+            hashs.add(hash)
+        }
+        return hashs.toSet().toList()
+    }
+
     fun getSettingFolder(): File {
         val file = File(context.filesDir, FOLDER_SHARE)
         if (!file.exists()) {
@@ -103,7 +111,7 @@ class FileManager(val context: Context) {
         return file
     }
 
-    fun getShareEnabled(appInfo: AppInfo): Boolean? {
+    fun getShareEnabled(appInfo: AppInfo): Boolean {
         try {
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
@@ -114,9 +122,9 @@ class FileManager(val context: Context) {
                 }
             }
         } catch (e: Exception) {
-            return null
+            return false
         }
-        return null
+        return false
     }
 
     fun getShareType(appInfo: AppInfo): String? {
@@ -211,8 +219,9 @@ class FileManager(val context: Context) {
         return types
     }
 
-    fun createCopyText(hash: String, type: String): String? {
+    fun createCopyText(rawHashs: List<String>, type: String): String? {
         try {
+            val hashs = getGameHashs(rawHashs)
             val file = getTypeFile(type)
             val rawJson = JSONObject(file.readText())
 
@@ -228,7 +237,7 @@ class FileManager(val context: Context) {
                     val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
                     List(arrayData.length()) { index ->
                         val partJson = arrayData.getJSONObject(index)
-                        if (partJson.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
+                        if (partJson.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
                             texts.add(partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT))
                         }
                     }

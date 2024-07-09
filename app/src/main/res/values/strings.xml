@@ -49,6 +49,14 @@
         Apps
     </string>
 
+    <string name="summary_share_enabled">
+        Use this app
+    </string>
+
+    <string name="summary_share_type">
+        Myset
+    </string>
+
     <string name="setting_myset">
         MySets
     </string>
@@ -61,15 +69,15 @@
         Add
     </string>
 
-    <string name="summary_title">
+    <string name="hint_title">
         Title
     </string>
 
-    <string name="summary_hash">
+    <string name="hint_hash">
         Hash
     </string>
 
-    <string name="summary_text">
+    <string name="hint_text">
         Text
     </string>
 

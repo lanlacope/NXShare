@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.classes
+package io.github.lanlacope.nxsharinghelper.`class`
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -10,7 +10,6 @@ import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import androidx.annotation.RequiresApi
-import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 
 class ConnectionManager(val context: Context) {
 

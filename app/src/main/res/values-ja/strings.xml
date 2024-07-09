@@ -44,6 +44,14 @@
         アプリ
     </string>
 
+    <string name="summary_share_enabled">
+        このアプリを使う
+    </string>
+
+    <string name="summary_share_type">
+        マイセット
+    </string>
+
     <string name="setting_myset">
         マイセット
     </string>
@@ -56,15 +64,15 @@
         追加
     </string>
 
-    <string name="summary_title">
+    <string name="hint_title">
         タイトル
     </string>
 
-    <string name="summary_hash">
+    <string name="hint_hash">
         ハッシュ
     </string>
 
-    <string name="summary_text">
+    <string name="hint_text">
         テキスト
     </string>
 </resources>

@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.activitys
+package io.github.lanlacope.nxsharinghelper.activity
 
 import android.app.Activity
 import android.content.Context
@@ -14,7 +14,7 @@ import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.classes.SWITCH_LOCALHOST
+import io.github.lanlacope.nxsharinghelper.`class`.SWITCH_LOCALHOST
 import com.google.zxing.client.android.R as zR
 
 /*

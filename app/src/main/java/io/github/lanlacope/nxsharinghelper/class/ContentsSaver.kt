@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.classes
+package io.github.lanlacope.nxsharinghelper.`class`
 
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -10,7 +10,6 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

@@ -1,10 +1,8 @@
-package io.github.lanlacope.nxsharinghelper.activitys
+package io.github.lanlacope.nxsharinghelper.activity
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,23 +31,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.classes.AppInfo
-import io.github.lanlacope.nxsharinghelper.classes.SHARE_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.classes.FileManager
-import io.github.lanlacope.nxsharinghelper.classes.ShareInfo
-import io.github.lanlacope.nxsharinghelper.createDummyResolveInfo
-import io.github.lanlacope.nxsharinghelper.isAfterAndroidVII
+import io.github.lanlacope.nxsharinghelper.`class`.AppInfo
+import io.github.lanlacope.nxsharinghelper.`class`.FileManager
+import io.github.lanlacope.nxsharinghelper.`class`.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 class EditPackageInfoActivity : ComponentActivity() {
@@ -101,7 +94,6 @@ private fun PackageList() {
                     app = app
                 )
             }
-
         }
     }
 }
@@ -191,44 +183,43 @@ private fun PackageSetting(
             mutableStateOf(shareInfo.shareEnabled)
         }
 
-        if (isAfterAndroidVII()) {
-            val onSwitchChange = {
+
+        val onSwitchChange = {
                 cheacked = !cheacked
                 fileManager.changeShareEnabled(app, cheacked)
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .clickable {
-                        onSwitchChange()
-                    }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .clickable {
+                    onSwitchChange()
+                }
 
             ) {
-                Text(
-                    text = "アプリを使う",
-                    maxLines = 1,
-                    minLines = 1,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterStart)
-                        .padding(all = TEXT_PADDING)
+            Text(
+                text = stringResource(id = R.string.summary_share_enabled),
+                maxLines = 1,
+                minLines = 1,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.CenterStart)
+                    .padding(all = TEXT_PADDING)
 
-                )
+            )
 
-                Switch(
-                    checked = cheacked,
-                    onCheckedChange = {
-                        onSwitchChange()
-                    },
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 50.dp)
+            Switch(
+                checked = cheacked,
+                onCheckedChange = {
+                    onSwitchChange()
+                },
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 50.dp)
 
-                )
-            }
+            )
         }
 
         var isExpanded by remember {
@@ -244,7 +235,7 @@ private fun PackageSetting(
 
         ) {
             Text(
-                text = "コピーを使う",
+                text = stringResource(id = R.string.summary_share_type),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier
@@ -260,7 +251,7 @@ private fun PackageSetting(
             }
             val typeNames = shareInfo.types
 
-            typeNames.forEach() { type ->
+            typeNames.forEach { type ->
                 TypeSelector(
                     app = app,
                     type = type,

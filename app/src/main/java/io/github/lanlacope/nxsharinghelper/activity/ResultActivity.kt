@@ -1,7 +1,6 @@
-package io.github.lanlacope.nxsharinghelper.activitys
+package io.github.lanlacope.nxsharinghelper.activity
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -17,7 +16,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -27,7 +25,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,13 +40,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.classes.ConnectionManager
-import io.github.lanlacope.nxsharinghelper.classes.ContentsDownloader
-import io.github.lanlacope.nxsharinghelper.classes.ContentsSaver
-import io.github.lanlacope.nxsharinghelper.classes.ContentsSharer
-import io.github.lanlacope.nxsharinghelper.classes.DownloadData
-import io.github.lanlacope.nxsharinghelper.isAfterAndroidX
+import io.github.lanlacope.nxsharinghelper.`class`.ConnectionManager
+import io.github.lanlacope.nxsharinghelper.`class`.ContentsDownloader
+import io.github.lanlacope.nxsharinghelper.`class`.ContentsSaver
+import io.github.lanlacope.nxsharinghelper.`class`.ContentsSharer
+import io.github.lanlacope.nxsharinghelper.`class`.DownloadData
+import io.github.lanlacope.nxsharinghelper.`class`.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import kotlinx.coroutines.launch
 
 class ResultViewModel : ViewModel() {
@@ -66,7 +64,7 @@ class ResultActivity : ComponentActivity() {
     private var isSaving = false
 
     private val wifiManager by lazy {
-        applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
     }
 
     private lateinit var captureLancher: ActivityResultLauncher<ScanOptions>
@@ -255,7 +253,6 @@ class ResultActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Navigation(
     viewModel: ResultViewModel,
@@ -298,7 +295,6 @@ private fun Navigation(
         ) {
             Text(
                 text = stringResource(id = R.string.license_cover),
-                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.wrapContentSize()
             )
         }
@@ -358,6 +354,7 @@ private fun Navigation(
 
             FloatingActionButton(
                 onClick = onShareButtonClick,
+                onLongClick =onShareButtonLongClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -370,10 +367,6 @@ private fun Navigation(
                         width = Dimension.value(SOMEBUTTON_SIZE)
                         height = Dimension.value(SOMEBUTTON_SIZE)
                     }
-                    .combinedClickable(
-                        onClick = onShareButtonClick,
-                        onLongClick = onShareButtonLongClick
-                    )
 
             ) {
                 Image(

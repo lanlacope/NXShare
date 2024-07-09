@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.activitys
+package io.github.lanlacope.nxsharinghelper.activity
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -44,15 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.classes.CommonInfo
-import io.github.lanlacope.nxsharinghelper.classes.FileManager
-import io.github.lanlacope.nxsharinghelper.classes.GameInfo
-import io.github.lanlacope.nxsharinghelper.classes.SHARE_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.classes.TypeInfo
-import io.github.lanlacope.nxsharinghelper.classes.removeStringsForFile
+import io.github.lanlacope.nxsharinghelper.`class`.CommonInfo
+import io.github.lanlacope.nxsharinghelper.`class`.FileManager
+import io.github.lanlacope.nxsharinghelper.`class`.GameInfo
+import io.github.lanlacope.nxsharinghelper.`class`.TypeInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.File
 
 class EditGameInfoActivity : ComponentActivity() {
@@ -161,7 +156,7 @@ private fun MySetListDialog(
                         onValueChange = { name = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_title),
+                                text = stringResource(id = R.string.hint_title),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -307,7 +302,7 @@ private fun MySetDialog(
                         onValueChange = { hash = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_hash),
+                                text = stringResource(id = R.string.hint_hash),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -325,7 +320,7 @@ private fun MySetDialog(
                         onValueChange = { title = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_title),
+                                text = stringResource(id = R.string.hint_title),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -343,7 +338,7 @@ private fun MySetDialog(
                         onValueChange = { text = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_text),
+                                text = stringResource(id = R.string.hint_text),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -496,7 +491,7 @@ private fun MySetCommonDialog(
                         onValueChange = { text.value = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_text),
+                                text = stringResource(id = R.string.hint_text),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -645,7 +640,7 @@ private fun MySetItemDialog(
                         onValueChange = { title.value = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_title),
+                                text = stringResource(id = R.string.hint_title),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -662,7 +657,7 @@ private fun MySetItemDialog(
                         onValueChange = { text.value = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.summary_text),
+                                text = stringResource(id = R.string.hint_text),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },

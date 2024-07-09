@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.activitys
+package io.github.lanlacope.nxsharinghelper.activity
 
 import android.content.Intent
 import android.content.res.Configuration

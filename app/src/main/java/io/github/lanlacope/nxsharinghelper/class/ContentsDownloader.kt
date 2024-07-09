@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.classes
+package io.github.lanlacope.nxsharinghelper.`class`
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers

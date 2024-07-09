@@ -1,19 +1,20 @@
-package io.github.lanlacope.nxsharinghelper.classes
+package io.github.lanlacope.nxsharinghelper.`class`
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Parcelable
 import androidx.annotation.RequiresApi
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.isAfterAndroidVII
 import java.io.File
 
 class ContentsSharer(val context: Context) {
@@ -71,19 +72,26 @@ class ContentsSharer(val context: Context) {
         val packageManager = context.packageManager
         val fileManager = FileManager(context)
 
-        if (isAfterAndroidVII()) {
+        //
             val sendablePackages =
                 packageManager.queryIntentActivities(
                     sendablentent,
                     PackageManager.MATCH_DEFAULT_ONLY
                 )
 
-            val exclusionPackages = sendablePackages.filterNot { sendablePackage ->
-                val appInfo = AppInfo(sendablePackage, packageManager)
-                fileManager.getShareEnabled(appInfo) ?: false
-            }
-            exclusionPackages.forEach { exclusionPackage ->
-                sendablentent.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, exclusionPackage)
+        val filteredIntents = sendablePackages.filter { sendablePackage ->
+            val appInfo = AppInfo(sendablePackage, packageManager)
+            !fileManager.getShareEnabled(appInfo)
+        }
+
+        filteredIntents.map { filteredIntent ->
+            Intent(sendablentent).apply {
+                setComponent(
+                    ComponentName(
+                        filteredIntent.activityInfo.packageName,
+                        filteredIntent.activityInfo.name
+                    )
+                )
             }
         }
 
@@ -97,7 +105,9 @@ class ContentsSharer(val context: Context) {
             }
         }
 
-        return Intent.createChooser(sendablentent, title)
+        val chooserIntent = Intent.createChooser(Intent(), title)
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, filteredIntents.toTypedArray<Parcelable>())
+        return chooserIntent
     }
 
     fun createSendableIntent(data: DownloadData): Intent {
@@ -157,7 +167,20 @@ class ContentsSharer(val context: Context) {
 
             val type = fileManager.getShareType(intent.component?.packageName) ?: ""
 
-            val text = fileManager.createCopyText(intent.data.toString(), type)
+            val rawTexts = mutableListOf<String>()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri::class.java)?.forEach { uri ->
+                    rawTexts.add(uri.toString())
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)?.forEach { uri ->
+                    rawTexts.add(uri.toString())
+                }
+            }
+
+            val text = fileManager.createCopyText(rawTexts, type)
 
             if (!text.isNullOrEmpty()) {
                 val clipboardManager =
