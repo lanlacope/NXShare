@@ -202,7 +202,7 @@ class ContentsSharer(val context: Context) {
 
             val type = fileManager.getShareType(intent.component?.packageName) ?: ""
 
-            val rawTexts = mutableListOf<String>()
+            val rawTexts = arrayListOf<String>()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri::class.java)?.forEach { uri ->

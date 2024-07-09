@@ -54,7 +54,7 @@ class FileManager(val context: Context) {
     }
 
     fun getTypeInfo(): List<TypeInfo> {
-        val typeInfo = mutableListOf<TypeInfo>()
+        val typeInfo = arrayListOf<TypeInfo>()
         getTypeFiles().forEach() { file ->
             typeInfo.add(TypeInfo(file, getTypeName(file)))
         }
@@ -69,7 +69,7 @@ class FileManager(val context: Context) {
     fun getGameInfo(file: File): List<GameInfo> {
         val jsonObject = JSONObject(file.readText())
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-        val info = mutableListOf<GameInfo>()
+        val info = arrayListOf<GameInfo>()
         List(jsonArray.length()) { index ->
             val gameData = jsonArray.getJSONObject(index)
             info.add(GameInfo(gameData))
@@ -78,7 +78,7 @@ class FileManager(val context: Context) {
     }
 
     fun getGameHashs(rawHashs: List<String>): List<String> {
-        val hashs = mutableListOf<String>()
+        val hashs = arrayListOf<String>()
         val regex = Regex("""-(.*?)\.(.*?)$""")
         rawHashs.forEach { rawHash ->
             val matchResult = regex.find(rawHash)
@@ -189,7 +189,7 @@ class FileManager(val context: Context) {
 
     // ファイルの表示用名
     fun getTypeNames(): List<String> {
-        val types = mutableListOf<String>()
+        val types = arrayListOf<String>()
         try {
             val files = FileManager(context).getTypeFiles()
             files.forEach { file ->
@@ -205,7 +205,7 @@ class FileManager(val context: Context) {
 
     // // ファイルの表示用名 + 非選択用名
     fun getTypeNamesWithNone(): List<String> {
-        val types = mutableListOf<String>()
+        val types = arrayListOf<String>()
         types.add(SHARE_JSON_PROPATY.TYPE_NONE)
         try {
             val files = FileManager(context).getTypeFiles()
@@ -233,7 +233,7 @@ class FileManager(val context: Context) {
                     // do nothing
                 }
                 try {
-                    val texts = mutableListOf<String>()
+                    val texts = arrayListOf<String>()
                     val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
                     List(arrayData.length()) { index ->
                         val partJson = arrayData.getJSONObject(index)
@@ -241,7 +241,7 @@ class FileManager(val context: Context) {
                             texts.add(partJson.getString(SHARE_JSON_PROPATY.GAME_TEXT))
                         }
                     }
-                    texts.toSet().forEach { text ->
+                    texts.toSet().toList().forEach { text ->
                         append(text)
                     }
                 } catch (e: Exception) {
