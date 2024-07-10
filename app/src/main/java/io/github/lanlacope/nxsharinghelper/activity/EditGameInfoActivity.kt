@@ -48,6 +48,7 @@ import io.github.lanlacope.nxsharinghelper.`class`.FileManager
 import io.github.lanlacope.nxsharinghelper.`class`.GameInfo
 import io.github.lanlacope.nxsharinghelper.`class`.TypeInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.widgit.Column
 import java.io.File
 
 class EditGameInfoActivity : ComponentActivity() {
@@ -389,12 +390,13 @@ private fun MySetCommon(
     }
 
     Column(
+        onClick = {
+            shown.value = true
+        },
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable {
-                shown.value = true
-            }
+
     ) {
         Text(
             text = common.name,
@@ -544,12 +546,13 @@ private fun MySetItem(
     }
 
     Column(
+        onClick = {
+            shown.value = true
+        },
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable {
-                shown.value = true
-            }
+
 
     ) {
         Text(

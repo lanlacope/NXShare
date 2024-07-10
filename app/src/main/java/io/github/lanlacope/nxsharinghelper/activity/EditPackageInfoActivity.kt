@@ -43,6 +43,8 @@ import io.github.lanlacope.nxsharinghelper.`class`.FileManager
 import io.github.lanlacope.nxsharinghelper.`class`.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.widgit.Box
+import io.github.lanlacope.nxsharinghelper.widgit.Row
 
 
 class EditPackageInfoActivity : ComponentActivity() {
@@ -190,12 +192,10 @@ private fun PackageSetting(
             }
 
         Box(
+            onClick = onSwitchChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable {
-                    onSwitchChange()
-                }
 
             ) {
             Text(
@@ -226,12 +226,13 @@ private fun PackageSetting(
             mutableStateOf(false)
         }
         Box(
+            onClick = {
+                isExpanded = !isExpanded
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable {
-                    isExpanded = !isExpanded
-                }
+
 
         ) {
             Text(
@@ -275,21 +276,15 @@ private fun TypeSelector(
     }
 
     Row(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable(
-                onClick = {
-                    onClick()
-                }
-            )
 
     ) {
         RadioButton(
             selected = type == selectedType.value,
-            onClick = {
-                onClick()
-            },
+            onClick = onClick,
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.CenterVertically)
@@ -304,6 +299,7 @@ private fun TypeSelector(
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.CenterVertically)
+
         )
     }
 }

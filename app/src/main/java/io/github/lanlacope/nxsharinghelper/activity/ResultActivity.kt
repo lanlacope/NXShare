@@ -48,6 +48,7 @@ import io.github.lanlacope.nxsharinghelper.`class`.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.`class`.DownloadData
 import io.github.lanlacope.nxsharinghelper.`class`.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import kotlinx.coroutines.launch
 
 class ResultViewModel : ViewModel() {
@@ -285,17 +286,18 @@ private fun Navigation(
         ) = createRefs()
 
         TextButton(
+            onClick = {
+                val intent = Intent(context, LicenceActivity::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .constrainAs(license) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                     width = Dimension.wrapContent
                     height = Dimension.wrapContent
-                },
-            onClick = {
-                val intent = Intent(context, LicenceActivity::class.java)
-                context.startActivity(intent)
-            },
+                }
+
         ) {
             Text(
                 text = stringResource(id = R.string.license_cover),
@@ -303,17 +305,18 @@ private fun Navigation(
             )
         }
         TextButton(
+            onClick = {
+                val intent = Intent(context, EditActivity::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .constrainAs(setting) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                     width = Dimension.wrapContent
                     height = Dimension.wrapContent
-                },
-            onClick = {
-                val intent = Intent(context, EditActivity::class.java)
-                context.startActivity(intent)
-            },
+                }
+
         ) {
             Text(
                 text = stringResource(id = R.string.setting_cover),
@@ -348,7 +351,7 @@ private fun Navigation(
                 context.startActivity(intent)
             }
 
-            val onShareButtonLongClick = {
+            val onShareButtonLongPress = {
                 val contentsSharer = ContentsSharer(context)
                 val chooserIntent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
                 val pendingIntent = contentsSharer.createPendingIntent()
@@ -356,10 +359,9 @@ private fun Navigation(
                 context.startActivity(intent)
             }
 
-            // TODO: Longclickへの対応
-
             FloatingActionButton(
                 onClick = onShareButtonClick,
+                onLongPress = onShareButtonLongPress,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -374,7 +376,7 @@ private fun Navigation(
                     }
                     .combinedClickable(
                         onClick = {},
-                        onLongClick = onShareButtonLongClick
+                        onLongClick = onShareButtonLongPress
                     )
 
             ) {

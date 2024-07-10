@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.widgit.Box
 
 class EditActivity: ComponentActivity() {
     
@@ -63,12 +64,12 @@ fun SettingList() {
             mutableStateOf(false)
         }
         Box(
+            onClick = {
+                cheacked = !cheacked
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable {
-                    cheacked = !cheacked
-                }
 
         ) {
             Text(
@@ -96,13 +97,13 @@ fun SettingList() {
         }
 
         Box(
+            onClick = {
+                val intent = Intent(context, EditPackageInfoActivity::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable {
-                    val intent = Intent(context, EditPackageInfoActivity::class.java)
-                    context.startActivity(intent)
-                }
 
         ) {
             Text(
@@ -118,13 +119,13 @@ fun SettingList() {
         }
 
         Box(
+            onClick = {
+                val intent = Intent(context, EditGameInfoActivity::class.java)
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .clickable {
-                    val intent = Intent(context, EditGameInfoActivity::class.java)
-                    context.startActivity(intent)
-                }
 
         ) {
             Text(
