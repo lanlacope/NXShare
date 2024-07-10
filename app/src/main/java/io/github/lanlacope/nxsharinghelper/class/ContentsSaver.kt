@@ -16,7 +16,9 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class ContentsSaver(val context: Context) {
+class ContentsSaver(_context: Context) {
+
+    val context = _context.applicationContext
 
     suspend fun save(data: DownloadData) {
 

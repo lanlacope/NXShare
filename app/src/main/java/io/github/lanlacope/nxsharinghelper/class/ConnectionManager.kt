@@ -11,7 +11,9 @@ import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import androidx.annotation.RequiresApi
 
-class ConnectionManager(val context: Context) {
+class ConnectionManager(_context: Context) {
+
+    private val context = _context.applicationContext
 
     fun start(config: Pair<String, String>, onConnect: () -> Unit) {
 
@@ -27,8 +29,10 @@ class ConnectionManager(val context: Context) {
         }
     }
 
-    val connectivityManager by lazy {
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    companion object {
+        lateinit var connectivityManager: ConnectivityManager
+        lateinit var wifiManager: WifiManager
+        var lastNetworkId = -1
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -37,6 +41,8 @@ class ConnectionManager(val context: Context) {
         password: String,
         onConnect: () -> Unit
     ) {
+
+        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
@@ -80,20 +86,14 @@ class ConnectionManager(val context: Context) {
         }
     }
 
-    /*****FOR BEFORE API 28 *****/
-
-    private val wifiManager by lazy {
-        context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    }
-
-    companion object var lastNetworkId = -1
-
     @Suppress("DEPRECATION")
     private fun connectSwitchLegacy(
         ssid: String,
         password: String,
         onConnect: () -> Unit
     ) {
+
+        wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         lastNetworkId = wifiManager.connectionInfo.networkId
 
@@ -116,5 +116,4 @@ class ConnectionManager(val context: Context) {
             onConnect()
         }
     }
-    /*****FOR BEFORE API 28 *****/
 }
