@@ -2,6 +2,7 @@ package io.github.lanlacope.nxsharinghelper.`class`
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -55,13 +56,6 @@ class FileManager(val context: Context) {
         return appInfo
     }
 
-    fun getTypeInfo(): List<TypeInfo> {
-        val typeInfo = getTypeFiles().map { file ->
-            TypeInfo(file, getTypeName(file))
-        }
-        return typeInfo
-    }
-
     fun getCommonInfo(file: File): CommonInfo {
         val jsonObject = JSONObject(file.readText())
         return CommonInfo(jsonObject)
@@ -77,9 +71,9 @@ class FileManager(val context: Context) {
         return info
     }
 
-    fun getGameHashs(rawHashs: List<String>): List<String> {
-        val regex = Regex("""-(.*?)\.(.*?)$""")
-        val hashs = rawHashs.map { rawHash ->
+    fun getGameHashs(fileNames: List<String>): List<String> {
+        val regex = Regex(""".*-(.*?)\..*?$""")
+        val hashs = fileNames.map { rawHash ->
             val matchResult = regex.find(rawHash)
             matchResult?.groupValues?.get(1) ?: ""
         }.distinct()
@@ -164,6 +158,17 @@ class FileManager(val context: Context) {
         return file
     }
 
+    fun getTypeFileByType(typeName: String): File? {
+        val files = getTypeFiles()
+        files.forEach { file ->
+            val jsonObject = JSONObject(file.readText())
+            if (jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME) == typeName) {
+                return file
+            }
+        }
+        return null
+    }
+
     fun getNewTypeFile(fileName: String): Result<File> {
         val file = File(getTypeFolder(), fileName)
         val isSucces = file.createNewFile()
@@ -182,13 +187,13 @@ class FileManager(val context: Context) {
 
     fun getTypeName(file: File): String {
         val jsonObject = JSONObject(file.readText())
-        return (jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME))
+        return jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
     }
 
     // ファイルの表示用名
     fun getTypeNames(): List<String> {
         try {
-            val files = FileManager(context).getTypeFiles()
+            val files = getTypeFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
                 jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
@@ -214,13 +219,15 @@ class FileManager(val context: Context) {
         }
     }
 
-    fun createCopyText(rawHashs: List<String>, type: String): String? {
+    fun createCopyText(fileNames: List<String>, packageName: String): String? {
         try {
-            val hashs = getGameHashs(rawHashs)
-            val file = getTypeFile(type)
-            val rawJson = JSONObject(file.readText())
+            val hashs = getGameHashs(fileNames)
+            val typeName = getShareType(packageName) ?: ""
+            val file = getTypeFileByType(typeName)
 
-            return StringBuilder().apply {
+            val rawJson = JSONObject(file!!.readText())
+
+            val resultText = StringBuilder().apply {
                 try {
                     val text = rawJson.getString(SHARE_JSON_PROPATY.COMMON_TEXT)
                     append(text)
@@ -229,18 +236,23 @@ class FileManager(val context: Context) {
                 }
                 try {
                     val arrayData = rawJson.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
-                    arrayData.mapIndexOnly { index ->
-                        arrayData.getJSONObject(index)
-                    }.forEach { jsonObject ->
-                        if (jsonObject.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
-                            val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
-                            append(text)
+                    arrayData.forEachIndexOnly { index ->
+                        try {
+                            val jsonObject = arrayData.getJSONObject(index)
+                            if (jsonObject.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
+                                val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
+                                append(text)
+                            }
+                        } catch (e: Exception) {
+                            // do nothing
                         }
                     }
                 } catch (e: Exception) {
                     // do nothing
                 }
-            }.toString()
+            }
+
+            return resultText.toString()
         } catch (e: Exception) {
             return null
         }

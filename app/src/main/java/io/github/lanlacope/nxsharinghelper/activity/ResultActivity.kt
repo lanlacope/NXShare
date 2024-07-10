@@ -345,17 +345,13 @@ private fun Navigation(
 
             val onShareButtonClick = {
                 val contentsSharer = ContentsSharer(context)
-                val chooserIntent = contentsSharer.createCustomChooserIntrnt(viewModel.downloadData.copy())
-                val pendingIntent = contentsSharer.createPendingIntent()
-                val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
+                val intent = contentsSharer.createCustomChooserIntrnt(viewModel.downloadData.copy())
                 context.startActivity(intent)
             }
 
             val onShareButtonLongPress = {
                 val contentsSharer = ContentsSharer(context)
-                val chooserIntent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
-                val pendingIntent = contentsSharer.createPendingIntent()
-                val intent = Intent.createChooser(chooserIntent, null, pendingIntent.intentSender)
+                val intent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
                 context.startActivity(intent)
             }
 

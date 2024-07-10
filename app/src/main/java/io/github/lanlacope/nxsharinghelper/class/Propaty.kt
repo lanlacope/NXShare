@@ -88,14 +88,6 @@ data class ShareInfo(
     val types = fileManager.getTypeNamesWithNone()
 }
 
-data class TypeInfo(
-    private val file: File,
-    private val name: String
-) {
-    val typeFile = file
-    val fileName = name
-}
-
 data class CommonInfo(
     private val jsonObject: JSONObject
 ) {

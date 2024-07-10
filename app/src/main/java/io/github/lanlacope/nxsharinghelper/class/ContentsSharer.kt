@@ -43,16 +43,13 @@ class ContentsSharer(val context: Context) {
                     .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
             } else {
-                val uri: ArrayList<Uri> = arrayListOf()
-                data.fileNames.forEach { fileName ->
+                val uri = data.fileNames.map { fileName ->
                     val file = File(context.cacheDir, fileName)
-                    uri.add(
-                        FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
-                    )
+                    FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
                 }
                 setStream(uri[0])
                     .createChooserIntent()
-                    .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uri)
+                    .putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uri))
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             }
@@ -73,6 +70,8 @@ class ContentsSharer(val context: Context) {
             }
         }
 
+        val pendingIntent = createPendingIntent(data)
+
         val sendablentent = createSendableIntent(data)
 
         val packageManager = context.packageManager
@@ -86,7 +85,7 @@ class ContentsSharer(val context: Context) {
 
         if (isAfterAndroidX()) {
 
-            val chooserIntent = Intent.createChooser(sendablentent, title)
+            val chooserIntent = Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filterNot { sendablePackage ->
                 val appInfo = AppInfo(sendablePackage, packageManager)
@@ -108,7 +107,7 @@ class ContentsSharer(val context: Context) {
             return chooserIntent
         } else {
 
-            val chooserIntent = Intent.createChooser(Intent(), title)
+            val chooserIntent = Intent.createChooser(Intent(), title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filter { sendablePackage ->
                 val appInfo = AppInfo(sendablePackage, packageManager)
@@ -174,13 +173,22 @@ class ContentsSharer(val context: Context) {
         }
     }
 
-    fun createPendingIntent(): PendingIntent {
-        return PendingIntent.getBroadcast(
+    fun createPendingIntent(data: DownloadData): PendingIntent {
+
+        val fileNames = ArrayList(data.fileNames)
+
+        val intent = Intent(context, ShareReceiver::class.java).apply {
+            putStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE, fileNames)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
             context,
-            1,
-            Intent(context, ShareReceiver::class.java),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
+
+        return pendingIntent
     }
 
     class ShareReceiver : BroadcastReceiver() {
@@ -189,22 +197,18 @@ class ContentsSharer(val context: Context) {
 
             val fileManager = FileManager(context)
 
-            val type = fileManager.getShareType(intent.component?.packageName) ?: ""
+            val fileNames = intent.getStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE)?.toList() ?: listOf()
 
-            val rawTexts = arrayListOf<String>()
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM, Uri::class.java)?.forEach { uri ->
-                    rawTexts.add(uri.toString())
-                }
+            val componentName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT, ComponentName::class.java)
             } else {
                 @Suppress("DEPRECATION")
-                intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)?.forEach { uri ->
-                    rawTexts.add(uri.toString())
-                }
+                intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT)
             }
 
-            val text = fileManager.createCopyText(rawTexts, type)
+            val packageName = componentName?.packageName ?: ""
+
+            val text = fileManager.createCopyText(fileNames, packageName)
 
             if (!text.isNullOrEmpty()) {
                 val clipboardManager =

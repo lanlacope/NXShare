@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +45,6 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.`class`.CommonInfo
 import io.github.lanlacope.nxsharinghelper.`class`.FileManager
 import io.github.lanlacope.nxsharinghelper.`class`.GameInfo
-import io.github.lanlacope.nxsharinghelper.`class`.TypeInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
 import java.io.File
@@ -74,8 +72,8 @@ class EditGameInfoActivity : ComponentActivity() {
 private fun MySetList(
 ) {
     val fileManager = FileManager(LocalContext.current)
-    val typeInfo = remember {
-        mutableStateOf(fileManager.getTypeInfo())
+    val files = remember {
+        mutableStateOf(fileManager.getTypeFiles())
     }
 
     Column(
@@ -105,19 +103,19 @@ private fun MySetList(
         }
         HorizontalPager(
             state = rememberPagerState(
-                pageCount = { typeInfo.value.size }
+                pageCount = { files.value.size }
             ),
             modifier = Modifier.fillMaxSize()
 
         ) { page ->
             MySet(
-                file = typeInfo.value[page].typeFile
+                file = files.value[page]
             )
         }
 
         MySetListDialog(
             shown = shown,
-            typeInfo = typeInfo
+            files = files
         )
     }
 }
@@ -125,7 +123,7 @@ private fun MySetList(
 @Composable
 private fun MySetListDialog(
     shown: MutableState<Boolean>,
-    typeInfo: MutableState<List<TypeInfo>>
+    files: MutableState<List<File>>
 ) {
     val fileManager = FileManager(LocalContext.current)
 
@@ -173,7 +171,7 @@ private fun MySetListDialog(
                         onClick = {
                             val result = fileManager.addMySet(name)
                             if (result.isSuccess) {
-                                typeInfo.value += TypeInfo(result.getOrNull()!!, name)
+                                files.value += result.getOrNull()!!
                                 shown.value = false
                             }
                         },
