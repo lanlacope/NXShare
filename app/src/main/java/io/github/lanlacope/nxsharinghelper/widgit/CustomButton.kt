@@ -141,7 +141,6 @@ fun FloatingActionButton(
     }
 }
 
-// FIXME: RippleEffectがでない
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @NonRestartableComposable
