@@ -1,9 +1,11 @@
 package io.github.lanlacope.nxsharinghelper.widgit
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -140,6 +142,7 @@ fun FloatingActionButton(
 }
 
 // FIXME: RippleEffectがでない
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @NonRestartableComposable
 private fun Surface(
@@ -175,24 +178,12 @@ private fun Surface(
                     border = border,
                     shadowElevation = with(LocalDensity.current) { shadowElevation.toPx() }
                 )
-                .pointerInput(enabled) {
-                    if (enabled) {
-                        detectTapGestures(
-                            onTap = {
-                                onClick()
-                            },
-                            onLongPress = {
-                                onLongClick()
-                            }
-                        )
-                    }
-                }
-                .then(
-                    if (enabled) Modifier else Modifier
-                        .indication(
-                            interactionSource = interactionSource,
-                            indication = indication
-                        )
+                .combinedClickable(
+                    enabled = enabled,
+                    onClick = onClick,
+                    onLongClick = onLongClick,
+                    indication = indication,
+                    interactionSource = interactionSource,
                 ),
             propagateMinConstraints = true
         ) {

@@ -1,6 +1,8 @@
 package io.github.lanlacope.nxsharinghelper.widgit
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.RowScope
@@ -29,6 +31,7 @@ inline fun Row(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 inline fun Row(
     noinline onClick: () -> Unit,
@@ -40,16 +43,10 @@ inline fun Row(
 ) {
     androidx.compose.foundation.layout.Row(
         modifier = modifier
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        onClick()
-                    },
-                    onLongPress = {
-                        onLongClick()
-                    }
-                )
-            },
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = verticalAlignment,
         content = content

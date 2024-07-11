@@ -34,6 +34,7 @@ inline fun Box(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 inline fun Box(
     noinline onClick: () -> Unit,
@@ -45,16 +46,10 @@ inline fun Box(
 ) {
     androidx.compose.foundation.layout.Box(
         modifier = modifier
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        onClick()
-                    },
-                    onLongPress = {
-                        onLongClick()
-                    }
-                )
-            },
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
 
         contentAlignment = contentAlignment,
         propagateMinConstraints = propagateMinConstraints,
@@ -75,6 +70,7 @@ fun Box(
         )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Box(
     onClick: () -> Unit,
@@ -83,16 +79,10 @@ fun Box(
 ) {
     androidx.compose.foundation.layout.Box(
         modifier = modifier
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        onClick()
-                    },
-                    onLongPress = {
-                        onLongClick()
-                    }
-                )
-            },
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
 
     )
 }
