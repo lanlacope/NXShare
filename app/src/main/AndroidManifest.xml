@@ -77,7 +77,7 @@
             android:theme="@style/Theme.NXSharingHelper" />
 
         <receiver
-            android:name=".class.ContentsSharer$ShareReceiver"
+            android:name=".clazz.ContentsSharer$ShareReceiver"
             android:exported="false" />
 
         <provider

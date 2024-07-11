@@ -1,12 +1,14 @@
-package io.github.lanlacope.nxsharinghelper.`class`
+package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
+import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
 
 fun isAfterAndroidX(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
@@ -69,36 +71,10 @@ object SHARE_JSON_PROPATY {
     val GAME_TEXT: String = "GameText"
 }
 
-data class AppInfo(
-    private val resolveInfo: ResolveInfo,
-    private val packageManager: PackageManager,
-) {
-    val appName = resolveInfo.loadLabel(packageManager).toString()
-    val packageName = resolveInfo.activityInfo?.packageName ?: "com.example.com"
-    val icon = resolveInfo.loadIcon(packageManager)
-}
-
-data class ShareInfo(
-    private val appInfo: AppInfo,
-    private val context: Context
-) {
-    private val fileManager = FileManager(context)
-    val shareEnabled = fileManager.getShareEnabled(appInfo)
-    val type = fileManager.getShareType(appInfo) ?: SHARE_JSON_PROPATY.TYPE_NONE
-    val types = fileManager.getTypeNamesWithNone()
-}
-
-data class CommonInfo(
-    private val jsonObject: JSONObject
-) {
-    val name = jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
-    val text = jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TEXT)
-}
-
-data class GameInfo(
-    private val jsonObject: JSONObject
-) {
-    val title = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TITLE)
-    val hash = jsonObject.getString(SHARE_JSON_PROPATY.GAME_HASH)
-    val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
+@Composable
+fun makeToast(
+    text: String,
+    duration: Int = Toast.LENGTH_SHORT
+):Toast {
+    return Toast.makeText(LocalContext.current, text, duration)
 }

@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.`class`
+package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -75,7 +75,7 @@ class ContentsSharer(val context: Context) {
         val sendablentent = createSendableIntent(data)
 
         val packageManager = context.packageManager
-        val fileManager = FileManager(context)
+        val fileReader = FileReader(context)
 
         val sendablePackages =
             packageManager.queryIntentActivities(
@@ -89,7 +89,7 @@ class ContentsSharer(val context: Context) {
 
             val filteredPackages = sendablePackages.filterNot { sendablePackage ->
                 val appInfo = AppInfo(sendablePackage, packageManager)
-                fileManager.getShareEnabled(appInfo)
+                fileReader.getShareEnabled(appInfo)
             }
 
             val excludeComponents = filteredPackages.map { filteredPackage ->
@@ -111,7 +111,7 @@ class ContentsSharer(val context: Context) {
 
             val filteredPackages = sendablePackages.filter { sendablePackage ->
                 val appInfo = AppInfo(sendablePackage, packageManager)
-                !fileManager.getShareEnabled(appInfo)
+                !fileReader.getShareEnabled(appInfo)
             }
 
             val filteredIntents = filteredPackages.map { filteredPackage ->
@@ -195,7 +195,7 @@ class ContentsSharer(val context: Context) {
 
         override fun onReceive(context: Context, intent: Intent) {
 
-            val fileManager = FileManager(context)
+            val fileReader = FileReader(context)
 
             val fileNames = intent.getStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE)?.toList() ?: listOf()
 
@@ -208,7 +208,7 @@ class ContentsSharer(val context: Context) {
 
             val packageName = componentName?.packageName ?: ""
 
-            val text = fileManager.createCopyText(fileNames, packageName)
+            val text = fileReader.createCopyText(fileNames, packageName)
 
             if (!text.isNullOrEmpty()) {
                 val clipboardManager =

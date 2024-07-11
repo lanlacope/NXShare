@@ -45,7 +45,7 @@
     <!-- Setting -->
     <string name="setting_cover"
         translatable="false">
-        setting
+        Setting
     </string>
 
     <string name="setting_app">

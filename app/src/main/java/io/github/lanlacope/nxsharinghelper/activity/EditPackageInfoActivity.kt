@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,9 +37,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.`class`.AppInfo
-import io.github.lanlacope.nxsharinghelper.`class`.FileManager
-import io.github.lanlacope.nxsharinghelper.`class`.ShareInfo
+import io.github.lanlacope.nxsharinghelper.clazz.AppInfo
+import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
+import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
+import io.github.lanlacope.nxsharinghelper.clazz.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
@@ -69,8 +69,8 @@ class EditPackageInfoActivity : ComponentActivity() {
 @Composable
 private fun PackageList() {
 
-    val fileManager = FileManager(LocalContext.current)
-    val apps = fileManager.getAppInfo()
+    val infoManager = InfoManager(LocalContext.current)
+    val apps = infoManager.getAppInfo()
 
     LazyColumn(
         modifier = Modifier
@@ -178,7 +178,7 @@ private fun PackageSetting(
     ) {
         val TEXT_PADDING = 10.dp
 
-        val fileManager = FileManager(context)
+        val fileEditor = FileEditor(context)
         val shareInfo = ShareInfo(app, context)
 
         var cheacked by remember {
@@ -188,7 +188,7 @@ private fun PackageSetting(
 
         val onSwitchChange = {
                 cheacked = !cheacked
-                fileManager.changeShareEnabled(app, cheacked)
+                fileEditor.changeShareEnabled(app, cheacked)
             }
 
         Box(
@@ -269,10 +269,10 @@ private fun TypeSelector(
     type: String,
     selectedType: MutableState<String>
 ) {
-    val fileManager = FileManager(LocalContext.current)
+    val fileEditor = FileEditor(LocalContext.current)
     val onClick = {
         selectedType.value = type
-        fileManager.changeShareType(app, type)
+        fileEditor.changeShareType(app, type)
     }
 
     Row(

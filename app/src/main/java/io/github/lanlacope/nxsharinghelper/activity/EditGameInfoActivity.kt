@@ -42,9 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.`class`.CommonInfo
-import io.github.lanlacope.nxsharinghelper.`class`.FileManager
-import io.github.lanlacope.nxsharinghelper.`class`.GameInfo
+import io.github.lanlacope.nxsharinghelper.clazz.CommonInfo
+import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
+import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
+import io.github.lanlacope.nxsharinghelper.clazz.GameInfo
+import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
 import java.io.File
@@ -71,9 +73,9 @@ class EditGameInfoActivity : ComponentActivity() {
 @Composable
 private fun MySetList(
 ) {
-    val fileManager = FileManager(LocalContext.current)
+    val fileSelector = FileSelector(LocalContext.current)
     val files = remember {
-        mutableStateOf(fileManager.getTypeFiles())
+        mutableStateOf(fileSelector.getTypeFiles())
     }
 
     Column(
@@ -125,7 +127,7 @@ private fun MySetListDialog(
     shown: MutableState<Boolean>,
     files: MutableState<List<File>>
 ) {
-    val fileManager = FileManager(LocalContext.current)
+    val fileEditor = FileEditor(LocalContext.current)
 
     var name by remember {
         mutableStateOf("")
@@ -169,7 +171,7 @@ private fun MySetListDialog(
 
                     TextButton(
                         onClick = {
-                            val result = fileManager.addMySet(name)
+                            val result = fileEditor.addMySet(name)
                             if (result.isSuccess) {
                                 files.value += result.getOrNull()!!
                                 shown.value = false
@@ -195,10 +197,10 @@ private fun MySetListDialog(
 private fun MySet(
     file: File
 ) {
-    val fileManager = FileManager(LocalContext.current)
-    val common = fileManager.getCommonInfo(file)
+    val infoManager = InfoManager(LocalContext.current)
+    val common = infoManager.getCommonInfo(file)
     val games = remember {
-        mutableStateOf(fileManager.getGameInfo(file))
+        mutableStateOf(infoManager.getGameInfo(file))
     }
 
     val shown = remember {
@@ -265,7 +267,7 @@ private fun MySetDialog(
     fileName: String,
     games:  MutableState<List<GameInfo>>
 ) {
-    val fileManager = FileManager(LocalContext.current)
+    val fileEditor = FileEditor(LocalContext.current)
 
     var title by remember {
         mutableStateOf("")
@@ -351,7 +353,7 @@ private fun MySetDialog(
 
                     TextButton(
                         onClick = {
-                            val result = fileManager.addGameInfo(fileName, title, hash, text)
+                            val result = fileEditor.addGameInfo(fileName, title, hash, text)
                             if (result.isSuccess) {
                                 games.value += result.getOrNull()!!
                                 shown.value = false
@@ -427,7 +429,7 @@ private fun MySetCommonDialog(
     fileName: String,
     text: MutableState<String>
 ) {
-    val fileManager = FileManager(LocalContext.current)
+    val fileEditor = FileEditor(LocalContext.current)
 
     /*
     var _title by remember {
@@ -506,7 +508,7 @@ private fun MySetCommonDialog(
                     TextButton(
                         onClick = {
                             shown.value = false
-                            fileManager.editCommonInfo(fileName, text.value)
+                            fileEditor.editCommonInfo(fileName, text.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()
@@ -589,7 +591,7 @@ private fun MySetItemDialog(
     hash: String,
     text: MutableState<String>
 ) {
-    val fileManager = FileManager(LocalContext.current)
+    val fileEditor = FileEditor(LocalContext.current)
 
     var _title by remember {
         mutableStateOf(title.value)
@@ -673,7 +675,7 @@ private fun MySetItemDialog(
                     TextButton(
                         onClick = {
                             shown.value = false
-                            fileManager.editGameInfo(fileName, title.value, hash, text.value)
+                            fileEditor.editGameInfo(fileName, title.value, hash, text.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()

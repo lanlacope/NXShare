@@ -3,7 +3,6 @@ package io.github.lanlacope.nxsharinghelper.widgit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +32,7 @@ inline fun Row(
 @Composable
 inline fun Row(
     noinline onClick: () -> Unit,
-    noinline onLongPress: () -> Unit,
+    noinline onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
@@ -41,13 +40,13 @@ inline fun Row(
 ) {
     androidx.compose.foundation.layout.Row(
         modifier = modifier
-            .clickable(
-                onClick = onClick
-            )
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onTap = {
+                        onClick()
+                    },
                     onLongPress = {
-                        onLongPress()
+                        onLongClick()
                     }
                 )
             },

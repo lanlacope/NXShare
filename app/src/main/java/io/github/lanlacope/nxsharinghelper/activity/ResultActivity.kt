@@ -41,15 +41,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.`class`.ConnectionManager
-import io.github.lanlacope.nxsharinghelper.`class`.ContentsDownloader
-import io.github.lanlacope.nxsharinghelper.`class`.ContentsSaver
-import io.github.lanlacope.nxsharinghelper.`class`.ContentsSharer
-import io.github.lanlacope.nxsharinghelper.`class`.DownloadData
-import io.github.lanlacope.nxsharinghelper.`class`.isAfterAndroidX
+import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
+import io.github.lanlacope.nxsharinghelper.clazz.ContentsDownloader
+import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
+import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
+import io.github.lanlacope.nxsharinghelper.clazz.DownloadData
+import io.github.lanlacope.nxsharinghelper.clazz.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
-import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import kotlinx.coroutines.launch
+import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 
 class ResultViewModel : ViewModel() {
 
@@ -357,7 +357,7 @@ private fun Navigation(
 
             FloatingActionButton(
                 onClick = onShareButtonClick,
-                onLongPress = onShareButtonLongPress,
+                onLongClick = onShareButtonLongPress,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -429,7 +429,7 @@ private fun Navigation(
 
         ) {
             Image(
-                painter = painterResource(R.drawable.baseline_qr_code_24),
+                painter = painterResource(R.drawable.baseline_qr_code_scanner_24),
                 contentDescription = "Scan",
                 modifier = Modifier
                     .fillMaxSize()

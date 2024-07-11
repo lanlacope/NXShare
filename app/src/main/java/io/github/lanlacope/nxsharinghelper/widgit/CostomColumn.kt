@@ -1,10 +1,10 @@
 package io.github.lanlacope.nxsharinghelper.widgit
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +33,7 @@ inline fun Column(
 @Composable
 inline fun Column(
     noinline onClick: () -> Unit,
-    noinline onLongPress: () -> Unit,
+    noinline onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
@@ -41,16 +41,17 @@ inline fun Column(
 ) {
     androidx.compose.foundation.layout.Column(
         modifier = modifier
-            .clickable(
-                onClick = onClick
-            )
             .pointerInput(Unit) {
                 detectTapGestures(
+                    onTap = {
+                        onClick()
+                    },
                     onLongPress = {
-                        onLongPress()
+                        onLongClick()
                     }
                 )
             },
+
         verticalArrangement = verticalArrangement,
         horizontalAlignment = horizontalAlignment,
         content = content

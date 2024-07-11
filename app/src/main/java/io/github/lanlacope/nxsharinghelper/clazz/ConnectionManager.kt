@@ -1,4 +1,4 @@
-package io.github.lanlacope.nxsharinghelper.`class`
+package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
 import android.net.ConnectivityManager
