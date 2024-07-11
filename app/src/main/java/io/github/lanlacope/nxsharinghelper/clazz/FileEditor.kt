@@ -5,7 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class FileEditor(private val context: Context) : FileSelector(context) {
+class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 

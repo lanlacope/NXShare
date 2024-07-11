@@ -5,7 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class FileReader(private val context: Context) : FileSelector(context) {
+class FileReader(context: Context) : FileSelector(context) {
 
     fun getGameHashs(fileNames: List<String>): List<String> {
         val regex = Regex(""".*-(.*?)\..*?$""")
