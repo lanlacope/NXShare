@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
 import android.widget.Toast
-import androidx.compose.ui.util.trace
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
