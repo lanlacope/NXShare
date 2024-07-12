@@ -33,12 +33,23 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun editCommonInfo(
         fileName: String,
+        title: String,
         text: String
     ) {
         val file = getTypeFile(fileName)
         val jsonObject = JSONObject(file.readText())
+        val lastTitle = try {
+            jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
+        } catch (e: Exception) {
+            title
+        }
+        jsonObject.put(SHARE_JSON_PROPATY.COMMON_TITLE, title)
         jsonObject.put(SHARE_JSON_PROPATY.COMMON_TEXT, text)
         file.writeText(jsonObject.toString())
+
+        if (title != lastTitle) {
+            updateShareType(text, lastTitle)
+        }
     }
 
     fun addGameInfo(
@@ -174,6 +185,26 @@ class FileEditor(context: Context) : FileSelector(context) {
                 put(SHARE_JSON_PROPATY.PACKAGE_TYPE, name)
             }
             jsonArray.put(jsonObject)
+        }
+
+        file.writeText(jsonArray.toString())
+    }
+
+    fun updateShareType(newType: String, lastType: String) {
+
+        val file = getAppSettingFile()
+        val jsonArray = try {
+            JSONArray(file.readText())
+        } catch (e: Exception) {
+            return
+        }
+
+        jsonArray.forEachIndexOnly { index ->
+            val jsonObject = jsonArray.getJSONObject(index)
+            if (jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE) == lastType) {
+                jsonObject.put(SHARE_JSON_PROPATY.COMMON_TITLE, newType)
+                jsonArray.put(index, jsonObject)
+            }
         }
 
         file.writeText(jsonArray.toString())

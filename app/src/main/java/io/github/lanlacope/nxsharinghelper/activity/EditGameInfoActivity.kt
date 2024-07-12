@@ -595,7 +595,7 @@ private fun EditCommonInfoDialog(
                     TextButton(
                         onClick = {
                             shown.value = false
-                            fileEditor.editCommonInfo(fileName, text.value)
+                            fileEditor.editCommonInfo(fileName, title.value, text.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()
