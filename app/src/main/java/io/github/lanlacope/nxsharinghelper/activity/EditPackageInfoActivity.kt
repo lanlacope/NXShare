@@ -94,7 +94,7 @@ private fun PackageList() {
             }
             if (isExpanded) {
                 PackageSetting(
-                    packageName = app.name
+                    packageName = app.packageName
                 )
             }
         }

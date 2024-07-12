@@ -1,6 +1,7 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -9,17 +10,21 @@ class FileReader(context: Context) : FileSelector(context) {
 
     fun getShareEnabled(packageName: String): Boolean {
         try {
+            Log.d("Q", packageName)
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
             jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
                 if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == packageName) {
+
                     return jsonObject.getBoolean(SHARE_JSON_PROPATY.PAKCAGE_ENABLED)
                 }
             }
         } catch (e: Exception) {
+            Log.d("Q", e.toString())
             return false
         }
+        Log.d("Q", "FUQ")
         return false
     }
 

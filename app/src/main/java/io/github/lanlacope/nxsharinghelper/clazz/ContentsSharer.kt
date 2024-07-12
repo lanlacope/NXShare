@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
 import android.widget.Toast
+import androidx.compose.ui.util.trace
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
@@ -88,7 +89,7 @@ class ContentsSharer(val context: Context) {
             val chooserIntent = Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filterNot { sendablePackage ->
-                val packageName = sendablePackage?.activityInfo?.packageName?: ""
+                val packageName = sendablePackage.activityInfo.packageName
                 fileReader.getShareEnabled(packageName)
             }
 
@@ -110,7 +111,7 @@ class ContentsSharer(val context: Context) {
             val chooserIntent = Intent.createChooser(Intent(), title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filter { sendablePackage ->
-                val packageName = sendablePackage?.activityInfo?.packageName?: ""
+                val packageName = sendablePackage.activityInfo.packageName
                 !fileReader.getShareEnabled(packageName)
             }
 
