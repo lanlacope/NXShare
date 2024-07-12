@@ -51,9 +51,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Button(
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    onLongClick: () -> Unit,
     enabled: Boolean = true,
     shape: Shape = ButtonDefaults.shape,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
@@ -101,9 +101,9 @@ fun Button(
 
 @Composable
 fun FloatingActionButton(
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    onLongClick: () -> Unit,
     shape: Shape = FloatingActionButtonDefaults.shape,
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
     contentColor: Color = contentColorFor(containerColor),
@@ -111,8 +111,8 @@ fun FloatingActionButton(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable () -> Unit,
 ) {
-    val tonalElevation = 0.0.dp // elevation.tonalElevation() ?: 0.dp
-    val shadowElevation = 0.0.dp//elevation.shadowElevation(interactionSource = interactionSource).value 0.dp
+    val tonalElevation = 0.0.dp  // elevation.tonalElevation() ?: 0.dp
+    val shadowElevation = 0.0.dp //elevation.shadowElevation(interactionSource = interactionSource).value 0.dp
 
     Surface(
         onClick = onClick,
@@ -145,9 +145,9 @@ fun FloatingActionButton(
 @Composable
 @NonRestartableComposable
 private fun Surface(
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+    onLongClick: () -> Unit,
     enabled: Boolean = true,
     shape: Shape = RectangleShape,
     color: Color = MaterialTheme.colorScheme.surface,
@@ -179,7 +179,7 @@ private fun Surface(
                 )
                 .combinedClickable(
                     enabled = enabled,
-                    onClick = onClick,
+                    onClick = onClick?.let { onClick }?:{ },
                     onLongClick = onLongClick,
                     indication = indication,
                     interactionSource = interactionSource,

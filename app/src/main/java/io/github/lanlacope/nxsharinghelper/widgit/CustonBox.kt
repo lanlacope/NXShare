@@ -37,9 +37,9 @@ inline fun Box(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 inline fun Box(
-    noinline onClick: () -> Unit,
-    noinline onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    noinline onClick: (() -> Unit)? = null,
+    noinline onLongClick: () -> Unit,
     contentAlignment: Alignment = Alignment.TopStart,
     propagateMinConstraints: Boolean = false,
     content: @Composable BoxScope.() -> Unit
@@ -47,7 +47,7 @@ inline fun Box(
     androidx.compose.foundation.layout.Box(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick,
+                onClick = onClick?.let { onClick }?:{ },
                 onLongClick = onLongClick
             ),
 

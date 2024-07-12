@@ -34,9 +34,9 @@ inline fun Column(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 inline fun Column(
-    noinline onClick: () -> Unit,
-    noinline onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    noinline onClick: (() -> Unit)? = null,
+    noinline onLongClick: () -> Unit,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     content: @Composable ColumnScope.() -> Unit
@@ -44,7 +44,7 @@ inline fun Column(
     androidx.compose.foundation.layout.Column(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick,
+                onClick = onClick?.let { onClick }?:{ },
                 onLongClick = onLongClick
             ),
 

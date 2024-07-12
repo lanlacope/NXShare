@@ -34,9 +34,9 @@ inline fun Row(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 inline fun Row(
-    noinline onClick: () -> Unit,
-    noinline onLongClick: () -> Unit,
     modifier: Modifier = Modifier,
+    noinline onClick: (() -> Unit)? = null,
+    noinline onLongClick: () -> Unit,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     content: @Composable RowScope.() -> Unit
@@ -44,7 +44,7 @@ inline fun Row(
     androidx.compose.foundation.layout.Row(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick,
+                onClick = onClick?.let { onClick }?:{ },
                 onLongClick = onLongClick
             ),
         horizontalArrangement = horizontalArrangement,
