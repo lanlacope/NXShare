@@ -47,7 +47,7 @@ class FileReader(context: Context) : FileSelector(context) {
     // ファイルの表示用名
     fun getTypeNames(): List<String> {
         try {
-            val files = getTypeFiles()
+            val files = getMySetFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
                 jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
@@ -62,7 +62,7 @@ class FileReader(context: Context) : FileSelector(context) {
     fun getTypeNamesWithNone(): List<String> {
         val defaultType = listOf(SHARE_JSON_PROPATY.TYPE_NONE)
         try {
-            val files = getTypeFiles()
+            val files = getMySetFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
                 jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
@@ -77,7 +77,7 @@ class FileReader(context: Context) : FileSelector(context) {
         try {
             val ids = getGameId(fileNames)
             val typeName = getShareType(packageName)
-            val file = getTypeFileByTitle(typeName!!).getOrNull()
+            val file = getMySetFileByTitle(typeName!!).getOrNull()
 
             val rawJson = JSONObject(file!!.readText())
 

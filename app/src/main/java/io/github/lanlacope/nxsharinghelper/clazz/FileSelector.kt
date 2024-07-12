@@ -5,22 +5,22 @@ import org.json.JSONObject
 import java.io.File
 
 val FOLDER_THIS: String = "NXShare"
-val FOLDER_SHARE = "share"
+val FOLDER_SETTING = "Setting"
 val FILE_APP = "app.json"
-val FOLDER_GAME = "game"
+val FOLDER_MYSET = "myset"
 
 open class FileSelector(private val context: Context) {
 
     fun getSettingFolder(): File {
-        val file = File(context.filesDir, FOLDER_SHARE)
+        val file = File(context.getExternalFilesDir(null), FOLDER_SETTING)
         if (!file.exists()) {
             file.mkdir()
         }
         return file
     }
 
-    fun getTypeFolder(): File {
-        val file =  File(getSettingFolder(), FOLDER_GAME)
+    fun getMySetFolder(): File {
+        val file =  File(getSettingFolder(), FOLDER_MYSET)
         if (!file.exists()) {
             file.mkdir()
         }
@@ -35,14 +35,14 @@ open class FileSelector(private val context: Context) {
     }
 
     // マイセットファイルを個別取得
-    fun getTypeFile(fileName: String): File {
-        val file = File(getTypeFolder(), fileName)
+    fun getMySetFile(fileName: String): File {
+        val file = File(getMySetFolder(), fileName)
         file.createNewFile()
         return file
     }
 
-    fun getTypeFileByTitle(typeName: String): Result<File> {
-        val files = getTypeFiles()
+    fun getMySetFileByTitle(typeName: String): Result<File> {
+        val files = getMySetFiles()
         files.forEach { file ->
             val jsonObject = JSONObject(file.readText())
             if (jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE) == typeName) {
@@ -52,15 +52,15 @@ open class FileSelector(private val context: Context) {
         return Result.failure(Exception())
     }
 
-    fun createNewTypeFile(fileName: String): Result<File> {
+    fun createNewMySetFile(fileName: String): Result<File> {
         try {
-            val file = File(getTypeFolder(), fileName)
+            val file = File(getMySetFolder(), fileName)
             val isSucces = file.createNewFile()
 
             if (isSucces) {
                 return Result.success(file)
             } else {
-                return createNewTypeFile("${fileName}_")
+                return createNewMySetFile("${fileName}_")
             }
         } catch (e: Exception) {
             return Result.failure(e)
@@ -68,7 +68,7 @@ open class FileSelector(private val context: Context) {
     }
 
     // マイセットファイルを全て取得
-    fun getTypeFiles(): List<File> {
-        return getTypeFolder().listFiles()?.toList() ?: listOf()
+    fun getMySetFiles(): List<File> {
+        return getMySetFolder().listFiles()?.toList() ?: listOf()
     }
 }

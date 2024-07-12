@@ -9,13 +9,13 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 
-        val isExists = (getTypeFileByTitle(name).isSuccess || name == SHARE_JSON_PROPATY.TYPE_NONE)
+        val isExists = (getMySetFileByTitle(name).isSuccess || name == SHARE_JSON_PROPATY.TYPE_NONE)
         if (isExists) {
             return Result.failure(Exception())
         }
 
         val fileName = "myset_${getSimpleDate()}.json"
-        val createFileResult = createNewTypeFile(fileName)
+        val createFileResult = createNewMySetFile(fileName)
 
         if (createFileResult.isFailure){
             return Result.failure(Exception())
@@ -32,7 +32,7 @@ class FileEditor(context: Context) : FileSelector(context) {
     }
 
     fun removeMySet(fileName: String) {
-        val file = getTypeFile(fileName)
+        val file = getMySetFile(fileName)
         file.delete()
     }
 
@@ -41,7 +41,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         title: String,
         text: String
     ) {
-        val file = getTypeFile(fileName)
+        val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
         val lastTitle = try {
             jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
@@ -64,7 +64,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         text: String
     ): Result<GameInfo> {
 
-        val file = getTypeFile(fileName)
+        val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
@@ -94,7 +94,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         id: String,
         text: String
     ) {
-        val file = getTypeFile(fileName)
+        val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
@@ -118,7 +118,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         fileName: String,
         id: String
     ) {
-        val file = getTypeFile(fileName)
+        val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)

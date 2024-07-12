@@ -84,7 +84,7 @@ private fun MySetList(
 ) {
     val fileSelector = FileSelector(LocalContext.current)
     val files = remember {
-        mutableStateOf(fileSelector.getTypeFiles())
+        mutableStateOf(fileSelector.getMySetFiles())
     }
 
     Column(
