@@ -40,6 +40,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
+import io.github.lanlacope.nxsharinghelper.clazz.SHARE_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
@@ -293,7 +294,7 @@ private fun TypeSelector(
         )
 
         Text(
-            text = type,
+            text = if (type != SHARE_JSON_PROPATY.TYPE_NONE) type else stringResource(id = R.string.summart_type_nothing),
             maxLines = 1,
             minLines = 1,
             modifier = Modifier

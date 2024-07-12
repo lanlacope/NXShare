@@ -9,7 +9,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 
-        val isExists = getTypeFileByTitle(name).isSuccess
+        val isExists = (getTypeFileByTitle(name).isSuccess || name == SHARE_JSON_PROPATY.TYPE_NONE)
         if (isExists) {
             return Result.failure(Exception())
         }

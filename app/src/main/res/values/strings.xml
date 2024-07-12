@@ -61,6 +61,7 @@
 
     <string name="summary_app_enabled">Use this app</string>
     <string name="summary_app_type">MySet</string>
+    <string name="summart_type_nothing">Use Nothing</string>
     <string name="summary_myset_removed"
         translatable="false">
         Removed
