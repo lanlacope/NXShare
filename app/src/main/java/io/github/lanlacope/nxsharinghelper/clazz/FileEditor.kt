@@ -9,7 +9,8 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 
-        if (getTypeFileByTitle(name).isFailure) {
+        val isExists = getTypeFileByTitle(name).isSuccess
+        if (isExists) {
             return Result.failure(Exception())
         }
 
