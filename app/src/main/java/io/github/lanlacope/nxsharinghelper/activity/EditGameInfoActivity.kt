@@ -34,9 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,9 +51,11 @@ import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
+import io.github.lanlacope.nxsharinghelper.clazz.getGameId
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
+import io.github.lanlacope.nxsharinghelper.widgit.Box
 import java.io.File
 
 class EditGameInfoActivity : ComponentActivity() {
@@ -637,6 +641,7 @@ private fun EditGameInfoDialog(
     text: MutableState<String>
 ) {
     val fileEditor = FileEditor(LocalContext.current)
+    val clipboardManager = LocalClipboardManager.current
 
     var _title by remember {
         mutableStateOf(title.value)
@@ -672,19 +677,27 @@ private fun EditGameInfoDialog(
                         .wrapContentHeight()
                 ) {
                     DialogTitle(text = stringResource(id = R.string.hint_game_id))
-                    
-                    Text(
-                        text = id,
-                        maxLines = 1,
+
+                    Box(
+                        onLongClick = {
+                            clipboardManager.setText(AnnotatedString(id))
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .align(Alignment.Start)
                             .padding(
-                                start = 16.dp
+                                start = 12.dp
                             )
+                    ) {
+                        Text(
+                            text = id,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .wrapContentSize()
 
-                    )
+                        )
+                    }
 
                     DialogTextField(
                         text = title,
@@ -854,7 +867,7 @@ private fun LicensePreViewLight() {
                 shown = shown,
                 fileName = "name",
                 title = title,
-                id = "hash",
+                id = "XXXXXXXXXXXXXXXXXXXXXX",
                 text = text
             )
         }
@@ -876,7 +889,7 @@ private fun LicensePreViewLight2() {
             RemoveGameInfoDialog(
                 shown = shown,
                 fileName = "name",
-                id = "hash",
+                id = "XXXXXXXXXXXXXXXXXXXXXX",
                 isParentRemoved = shown
             )
         }
