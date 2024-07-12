@@ -2,12 +2,6 @@
     <string name="app_name">NXShare</string>
 
     <!-- Navigation Message -->
-    <string name="failed_decode_islocalhost">
-        Please scan first QR
-    </string>
-    <string name="failed_decode_notswitch">
-        Please scan QR in Switch
-    </string>
     <string name="failed_connect">
         Failed connecting Switch\n
         Please retry
@@ -20,27 +14,38 @@
         Now download\n
         Please wait…
     </string>
-    <string name="succesful_download">
-        Successful download!
-    </string>
-    <string name="failed_download">
-        Failed download…
-    </string>
-    <string name="saved_notification">
-        &#32;Files are saved
-    </string>
-    <string name="copy_clipboard">
-        Copy for Clipboard
-    </string>
+    <string name="succesful_download">Successful download!</string>
+    <string name="failed_download">Failed download…</string>
 
-    <!-- Permission Message -->
-    <string name="permission_share_photo">
-        Share photos
-    </string>
+    <!-- Toast Message -->
+    <string name="failed_decode_islocalhost">Please scan first QR</string>
+    <string name="failed_decode_notswitch">Please scan QR in Switch</string>
+    <string name="saved_notification">%1$d Files are saved</string>
+    <string name="copy_clipboard">Copy for Clipboard</string>
 
-    <string name="permission_share_movie">
-        Share movie
-    </string>
+    <!-- Chooser Message -->
+    <string name="permission_share_photo">Share photos
+    </string><string name="permission_share_movie">Share movie</string>
+
+    <!-- dialog message -->
+    <string name="dialog_poitive_apply">Apply</string>
+    <string name="dialog_poitive_add">Add</string>
+
+    <string name="dialog_title_comfirm">Confirm</string>
+    <string name="dialog_title_myset_add">Add New MySet</string>
+    <string name="dialog_title_myset_edit">Edit MySet</string>
+    <string name="dialog_title_game_add">Add New GameData</string>
+    <string name="dialog_title_game_edit">Edit GameData</string>
+
+    <string name="confirm_text_myset_remove">Delete this MySet?</string>
+    <string name="confirm_text_game_remove">Delete this GameID?</string>
+
+    <!-- TextField Message -->
+    <string name="hint_myset_title">MySet Title</string>
+    <string name="hint_myset_text">Text For All</string>
+    <string name="hint_game_title">Game Title</string>
+    <string name="hint_game_id">Game ID</string>
+    <string name="hint_game_text">Text For This</string>
 
     <!-- Setting -->
     <string name="setting_cover"
@@ -48,54 +53,16 @@
         Setting
     </string>
 
-    <string name="setting_app">
-        Apps
-    </string>
+    <!-- Setting Name -->
+    <string name="setting_app">Apps</string>
+    <string name="setting_myset">MySets</string>
 
-    <string name="summary_share_enabled">
-        Use this app
+    <string name="summary_app_enabled">Use this app</string>
+    <string name="summary_app_type">MySet</string>
+    <string name="summary_myset_removed"
+        translatable="false">
+        Removed
     </string>
-
-    <string name="summary_share_type">
-        My-Set
-    </string>
-
-    <string name="setting_myset">
-        My-Sets
-    </string>
-
-    <string name="button_apply">
-        Apply
-    </string>
-
-    <string name="button_add">
-        Add
-    </string>
-
-    <string name="confirm_title">
-        COMFIRM
-    </string>
-
-    <string name="confirm_text_myset">
-        Delete this My-Set?
-    </string>
-
-    <string name="confirm_text_game">
-        Delete this Game-ID?
-    </string>
-
-    <string name="hint_title">
-        Title
-    </string>
-
-    <string name="hint_id">
-        ID
-    </string>
-
-    <string name="hint_text">
-        Text
-    </string>
-
 
     <!-- License -->
     <string name="license_cover"

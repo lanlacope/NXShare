@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -101,7 +102,7 @@ private fun MySetList(
                 )
         ) {
             Text(
-                text = stringResource(id = R.string.button_add),
+                text = stringResource(id = R.string.dialog_poitive_add),
                 modifier = Modifier.wrapContentSize()
             )
         }
@@ -204,8 +205,12 @@ private fun MySet(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "Removed",
-                fontSize = 32.sp,
+                text = stringResource(id = R.string.summary_myset_removed),
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(
+                    color = Gray
+                ),
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.Center)
@@ -386,9 +391,11 @@ private fun AddMySetDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
+
                     DialogTextField(
                         text = title,
-                        hint = stringResource(id = R.string.hint_title)
+                        hint = stringResource(id = R.string.hint_myset_title)
                     )
 
                     TextButton(
@@ -404,7 +411,7 @@ private fun AddMySetDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.button_add),
+                            text = stringResource(id = R.string.dialog_poitive_add),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -440,29 +447,9 @@ private fun RemoveMySetDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.confirm_title),
-                        fontSize = 32.sp,
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = 10.dp)
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_comfirm))
 
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.confirm_text_myset),
-                        fontSize = 16.sp,
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(start = 16.dp)
-
-                    )
+                    DialogMessage(text = stringResource(id = R.string.confirm_text_myset_remove))
 
                     TextButton(
                         onClick = {
@@ -475,7 +462,7 @@ private fun RemoveMySetDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.button_apply),
+                            text = stringResource(id = R.string.dialog_poitive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -529,14 +516,16 @@ private fun EditCommonInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_edit))
+
                     DialogTextField(
                         text = title,
-                        hint = stringResource(id = R.string.hint_title)
+                        hint = stringResource(id = R.string.hint_myset_title)
                     )
 
                     DialogTextField(
                         text = text,
-                        hint = stringResource(id = R.string.hint_text),
+                        hint = stringResource(id = R.string.hint_myset_text),
                         singleLine = false
                     )
 
@@ -550,7 +539,7 @@ private fun EditCommonInfoDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.button_apply),
+                            text = stringResource(id = R.string.dialog_poitive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -596,19 +585,20 @@ private fun AddGameInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_game_add))
                     DialogTextField(
                         text = id,
-                        hint = stringResource(id = R.string.hint_id)
+                        hint = stringResource(id = R.string.hint_game_id)
                     )
 
                     DialogTextField(
                         text = title,
-                        hint = stringResource(id = R.string.hint_title)
+                        hint = stringResource(id = R.string.hint_game_title)
                     )
 
                     DialogTextField(
                         text = text,
-                        hint = stringResource(id = R.string.hint_text),
+                        hint = stringResource(id = R.string.hint_game_text),
                         singleLine = false
                     )
 
@@ -626,7 +616,7 @@ private fun AddGameInfoDialog(
 
                     ) {
                         Text(
-                            text = stringResource(id = R.string.button_add),
+                            text = stringResource(id = R.string.dialog_poitive_add),
                             modifier = Modifier
                                 .wrapContentSize()
 
@@ -681,26 +671,29 @@ private fun EditGameInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
+                    DialogTitle(text = stringResource(id = R.string.hint_game_id))
+                    
                     Text(
                         text = id,
-                        minLines = 1,
                         maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .align(Alignment.Start)
-                            .padding(all = 8.dp)
+                            .padding(
+                                start = 16.dp
+                            )
 
                     )
 
                     DialogTextField(
                         text = title,
-                        hint = stringResource(id = R.string.hint_title)
+                        hint = stringResource(id = R.string.hint_game_title)
                     )
 
                     DialogTextField(
                         text = text,
-                        hint = stringResource(id = R.string.hint_text),
+                        hint = stringResource(id = R.string.hint_game_text),
                         singleLine = false
                     )
 
@@ -714,7 +707,7 @@ private fun EditGameInfoDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.button_apply),
+                            text = stringResource(id = R.string.dialog_poitive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -751,29 +744,9 @@ private fun RemoveGameInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.confirm_title),
-                        fontSize = 32.sp,
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = 10.dp)
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_comfirm))
 
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.confirm_text_game),
-                        fontSize = 16.sp,
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(start = 16.dp)
-
-                    )
+                    DialogMessage(text = stringResource(id = R.string.confirm_text_game_remove))
 
                     TextButton(
                         onClick = {
@@ -786,7 +759,7 @@ private fun RemoveGameInfoDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.button_apply),
+                            text = stringResource(id = R.string.dialog_poitive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -795,6 +768,37 @@ private fun RemoveGameInfoDialog(
             }
         }
     }
+}
+
+@Composable
+private fun DialogTitle(
+    text: String
+) {
+    Text(
+        text = text,
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(all = 10.dp)
+
+    )
+}
+
+@Composable
+private fun DialogMessage(
+    text: String
+) {
+    Text(
+        text = text,
+        fontSize = 16.sp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(start = 16.dp)
+
+    )
 }
 
 @Composable
@@ -811,13 +815,13 @@ private fun DialogTextField(
         placeholder = {
             Text(
                 text = hint,
+                fontWeight = FontWeight.Bold,
                 style = TextStyle(
                     color = Gray
                 ),
                 modifier = Modifier.wrapContentSize()
             )
         },
-        minLines = 1,
         maxLines = maxLines,
         singleLine = singleLine,
         modifier = Modifier
@@ -879,23 +883,3 @@ private fun LicensePreViewLight2() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun LicensePreViewLight3() {
-    NXSharingHelperTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val shown = remember {
-                mutableStateOf(true)
-            }
-
-            RemoveMySetDialog(
-                shown = shown,
-                fileName = "name",
-                isParentRemoved = shown
-            )
-        }
-    }
-}

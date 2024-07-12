@@ -199,7 +199,7 @@ private fun PackageSetting(
 
             ) {
             Text(
-                text = stringResource(id = R.string.summary_share_enabled),
+                text = stringResource(id = R.string.summary_app_enabled),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier
@@ -236,7 +236,7 @@ private fun PackageSetting(
 
         ) {
             Text(
-                text = stringResource(id = R.string.summary_share_type),
+                text = stringResource(id = R.string.summary_app_type),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier

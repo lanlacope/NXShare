@@ -3,13 +3,7 @@
     <string name="app_name">NXシェア</string>
 
     <!-- Navigation Message -->
-    <string name="failed_decode_islocalhost">
-        一つ目のQRコードを読み取ってください
-    </string>
-        <string name="failed_decode_notswitch">
-        Switch内に表示されているQRコードを読み取ってください
-    </string>
-        <string name="failed_connect">
+    <string name="failed_connect">
         Switchと接続できませんでした\n
         もう一度試してください
     </string>
@@ -17,77 +11,47 @@
         接続中です\n
         しばらく待ってください
     </string>
-        <string name="waiting_download">
+    <string name="waiting_download">
         ダウンロード中です\n
         しばらく待ってください
     </string>
-        <string name="succesful_download">
-        ダウンロードに成功しました！
-    </string>
-    <string name="failed_download">
-        ダウンロードに失敗しました……
-    </string>
-    <string name="saved_notification">
-        件のファイルを保存しました
-    </string>
-    <string name="copy_clipboard">
-        クリップボードにコピーしました
-    </string>
+    <string name="succesful_download">ダウンロードに成功しました！</string>
+    <string name="failed_download">ダウンロードに失敗しました……</string>
 
-    <string name="permission_share_photo">
-        画像の共有
-    </string>
+    <!-- Navigation Message -->
+    <string name="failed_decode_islocalhost">一つ目のQRコードを読み取ってください</string>
+    <string name="failed_decode_notswitch">Switch内に表示されているQRコードを読み取ってください</string>
+    <string name="saved_notification">%1$d件のファイルを保存しました</string>
+    <string name="copy_clipboard">クリップボードにコピーしました</string>
 
-    <string name="permission_share_movie">
-        動画の共有
-    </string>
+    <!-- Chooser Message -->
+    <string name="permission_share_photo">画像の共有</string>
+    <string name="permission_share_movie">動画の共有</string>
 
-    <!-- Setting -->
-    <string name="setting_app">
-        アプリ
-    </string>
+    <!-- Dialog Message -->
+    <string name="dialog_poitive_apply">適用</string>
+    <string name="dialog_poitive_add">追加</string>
 
-    <string name="summary_share_enabled">
-        このアプリを使う
-    </string>
+    <string name="dialog_title_comfirm">確認</string>
+    <string name="dialog_title_myset_add">新規マイセット追加</string>
+    <string name="dialog_title_myset_edit">マイセット編集</string>
+    <string name="dialog_title_game_add">新規ゲーム追加</string>
+    <string name="dialog_title_game_edit">ゲーム情報編集</string>
 
-    <string name="summary_share_type">
-        マイセット
-    </string>
+    <string name="confirm_text_myset_remove">このマイセットを削除しますか？</string>
+    <string name="confirm_text_game_remove">このゲームIDを削除しますか？</string>
 
-    <string name="setting_myset">
-        マイセット
-    </string>
+    <!-- TextField Message -->
+    <string name="hint_myset_title">マイセット名</string>
+    <string name="hint_myset_text">共通テキスト</string>
+    <string name="hint_game_title">ゲーム名</string>
+    <string name="hint_game_id">ゲームID</string>
+    <string name="hint_game_text">個別テキスト</string>
 
-    <string name="button_apply">
-        適用
-    </string>
+    <!-- Setting Name -->
+    <string name="setting_app">アプリ</string>
+    <string name="setting_myset">マイセット</string>
 
-    <string name="button_add">
-        追加
-    </string>
-
-    <string name="confirm_title">
-        確認
-    </string>
-
-    <string name="confirm_text_myset">
-        このマイセットを削除しますか？
-    </string>
-
-    <string name="confirm_text_game">
-        このゲームIDを削除しますか？
-    </string>
-
-    <string name="hint_title">
-        タイトル
-    </string>
-
-    <string name="hint_id">
-        ID
-    </string>
-
-    <string name="hint_text">
-        テキスト
-    </string>
+    <string name="summary_app_enabled">このアプリを使う</string>
+    <string name="summary_app_type">マイセット</string>
 </resources>
