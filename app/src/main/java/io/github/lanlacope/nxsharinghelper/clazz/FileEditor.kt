@@ -55,7 +55,7 @@ class FileEditor(context: Context) : FileSelector(context) {
     fun addGameInfo(
         fileName: String,
         title: String,
-        hash: String,
+        id: String,
         text: String
     ): Result<GameInfo> {
 
@@ -66,13 +66,13 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         val gameData = JSONObject().apply {
             put(SHARE_JSON_PROPATY.GAME_TITLE, title)
-            put(SHARE_JSON_PROPATY.GAME_ID, hash)
+            put(SHARE_JSON_PROPATY.GAME_ID, id)
             put(SHARE_JSON_PROPATY.GAME_TEXT, text)
         }
 
         jsonArray.forEachIndexOnly { index ->
             val parsedData = jsonArray.getJSONObject(index)
-            if (parsedData.getString(SHARE_JSON_PROPATY.GAME_ID) == hash) {
+            if (parsedData.getString(SHARE_JSON_PROPATY.GAME_ID) == id) {
                 return Result.failure(Exception())
             }
         }
@@ -86,7 +86,7 @@ class FileEditor(context: Context) : FileSelector(context) {
     fun editGameInfo(
         fileName: String,
         title: String,
-        hash: String,
+        id: String,
         text: String
     ) {
         val file = getTypeFile(fileName)
@@ -96,7 +96,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
-            if (gameData.getString(SHARE_JSON_PROPATY.GAME_ID) == hash) {
+            if (gameData.getString(SHARE_JSON_PROPATY.GAME_ID) == id) {
                 gameData.apply {
                     put(SHARE_JSON_PROPATY.GAME_TITLE, title)
                     put(SHARE_JSON_PROPATY.GAME_TEXT, text)
@@ -111,7 +111,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun removeGameInfo(
         fileName: String,
-        hash: String
+        id: String
     ) {
         val file = getTypeFile(fileName)
         val jsonObject = JSONObject(file.readText())
@@ -120,7 +120,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
-            if (gameData.getString(SHARE_JSON_PROPATY.GAME_ID) == hash) {
+            if (gameData.getString(SHARE_JSON_PROPATY.GAME_ID) == id) {
                 jsonArray.remove(index)
                 jsonObject.put(SHARE_JSON_PROPATY.GAME_DATA, jsonArray)
                 file.writeText(jsonObject.toString())

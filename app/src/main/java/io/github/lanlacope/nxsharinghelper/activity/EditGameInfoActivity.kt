@@ -365,7 +365,7 @@ private fun AddMySetDialog(
 ) {
     val fileEditor = FileEditor(LocalContext.current)
 
-    var name by remember {
+    val title = remember {
         mutableStateOf("")
     }
 
@@ -386,33 +386,14 @@ private fun AddMySetDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    val TEXT_PADDING = 8.dp
-
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_title),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        maxLines = 1,
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
+                    DialogTextField(
+                        text = title,
+                        hint = stringResource(id = R.string.hint_title)
                     )
 
                     TextButton(
                         onClick = {
-                            val result = fileEditor.addMySet(name)
+                            val result = fileEditor.addMySet(title.value)
                             if (result.isSuccess) {
                                 files.value += result.getOrNull()!!
                                 shown.value = false
@@ -548,48 +529,15 @@ private fun EditCommonInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    val TEXT_PADDING = 8.dp
-                    OutlinedTextField(
-                        value = title.value,
-                        onValueChange = { title.value = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_title),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        maxLines = 1,
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
-
+                    DialogTextField(
+                        text = title,
+                        hint = stringResource(id = R.string.hint_title)
                     )
 
-                    OutlinedTextField(
-                        value = text.value,
-                        onValueChange = { text.value = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_text),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
+                    DialogTextField(
+                        text = text,
+                        hint = stringResource(id = R.string.hint_text),
+                        singleLine = false
                     )
 
                     TextButton(
@@ -621,13 +569,13 @@ private fun AddGameInfoDialog(
 ) {
     val fileEditor = FileEditor(LocalContext.current)
 
-    var title by remember {
+    val title = remember {
         mutableStateOf("")
     }
-    var id by remember {
+    val id = remember {
         mutableStateOf("")
     }
-    var text by remember {
+    val text = remember {
         mutableStateOf("")
     }
 
@@ -648,76 +596,25 @@ private fun AddGameInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    val TEXT_PADDING = 8.dp
-
-                    OutlinedTextField(
-                        value = id,
-                        onValueChange = { id = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_id),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        maxLines = 1,
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
-
+                    DialogTextField(
+                        text = id,
+                        hint = stringResource(id = R.string.hint_id)
                     )
 
-                    OutlinedTextField(
-                        value = title,
-                        onValueChange = { title = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_title),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        maxLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
-
+                    DialogTextField(
+                        text = title,
+                        hint = stringResource(id = R.string.hint_title)
                     )
 
-                    OutlinedTextField(
-                        value = text,
-                        onValueChange = { text = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_text),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
+                    DialogTextField(
+                        text = text,
+                        hint = stringResource(id = R.string.hint_text),
+                        singleLine = false
                     )
 
                     TextButton(
                         onClick = {
-                            val result = fileEditor.addGameInfo(fileName, title, id, text)
+                            val result = fileEditor.addGameInfo(fileName, title.value, id.value, text.value)
                             if (result.isSuccess) {
                                 games.value += result.getOrNull()!!
                                 shown.value = false
@@ -784,7 +681,6 @@ private fun EditGameInfoDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    val TEXT_PADDING = 8.dp
                     Text(
                         text = id,
                         minLines = 1,
@@ -793,50 +689,19 @@ private fun EditGameInfoDialog(
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
+                            .padding(all = 8.dp)
 
                     )
 
-                    OutlinedTextField(
-                        value = title.value,
-                        onValueChange = { title.value = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_title),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        maxLines = 1,
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
-
+                    DialogTextField(
+                        text = title,
+                        hint = stringResource(id = R.string.hint_title)
                     )
-                    OutlinedTextField(
-                        value = text.value,
-                        onValueChange = { text.value = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_text),
-                                style = TextStyle(
-                                    color = Gray
-                                ),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
+
+                    DialogTextField(
+                        text = text,
+                        hint = stringResource(id = R.string.hint_text),
+                        singleLine = false
                     )
 
                     TextButton(
@@ -930,6 +795,37 @@ private fun RemoveGameInfoDialog(
             }
         }
     }
+}
+
+@Composable
+private fun DialogTextField(
+    text: MutableState<String>,
+    hint: String,
+    singleLine: Boolean = true
+) {
+    val maxLines = if (singleLine) 1 else Int.MAX_VALUE
+
+    OutlinedTextField(
+        value = text.value,
+        onValueChange = { text.value = it },
+        placeholder = {
+            Text(
+                text = hint,
+                style = TextStyle(
+                    color = Gray
+                ),
+                modifier = Modifier.wrapContentSize()
+            )
+        },
+        minLines = 1,
+        maxLines = maxLines,
+        singleLine = singleLine,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(all = 8.dp)
+
+    )
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
