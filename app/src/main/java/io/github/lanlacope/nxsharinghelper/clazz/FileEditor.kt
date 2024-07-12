@@ -9,7 +9,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 
-        val fileName = "${removeStringsForFile(name)}.json"
+        val fileName = "myset_${getSimpleDate()}.json"
         val result = getNewTypeFile(fileName)
         val file = result.getOrNull()
 
@@ -118,7 +118,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         }
     }
 
-    fun changeShareEnabled(app: AppInfo, isEnable: Boolean) {
+    fun changeShareEnabled(packageName: String, isEnable: Boolean) {
         val file = getAppSettingFile()
         val jsonArray = try {
             JSONArray(file.readText())
@@ -130,7 +130,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
-            if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == app.packageName) {
+            if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == packageName) {
                 jsonObject.put(SHARE_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
                 jsonArray.put(index, jsonObject)
                 isFound = true
@@ -139,7 +139,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         if (!isFound) {
             val jsonObject = JSONObject().apply {
-                put(SHARE_JSON_PROPATY.PACKAGE_NAME, app.packageName)
+                put(SHARE_JSON_PROPATY.PACKAGE_NAME, packageName)
                 put(SHARE_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
             }
             jsonArray.put(jsonObject)
@@ -148,7 +148,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         file.writeText(jsonArray.toString())
     }
 
-    fun changeShareType (app: AppInfo, name: String) {
+    fun changeShareType (packageName: String, name: String) {
         val file = getAppSettingFile()
         val jsonArray = try {
             JSONArray(file.readText())
@@ -160,7 +160,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
-            if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == app.packageName) {
+            if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == packageName) {
                 jsonObject.put(SHARE_JSON_PROPATY.PACKAGE_TYPE, name)
                 jsonArray.put(index, jsonObject)
                 isFound = true
@@ -170,7 +170,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         if (!isFound) {
             val jsonObject = JSONObject().apply {
-                put(SHARE_JSON_PROPATY.PACKAGE_NAME, app.packageName)
+                put(SHARE_JSON_PROPATY.PACKAGE_NAME, packageName)
                 put(SHARE_JSON_PROPATY.PACKAGE_TYPE, name)
             }
             jsonArray.put(jsonObject)

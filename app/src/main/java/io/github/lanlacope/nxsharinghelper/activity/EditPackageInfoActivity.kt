@@ -93,7 +93,7 @@ private fun PackageList() {
             }
             if (isExpanded) {
                 PackageSetting(
-                    app = app
+                    packageName = app.name
                 )
             }
         }
@@ -119,7 +119,7 @@ private fun PackageCard(app: AppInfo) {
 
         Image(
             bitmap = app.icon.toBitmap().asImageBitmap(),
-            contentDescription = app.appName,
+            contentDescription = app.name,
             modifier = Modifier
                 .constrainAs(icon) {
                     start.linkTo(parent.start)
@@ -133,7 +133,7 @@ private fun PackageCard(app: AppInfo) {
         )
 
         Text(
-            text = app.appName,
+            text = app.name,
             fontSize = 24.sp,
             minLines = 1,
             maxLines = 1,
@@ -168,7 +168,7 @@ private fun PackageCard(app: AppInfo) {
 
 @Composable
 private fun PackageSetting(
-    app: AppInfo
+    packageName: String
 ) {
     val context = LocalContext.current
 
@@ -179,7 +179,7 @@ private fun PackageSetting(
         val TEXT_PADDING = 10.dp
 
         val fileEditor = FileEditor(context)
-        val shareInfo = ShareInfo(app, context)
+        val shareInfo = ShareInfo(packageName, context)
 
         var cheacked by remember {
             mutableStateOf(shareInfo.shareEnabled)
@@ -188,7 +188,7 @@ private fun PackageSetting(
 
         val onSwitchChange = {
                 cheacked = !cheacked
-                fileEditor.changeShareEnabled(app, cheacked)
+                fileEditor.changeShareEnabled(packageName, cheacked)
             }
 
         Box(
@@ -254,7 +254,7 @@ private fun PackageSetting(
 
             typeNames.forEach { type ->
                 TypeSelector(
-                    app = app,
+                    packageName = packageName,
                     type = type,
                     selectedType = selectedType,
                 )
@@ -265,14 +265,14 @@ private fun PackageSetting(
 
 @Composable
 private fun TypeSelector(
-    app: AppInfo,
+    packageName: String,
     type: String,
     selectedType: MutableState<String>
 ) {
     val fileEditor = FileEditor(LocalContext.current)
     val onClick = {
         selectedType.value = type
-        fileEditor.changeShareType(app, type)
+        fileEditor.changeShareType(packageName, type)
     }
 
     Row(

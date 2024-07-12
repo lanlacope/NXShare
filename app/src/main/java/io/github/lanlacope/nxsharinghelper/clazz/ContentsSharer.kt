@@ -88,8 +88,8 @@ class ContentsSharer(val context: Context) {
             val chooserIntent = Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filterNot { sendablePackage ->
-                val appInfo = AppInfo(sendablePackage, packageManager)
-                fileReader.getShareEnabled(appInfo)
+                val packageName = sendablePackage.activityInfo.packageName
+                fileReader.getShareEnabled(packageName)
             }
 
             val excludeComponents = filteredPackages.map { filteredPackage ->
@@ -110,8 +110,8 @@ class ContentsSharer(val context: Context) {
             val chooserIntent = Intent.createChooser(Intent(), title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filter { sendablePackage ->
-                val appInfo = AppInfo(sendablePackage, packageManager)
-                !fileReader.getShareEnabled(appInfo)
+                val packageName = sendablePackage.activityInfo.packageName
+                !fileReader.getShareEnabled(packageName)
             }
 
             val filteredIntents = filteredPackages.map { filteredPackage ->

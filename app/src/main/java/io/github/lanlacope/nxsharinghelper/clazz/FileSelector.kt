@@ -60,7 +60,7 @@ open class FileSelector(private val context: Context) {
             if (isSucces) {
                 return Result.success(file)
             } else {
-                return getNewTypeFile("_${fileName}")
+                return getNewTypeFile("${fileName}_")
             }
         } catch (e: Exception) {
             return Result.failure(e)

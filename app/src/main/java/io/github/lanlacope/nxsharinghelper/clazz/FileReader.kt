@@ -7,13 +7,13 @@ import java.io.File
 
 class FileReader(context: Context) : FileSelector(context) {
 
-    fun getShareEnabled(appInfo: AppInfo): Boolean {
+    fun getShareEnabled(packageName: String): Boolean {
         try {
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
             jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
-                if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == appInfo.packageName) {
+                if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == packageName) {
                     return jsonObject.getBoolean(SHARE_JSON_PROPATY.PAKCAGE_ENABLED)
                 }
             }
@@ -23,23 +23,7 @@ class FileReader(context: Context) : FileSelector(context) {
         return false
     }
 
-    fun getShareType(appInfo: AppInfo): String? {
-        try {
-            val file = getAppSettingFile()
-            val jsonArray = JSONArray(file.readText())
-            jsonArray.forEachIndexOnly { index ->
-                val jsonObject = jsonArray.getJSONObject(index)
-                if (jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_NAME) == appInfo.packageName) {
-                    return jsonObject.getString(SHARE_JSON_PROPATY.PACKAGE_TYPE)
-                }
-            }
-        } catch (e: Exception) {
-            return null
-        }
-        return null
-    }
-
-    fun getShareType(packageName: String?): String? {
+    fun getShareType(packageName: String): String? {
         try {
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
@@ -54,7 +38,6 @@ class FileReader(context: Context) : FileSelector(context) {
         }
         return null
     }
-
 
     fun getTypeName(file: File): String {
         val jsonObject = JSONObject(file.readText())

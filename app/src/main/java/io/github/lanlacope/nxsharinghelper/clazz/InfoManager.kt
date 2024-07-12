@@ -1,27 +1,27 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import org.json.JSONObject
 import java.io.File
 
 data class AppInfo(
-    private val resolveInfo: ResolveInfo,
+    private val applicationInfo: ApplicationInfo,
     private val packageManager: PackageManager,
 ) {
-    val appName = resolveInfo.loadLabel(packageManager).toString()
-    val packageName = resolveInfo.activityInfo?.packageName ?: "com.example.com"
-    val icon = resolveInfo.loadIcon(packageManager)
+    val name = applicationInfo.loadLabel(packageManager).toString()
+    val icon = applicationInfo.loadIcon(packageManager)
+    val packageName = applicationInfo.packageName
 }
 
 data class ShareInfo(
-    private val appInfo: AppInfo,
+    private val packageName: String,
     private val context: Context
 ) {
     private val fileReader = FileReader(context)
-    val shareEnabled = fileReader.getShareEnabled(appInfo)
-    val type = fileReader.getShareType(appInfo) ?: SHARE_JSON_PROPATY.TYPE_NONE
+    val shareEnabled = fileReader.getShareEnabled(packageName)
+    val type = fileReader.getShareType(packageName) ?: SHARE_JSON_PROPATY.TYPE_NONE
     val types = fileReader.getTypeNamesWithNone()
 }
 
@@ -80,10 +80,8 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         }.distinct()
 
         val appInfo = parsedPackageNames.map { packageName ->
-            val resolveInfo = allPackages.first { rawPackage ->
-                rawPackage.activityInfo.packageName == packageName
-            }
-            AppInfo(resolveInfo, packageManager)
+            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+            AppInfo(applicationInfo, packageManager)
         }
 
         return appInfo
