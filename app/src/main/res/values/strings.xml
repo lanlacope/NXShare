@@ -57,11 +57,11 @@
     </string>
 
     <string name="summary_share_type">
-        Myset
+        My-Set
     </string>
 
     <string name="setting_myset">
-        MySets
+        My-Sets
     </string>
 
     <string name="button_apply">
@@ -72,8 +72,16 @@
         Add
     </string>
 
-    <string name="confirm_delete">
-        Delete it?
+    <string name="confirm_title">
+        COMFIRM
+    </string>
+
+    <string name="confirm_text_myset">
+        Delete this My-Set?
+    </string>
+
+    <string name="confirm_text_game">
+        Delete this Game-ID?
     </string>
 
     <string name="hint_title">

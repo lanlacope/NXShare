@@ -35,11 +35,11 @@
     </string>
 
     <string name="permission_share_photo">
-        Share photos
+        画像の共有
     </string>
 
     <string name="permission_share_movie">
-        Share movie
+        動画の共有
     </string>
 
     <!-- Setting -->
@@ -67,8 +67,16 @@
         追加
     </string>
 
-    <string name="confirm_delete">
-        削除しますか？
+    <string name="confirm_title">
+        確認
+    </string>
+
+    <string name="confirm_text_myset">
+        このマイセットを削除しますか？
+    </string>
+
+    <string name="confirm_text_game">
+        このゲームIDを削除しますか？
     </string>
 
     <string name="hint_title">

@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,6 +48,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
+import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
 import java.io.File
@@ -393,10 +394,15 @@ private fun AddMySetDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_title),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
                         minLines = 1,
+                        maxLines = 1,
+                        singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -448,22 +454,32 @@ private fun RemoveMySetDialog(
                     .wrapContentSize()
 
             ) {
-                val TEXT_PADDING = 30.dp
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.confirm_delete),
+                        text = stringResource(id = R.string.confirm_title),
                         fontSize = 32.sp,
-                        textAlign = TextAlign.Center,
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .align(Alignment.TopCenter)
-                            .padding(all = TEXT_PADDING)
+                            .align(Alignment.Start)
+                            .padding(all = 10.dp)
+
+                    )
+
+                    Text(
+                        text = stringResource(id = R.string.confirm_text_myset),
+                        fontSize = 16.sp,
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp)
 
                     )
 
@@ -475,7 +491,7 @@ private fun RemoveMySetDialog(
                         },
                         modifier = Modifier
                             .wrapContentSize()
-                            .align(Alignment.BottomEnd)
+                            .align(Alignment.End)
                     ) {
                         Text(
                             text = stringResource(id = R.string.button_apply),
@@ -539,10 +555,15 @@ private fun EditCommonInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_title),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
                         minLines = 1,
+                        maxLines = 1,
+                        singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -557,6 +578,9 @@ private fun EditCommonInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_text),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -632,10 +656,15 @@ private fun AddGameInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_id),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
                         minLines = 1,
+                        maxLines = 1,
+                        singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -650,10 +679,14 @@ private fun AddGameInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_title),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
                         minLines = 1,
+                        maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -668,6 +701,9 @@ private fun AddGameInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_text),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -767,10 +803,15 @@ private fun EditGameInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_title),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
                         minLines = 1,
+                        maxLines = 1,
+                        singleLine = true,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -784,6 +825,9 @@ private fun EditGameInfoDialog(
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.hint_text),
+                                style = TextStyle(
+                                    color = Gray
+                                ),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -837,22 +881,32 @@ private fun RemoveGameInfoDialog(
                     .wrapContentSize()
 
             ) {
-                val TEXT_PADDING = 30.dp
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.confirm_delete),
+                        text = stringResource(id = R.string.confirm_title),
                         fontSize = 32.sp,
-                        textAlign = TextAlign.Center,
                         minLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .align(Alignment.TopCenter)
-                            .padding(all = TEXT_PADDING)
+                            .align(Alignment.Start)
+                            .padding(all = 10.dp)
+
+                    )
+
+                    Text(
+                        text = stringResource(id = R.string.confirm_text_game),
+                        fontSize = 16.sp,
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(start = 16.dp)
 
                     )
 
@@ -864,7 +918,7 @@ private fun RemoveGameInfoDialog(
                         },
                         modifier = Modifier
                             .wrapContentSize()
-                            .align(Alignment.BottomEnd)
+                            .align(Alignment.End)
                     ) {
                         Text(
                             text = stringResource(id = R.string.button_apply),
@@ -923,6 +977,27 @@ private fun LicensePreViewLight2() {
                 shown = shown,
                 fileName = "name",
                 id = "hash",
+                isParentRemoved = shown
+            )
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun LicensePreViewLight3() {
+    NXSharingHelperTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            val shown = remember {
+                mutableStateOf(true)
+            }
+
+            RemoveMySetDialog(
+                shown = shown,
+                fileName = "name",
                 isParentRemoved = shown
             )
         }
