@@ -179,7 +179,7 @@ private fun Surface(
                 )
                 .combinedClickable(
                     enabled = enabled,
-                    onClick = onClick?.let { onClick }?:{ },
+                    onClick = onClick?: { },
                     onLongClick = onLongClick,
                     indication = indication,
                     interactionSource = interactionSource,

@@ -44,7 +44,7 @@ inline fun Row(
     androidx.compose.foundation.layout.Row(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick?.let { onClick }?:{ },
+                onClick = onClick?: { },
                 onLongClick = onLongClick
             ),
         horizontalArrangement = horizontalArrangement,

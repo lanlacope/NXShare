@@ -44,7 +44,7 @@ inline fun Column(
     androidx.compose.foundation.layout.Column(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick?.let { onClick }?:{ },
+                onClick = onClick?: { },
                 onLongClick = onLongClick
             ),
 

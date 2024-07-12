@@ -47,7 +47,7 @@ inline fun Box(
     androidx.compose.foundation.layout.Box(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick?.let { onClick }?:{ },
+                onClick = onClick?: { },
                 onLongClick = onLongClick
             ),
 
