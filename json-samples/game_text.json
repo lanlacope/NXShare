@@ -1,15 +1,15 @@
 {
-  "DataName": "このセットの名前",
+  "CommonTitle": "このセットの名前",
   "CommonText": "全ゲーム共通のテキスト",
   "GameData": [
     {
       "GameTitle": "THE ゲーム",
-      "GameHash": "XXXXXXXXXX",
+      "GameID": "XXXXXXXXXX",
       "GameText": "このテキストがコピーされるよ！"
     },
     {
       "GameTitle": "ゲームのタイトル",
-      "GameHash": "ゲームのハッシュ値",
+      "GameID": "ゲームのID",
       "GameText": "そのゲーム専用のテキスト"
     }
   ]

@@ -18,12 +18,17 @@ class FileEditor(context: Context) : FileSelector(context) {
         }
 
         val jsonObject = JSONObject().apply {
-            put(SHARE_JSON_PROPATY.DATA_NAME, name)
+            put(SHARE_JSON_PROPATY.COMMON_TITLE, name)
             put(SHARE_JSON_PROPATY.COMMON_TEXT, "")
             put(SHARE_JSON_PROPATY.GAME_DATA, JSONArray())
         }
         file!!.writeText(jsonObject.toString())
         return Result.success(file)
+    }
+
+    fun removeMySet(fileName: String) {
+        val file = getTypeFile(fileName)
+        file.delete()
     }
 
     fun editCommonInfo(
@@ -50,13 +55,13 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         val gameData = JSONObject().apply {
             put(SHARE_JSON_PROPATY.GAME_TITLE, title)
-            put(SHARE_JSON_PROPATY.GAME_HASH, hash)
+            put(SHARE_JSON_PROPATY.GAME_ID, hash)
             put(SHARE_JSON_PROPATY.GAME_TEXT, text)
         }
 
         jsonArray.forEachIndexOnly { index ->
             val parsedData = jsonArray.getJSONObject(index)
-            if (parsedData.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
+            if (parsedData.getString(SHARE_JSON_PROPATY.GAME_ID) == hash) {
                 return Result.failure(Exception())
             }
         }
@@ -80,16 +85,37 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
-            if (gameData.getString(SHARE_JSON_PROPATY.GAME_HASH) == hash) {
+            if (gameData.getString(SHARE_JSON_PROPATY.GAME_ID) == hash) {
                 gameData.apply {
                     put(SHARE_JSON_PROPATY.GAME_TITLE, title)
                     put(SHARE_JSON_PROPATY.GAME_TEXT, text)
                 }
                 jsonArray.put(index, gameData)
+                jsonObject.put(SHARE_JSON_PROPATY.GAME_DATA, jsonArray)
+                file.writeText(jsonObject.toString())
+                return
             }
         }
-        jsonObject.put(SHARE_JSON_PROPATY.GAME_DATA, jsonArray)
-        file.writeText(jsonObject.toString())
+    }
+
+    fun removeGameInfo(
+        fileName: String,
+        hash: String
+    ) {
+        val file = getTypeFile(fileName)
+        val jsonObject = JSONObject(file.readText())
+
+        val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
+
+        jsonArray.forEachIndexOnly { index ->
+            val gameData = jsonArray.getJSONObject(index)
+            if (gameData.getString(SHARE_JSON_PROPATY.GAME_ID) == hash) {
+                jsonArray.remove(index)
+                jsonObject.put(SHARE_JSON_PROPATY.GAME_DATA, jsonArray)
+                file.writeText(jsonObject.toString())
+                return
+            }
+        }
     }
 
     fun changeShareEnabled(app: AppInfo, isEnable: Boolean) {
@@ -138,6 +164,7 @@ class FileEditor(context: Context) : FileSelector(context) {
                 jsonObject.put(SHARE_JSON_PROPATY.PACKAGE_TYPE, name)
                 jsonArray.put(index, jsonObject)
                 isFound = true
+                return@forEachIndexOnly
             }
         }
 

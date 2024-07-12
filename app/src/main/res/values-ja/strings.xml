@@ -67,12 +67,16 @@
         追加
     </string>
 
+    <string name="confirm_delete">
+        削除しますか？
+    </string>
+
     <string name="hint_title">
         タイトル
     </string>
 
-    <string name="hint_hash">
-        ハッシュ
+    <string name="hint_id">
+        ID
     </string>
 
     <string name="hint_text">

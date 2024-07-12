@@ -4,6 +4,11 @@ import android.content.Context
 import org.json.JSONObject
 import java.io.File
 
+val FOLDER_THIS: String = "NXShare"
+val FOLDER_SHARE = "share"
+val FILE_APP = "app.json"
+val FOLDER_GAME = "game"
+
 open class FileSelector(private val context: Context) {
 
     fun getSettingFolder(): File {
@@ -36,11 +41,11 @@ open class FileSelector(private val context: Context) {
         return file
     }
 
-    fun getTypeFileByType(typeName: String): File? {
+    fun getTypeFileByTitle(typeName: String): File? {
         val files = getTypeFiles()
         files.forEach { file ->
             val jsonObject = JSONObject(file.readText())
-            if (jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME) == typeName) {
+            if (jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE) == typeName) {
                 return file
             }
         }
@@ -48,13 +53,17 @@ open class FileSelector(private val context: Context) {
     }
 
     fun getNewTypeFile(fileName: String): Result<File> {
-        val file = File(getTypeFolder(), fileName)
-        val isSucces = file.createNewFile()
+        try {
+            val file = File(getTypeFolder(), fileName)
+            val isSucces = file.createNewFile()
 
-        if (isSucces) {
-            return Result.success(file)
-        } else {
-            return Result.failure(Exception())
+            if (isSucces) {
+                return Result.success(file)
+            } else {
+                return getNewTypeFile("_${fileName}")
+            }
+        } catch (e: Exception) {
+            return Result.failure(e)
         }
     }
 

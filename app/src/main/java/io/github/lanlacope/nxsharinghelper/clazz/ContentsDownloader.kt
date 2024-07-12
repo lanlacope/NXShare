@@ -10,6 +10,12 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
+data class DownloadData(
+    val fileType: String = "",
+    val consoleName: String = "",
+    val fileNames: List<String> = listOf()
+)
+
 class ContentsDownloader(val context: Context) {
 
     var downloadData = DownloadData()

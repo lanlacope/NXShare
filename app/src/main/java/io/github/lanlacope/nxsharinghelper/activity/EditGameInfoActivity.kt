@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -115,7 +116,7 @@ private fun MySetList(
             )
         }
 
-        MySetListDialog(
+        AddMySetDialog(
             shown = shown,
             files = files
         )
@@ -123,7 +124,241 @@ private fun MySetList(
 }
 
 @Composable
-private fun MySetListDialog(
+private fun MySet(
+    file: File
+) {
+    val isRemoved = remember {
+        mutableStateOf(!file.exists())
+    }
+
+    if (!isRemoved.value) {
+        val infoManager = InfoManager(LocalContext.current)
+        val common by remember {
+            mutableStateOf(infoManager.getCommonInfo(file))
+        }
+        val games = remember {
+            mutableStateOf(infoManager.getGameInfo(file))
+        }
+
+        val shownAddDialog = remember {
+            mutableStateOf(false)
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+                    MySetCommon(
+                        common = common,
+                        fileName = file.name,
+                        isParentRemoved = isRemoved
+                    )
+                }
+                items(games.value) { game ->
+                    MySetItem(
+                        gameInfo = game,
+                        fileName = file.name
+                    )
+                }
+            }
+
+            val FAB_PADDING = 30.dp
+
+            FloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.secondary,
+                onClick = {
+                    shownAddDialog.value = true
+                },
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(
+                        end = FAB_PADDING,
+                        bottom = FAB_PADDING
+                    )
+                    .align(Alignment.BottomEnd)
+
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_add_24),
+                    contentDescription = "Add",
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(all = 8.dp)
+
+                )
+            }
+        }
+
+        AddGameInfoDialog(
+            shown = shownAddDialog,
+            fileName = file.name,
+            games = games
+        )
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "Removed",
+                fontSize = 32.sp,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.Center)
+
+            )
+        }
+    }
+}
+
+@Composable
+private fun MySetCommon(
+    common: CommonInfo,
+    fileName: String,
+    isParentRemoved: MutableState<Boolean>
+) {
+    val shownEditDialog = remember {
+        mutableStateOf(false)
+    }
+    val shownRemoveDialog = remember {
+        mutableStateOf(false)
+    }
+
+    val title = remember {
+        mutableStateOf(common.title)
+    }
+
+    val text = remember {
+        mutableStateOf(common.text)
+    }
+
+    Column(
+        onClick = {
+            shownEditDialog.value = true
+        },
+        onLongClick = {
+            shownRemoveDialog.value = true
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+
+    ) {
+        Text(
+            text = title.value,
+            fontSize = 24.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(Alignment.Start)
+        )
+        Text(
+            text = text.value,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(Alignment.Start)
+        )
+    }
+
+    EditCommonInfoDialog(
+        shown = shownEditDialog,
+        fileName = fileName,
+        title = title,
+        text = text
+    )
+
+    RemoveMySetDialog(
+        shown = shownRemoveDialog,
+        fileName = fileName,
+        isParentRemoved = isParentRemoved
+    )
+}
+
+
+
+@Composable
+private fun MySetItem(
+    gameInfo: GameInfo,
+    fileName: String
+) {
+    val title = remember {
+        mutableStateOf(gameInfo.title)
+    }
+    val id = gameInfo.id
+
+    val text = remember {
+        mutableStateOf(gameInfo.text)
+    }
+
+    val isRemoved = remember {
+        mutableStateOf(false)
+    }
+
+    val shownEditDialog = remember {
+        mutableStateOf(false)
+    }
+
+    val shownRemoveDialog = remember {
+        mutableStateOf(false)
+    }
+
+    if (!isRemoved.value) {
+        Column(
+            onClick = {
+                shownEditDialog.value = true
+            },
+            onLongClick = {
+                shownRemoveDialog.value = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+
+
+        ) {
+            Text(
+                text = title.value,
+                fontSize = 24.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .align(Alignment.Start)
+            )
+            Text(
+                text = text.value,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .align(Alignment.Start)
+
+            )
+        }
+    }
+
+    EditGameInfoDialog(
+        shown = shownEditDialog,
+        fileName = fileName,
+        title = title,
+        id = id,
+        text = text
+    )
+
+    RemoveGameInfoDialog(
+        shown = shownRemoveDialog,
+        fileName = fileName,
+        id = id,
+        isParentRemoved = isRemoved
+    )
+}
+
+@Composable
+private fun AddMySetDialog(
     shown: MutableState<Boolean>,
     files: MutableState<List<File>>
 ) {
@@ -194,75 +429,168 @@ private fun MySetListDialog(
 }
 
 @Composable
-private fun MySet(
-    file: File
+private fun RemoveMySetDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    isParentRemoved: MutableState<Boolean>
 ) {
-    val infoManager = InfoManager(LocalContext.current)
-    val common = infoManager.getCommonInfo(file)
-    val games = remember {
-        mutableStateOf(infoManager.getGameInfo(file))
-    }
+    val fileEditor = FileEditor(LocalContext.current)
 
-    val shown = remember {
-        mutableStateOf(false)
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item {
-                MySetCommon(
-                    common = common,
-                    fileName = file.name
-                )
-            }
-            items(games.value) { game ->
-                MySetItem(
-                    gameInfo = game,
-                    fileName = file.name
-                )
-            }
-        }
-
-        val FAB_PADDING = 30.dp
-
-        FloatingActionButton(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            onClick = {
-                shown.value = true
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
             },
-            modifier = Modifier
-                .wrapContentSize()
-                .padding(
-                    end = FAB_PADDING,
-                    bottom = FAB_PADDING
-                )
-                .align(Alignment.BottomEnd)
-
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.baseline_add_24),
-                contentDescription = "Add",
+            Surface(
+                color = MaterialTheme.colorScheme.background,
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(all = 8.dp)
 
-            )
+            ) {
+                val TEXT_PADDING = 30.dp
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.confirm_delete),
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center,
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.TopCenter)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+
+                    TextButton(
+                        onClick = {
+                            shown.value = false
+                            fileEditor.removeMySet(fileName)
+                            isParentRemoved.value = true
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.BottomEnd)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.button_apply),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
+            }
         }
     }
-    
-    MySetDialog(
-        shown = shown, 
-        fileName = file.name, 
-        games = games
-    ) 
 }
 
 @Composable
-private fun MySetDialog(
+private fun EditCommonInfoDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    title: MutableState<String>,
+    text: MutableState<String>
+) {
+    val fileEditor = FileEditor(LocalContext.current)
+
+    var _title by remember {
+        mutableStateOf(title.value)
+    }
+
+    var _text by remember {
+        mutableStateOf(text.value)
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            _title = title.value
+            _text = text.value
+        }
+    }
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+                title.value = _title
+                text.value = _text
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    val TEXT_PADDING = 8.dp
+                    OutlinedTextField(
+                        value = title.value,
+                        onValueChange = { title.value = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.hint_title),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+
+                    OutlinedTextField(
+                        value = text.value,
+                        onValueChange = { text.value = it },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.hint_text),
+                                modifier = Modifier.wrapContentSize()
+                            )
+                        },
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.Start)
+                            .padding(all = TEXT_PADDING)
+                    )
+
+                    TextButton(
+                        onClick = {
+                            shown.value = false
+                            fileEditor.editCommonInfo(fileName, text.value)
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.End)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.button_apply),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
     games:  MutableState<List<GameInfo>>
@@ -272,7 +600,7 @@ private fun MySetDialog(
     var title by remember {
         mutableStateOf("")
     }
-    var hash by remember {
+    var id by remember {
         mutableStateOf("")
     }
     var text by remember {
@@ -299,11 +627,11 @@ private fun MySetDialog(
                     val TEXT_PADDING = 8.dp
 
                     OutlinedTextField(
-                        value = hash,
-                        onValueChange = { hash = it },
+                        value = id,
+                        onValueChange = { id = it },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.hint_hash),
+                                text = stringResource(id = R.string.hint_id),
                                 modifier = Modifier.wrapContentSize()
                             )
                         },
@@ -353,7 +681,7 @@ private fun MySetDialog(
 
                     TextButton(
                         onClick = {
-                            val result = fileEditor.addGameInfo(fileName, title, hash, text)
+                            val result = fileEditor.addGameInfo(fileName, title, id, text)
                             if (result.isSuccess) {
                                 games.value += result.getOrNull()!!
                                 shown.value = false
@@ -378,217 +706,11 @@ private fun MySetDialog(
 }
 
 @Composable
-private fun MySetCommon(
-    common: CommonInfo,
-    fileName: String
-) {
-    val shown = remember {
-        mutableStateOf(false)
-    }
-    val text = remember {
-        mutableStateOf(common.text)
-    }
-
-    Column(
-        onClick = {
-            shown.value = true
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-
-    ) {
-        Text(
-            text = common.name,
-            fontSize = 24.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-        )
-        Text(
-            text = text.value,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-        )
-    }
-
-    MySetCommonDialog(
-        shown = shown,
-        fileName = fileName,
-        text = text
-    )
-}
-
-@Composable
-private fun MySetCommonDialog(
-    shown: MutableState<Boolean>,
-    fileName: String,
-    text: MutableState<String>
-) {
-    val fileEditor = FileEditor(LocalContext.current)
-
-    /*
-    var _title by remember {
-        mutableStateOf(title.value)
-    }
-
-     */
-    var _text by remember {
-        mutableStateOf(text.value)
-    }
-
-    LaunchedEffect(shown.value) {
-        if (shown.value) {
-            // _title = title.value
-            _text = text.value
-        }
-    }
-
-    if (shown.value) {
-        Dialog(
-            onDismissRequest = {
-                shown.value = false
-                //title.value = _title
-                text.value = _text
-            },
-        ) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier
-                    .wrapContentSize()
-
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    val TEXT_PADDING = 8.dp
-                    /*
-                    OutlinedTextField(
-                        value = title.value,
-                        onValueChange = { title.value = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.summary_title),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
-
-                    )
-
-                     */
-                    OutlinedTextField(
-                        value = text.value,
-                        onValueChange = { text.value = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.hint_text),
-                                modifier = Modifier.wrapContentSize()
-                            )
-                        },
-                        minLines = 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.Start)
-                            .padding(all = TEXT_PADDING)
-                    )
-
-                    TextButton(
-                        onClick = {
-                            shown.value = false
-                            fileEditor.editCommonInfo(fileName, text.value)
-                        },
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .align(Alignment.End)
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.button_apply),
-                            modifier = Modifier
-                                .wrapContentSize()
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun MySetItem(
-    gameInfo: GameInfo,
-    fileName: String
-) {
-    val title = remember {
-        mutableStateOf(gameInfo.title)
-    }
-    val hash = gameInfo.hash
-
-    val text = remember {
-        mutableStateOf(gameInfo.text)
-    }
-
-    val shown = remember {
-        mutableStateOf(false)
-    }
-
-    Column(
-        onClick = {
-            shown.value = true
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-
-
-    ) {
-        Text(
-            text = title.value,
-            fontSize = 24.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-        )
-        Text(
-            text = text.value,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-
-        )
-    }
-
-    MySetItemDialog(
-        shown = shown,
-        fileName = fileName,
-        title = title,
-        hash = hash,
-        text = text
-    )
-}
-
-@Composable
-private fun MySetItemDialog(
+private fun EditGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
     title: MutableState<String>,
-    hash: String,
+    id: String,
     text: MutableState<String>
 ) {
     val fileEditor = FileEditor(LocalContext.current)
@@ -628,8 +750,9 @@ private fun MySetItemDialog(
                 ) {
                     val TEXT_PADDING = 8.dp
                     Text(
-                        text = hash,
+                        text = id,
                         minLines = 1,
+                        maxLines = 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -675,11 +798,73 @@ private fun MySetItemDialog(
                     TextButton(
                         onClick = {
                             shown.value = false
-                            fileEditor.editGameInfo(fileName, title.value, hash, text.value)
+                            fileEditor.editGameInfo(fileName, title.value, id, text.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()
                             .align(Alignment.End)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.button_apply),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RemoveGameInfoDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    id: String,
+    isParentRemoved: MutableState<Boolean>
+) {
+    val fileEditor = FileEditor(LocalContext.current)
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                val TEXT_PADDING = 30.dp
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.confirm_delete),
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center,
+                        minLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.TopCenter)
+                            .padding(all = TEXT_PADDING)
+
+                    )
+
+                    TextButton(
+                        onClick = {
+                            shown.value = false
+                            fileEditor.removeGameInfo(fileName, id)
+                            isParentRemoved.value = true
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.BottomEnd)
                     ) {
                         Text(
                             text = stringResource(id = R.string.button_apply),
@@ -711,12 +896,34 @@ private fun LicensePreViewLight() {
                 mutableStateOf("")
             }
 
-            MySetItemDialog(
+            EditGameInfoDialog(
                 shown = shown,
                 fileName = "name",
                 title = title,
-                hash = "hash",
+                id = "hash",
                 text = text
+            )
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun LicensePreViewLight2() {
+    NXSharingHelperTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            val shown = remember {
+                mutableStateOf(true)
+            }
+
+            RemoveGameInfoDialog(
+                shown = shown,
+                fileName = "name",
+                id = "hash",
+                isParentRemoved = shown
             )
         }
     }

@@ -28,9 +28,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,6 +48,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentsDownloader
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.clazz.DownloadData
+import io.github.lanlacope.nxsharinghelper.clazz.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import kotlinx.coroutines.launch
@@ -116,9 +119,7 @@ class ResultActivity : ComponentActivity() {
             }
 
         // 初回起動
-        startScan()
-
-        // ボタンの動作を定義
+        // startScan()
 
         val save: () -> Unit = {
             startSave()
@@ -136,8 +137,8 @@ class ResultActivity : ComponentActivity() {
                 ) {
                     Navigation(
                         viewModel = viewModel,
-                        save = save,
-                        scan = scan
+                        onSaveButtonClick = save,
+                        onScanButtonClick = scan
                     )
                 }
             }
@@ -261,8 +262,8 @@ class ResultActivity : ComponentActivity() {
 @Composable
 private fun Navigation(
     viewModel: ResultViewModel,
-    save: () -> Unit,
-    scan: () -> Unit
+    onSaveButtonClick: () -> Unit,
+    onScanButtonClick: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -349,7 +350,7 @@ private fun Navigation(
                 context.startActivity(intent)
             }
 
-            val onShareButtonLongPress = {
+            val onShareButtonLongClick = {
                 val contentsSharer = ContentsSharer(context)
                 val intent = contentsSharer.createChooserIntent(viewModel.downloadData.copy())
                 context.startActivity(intent)
@@ -357,7 +358,7 @@ private fun Navigation(
 
             FloatingActionButton(
                 onClick = onShareButtonClick,
-                onLongClick = onShareButtonLongPress,
+                onLongClick = onShareButtonLongClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -372,7 +373,7 @@ private fun Navigation(
                     }
                     .combinedClickable(
                         onClick = {},
-                        onLongClick = onShareButtonLongPress
+                        onLongClick = onShareButtonLongClick
                     )
 
             ) {
@@ -385,8 +386,18 @@ private fun Navigation(
                 )
             }
 
+            val clipboardManager = LocalClipboardManager.current
+
+            val onSaveButtonLongClick = {
+                val ids = getGameId(viewModel.downloadData.fileNames)
+                ids.forEach { id ->
+                    clipboardManager.setText(AnnotatedString(id))
+                }
+            }
+
             FloatingActionButton(
-                onClick = save,
+                onClick = onSaveButtonClick,
+                onLongClick = onSaveButtonLongClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(
@@ -413,7 +424,7 @@ private fun Navigation(
         }
 
         FloatingActionButton(
-            onClick = scan,
+            onClick = onScanButtonClick,
             containerColor = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .padding(
@@ -435,32 +446,6 @@ private fun Navigation(
                     .fillMaxSize()
                     .padding(all = IMAGE_PADDING)
             )
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun NavigationPreviewLight(
-) {
-    NXSharingHelperTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun NavigationPreviewDark(
-) {
-    NXSharingHelperTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
         }
     }
 }

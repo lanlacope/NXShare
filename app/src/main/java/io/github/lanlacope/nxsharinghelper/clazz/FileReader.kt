@@ -7,15 +7,6 @@ import java.io.File
 
 class FileReader(context: Context) : FileSelector(context) {
 
-    fun getGameHashs(fileNames: List<String>): List<String> {
-        val regex = Regex(""".*-(.*?)\..*?$""")
-        val hashs = fileNames.map { rawHash ->
-            val matchResult = regex.find(rawHash)
-            matchResult?.groupValues?.get(1) ?: ""
-        }.distinct()
-        return hashs
-    }
-
     fun getShareEnabled(appInfo: AppInfo): Boolean {
         try {
             val file = getAppSettingFile()
@@ -67,7 +58,7 @@ class FileReader(context: Context) : FileSelector(context) {
 
     fun getTypeName(file: File): String {
         val jsonObject = JSONObject(file.readText())
-        return jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
+        return jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
     }
 
     // ファイルの表示用名
@@ -76,7 +67,7 @@ class FileReader(context: Context) : FileSelector(context) {
             val files = getTypeFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
-                jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
+                jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
             }
             return types
         } catch (e: Exception) {
@@ -91,7 +82,7 @@ class FileReader(context: Context) : FileSelector(context) {
             val files = getTypeFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
-                jsonObject.getString(SHARE_JSON_PROPATY.DATA_NAME)
+                jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
             }
             return defaultType + types
         } catch (e: Exception) {
@@ -101,9 +92,9 @@ class FileReader(context: Context) : FileSelector(context) {
 
     fun createCopyText(fileNames: List<String>, packageName: String): String? {
         try {
-            val hashs = getGameHashs(fileNames)
+            val ids = getGameId(fileNames)
             val typeName = getShareType(packageName) ?: ""
-            val file = getTypeFileByType(typeName)
+            val file = getTypeFileByTitle(typeName)
 
             val rawJson = JSONObject(file!!.readText())
 
@@ -119,7 +110,7 @@ class FileReader(context: Context) : FileSelector(context) {
                     arrayData.forEachIndexOnly { index ->
                         try {
                             val jsonObject = arrayData.getJSONObject(index)
-                            if (jsonObject.getString(SHARE_JSON_PROPATY.GAME_HASH) in hashs) {
+                            if (jsonObject.getString(SHARE_JSON_PROPATY.GAME_ID) in ids) {
                                 val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
                                 append(text)
                             }

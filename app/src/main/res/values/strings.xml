@@ -72,12 +72,16 @@
         Add
     </string>
 
+    <string name="confirm_delete">
+        Delete it?
+    </string>
+
     <string name="hint_title">
         Title
     </string>
 
-    <string name="hint_hash">
-        Hash
+    <string name="hint_id">
+        ID
     </string>
 
     <string name="hint_text">
