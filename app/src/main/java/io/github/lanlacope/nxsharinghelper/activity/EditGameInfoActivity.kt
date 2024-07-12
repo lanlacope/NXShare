@@ -729,7 +729,7 @@ private fun AddGameInfoDialog(
 
                     ) {
                         Text(
-                            text = "追加",
+                            text = stringResource(id = R.string.button_add),
                             modifier = Modifier
                                 .wrapContentSize()
 
