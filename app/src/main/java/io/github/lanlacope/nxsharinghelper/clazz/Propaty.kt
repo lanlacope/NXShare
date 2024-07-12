@@ -11,7 +11,7 @@ fun isAfterAndroidX(): Boolean {
 
 }
 
-inline fun JSONArray.forEachIndexOnly(action: (Int) -> Unit): Unit {
+inline fun JSONArray.forEachIndexOnly(action: (Int) -> Unit) {
     for (index in 0 until length()) action(index)
 }
 
