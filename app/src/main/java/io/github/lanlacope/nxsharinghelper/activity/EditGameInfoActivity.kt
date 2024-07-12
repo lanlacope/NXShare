@@ -6,8 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,7 +54,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
-import io.github.lanlacope.nxsharinghelper.clazz.getGameId
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
@@ -138,16 +140,17 @@ private fun MySet(
     }
 
     if (!isRemoved.value) {
+
+        val shownAddDialog = remember {
+            mutableStateOf(false)
+        }
+
         val infoManager = InfoManager(LocalContext.current)
         val common by remember {
             mutableStateOf(infoManager.getCommonInfo(file))
         }
         val games = remember {
             mutableStateOf(infoManager.getGameInfo(file))
-        }
-
-        val shownAddDialog = remember {
-            mutableStateOf(false)
         }
 
         Box(
@@ -240,7 +243,6 @@ private fun MySetCommon(
     val title = remember {
         mutableStateOf(common.title)
     }
-
     val text = remember {
         mutableStateOf(common.text)
     }
@@ -260,6 +262,7 @@ private fun MySetCommon(
         Text(
             text = title.value,
             fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -296,6 +299,16 @@ private fun MySetItem(
     gameInfo: GameInfo,
     fileName: String
 ) {
+    val isRemoved = remember {
+        mutableStateOf(false)
+    }
+    val shownEditDialog = remember {
+        mutableStateOf(false)
+    }
+    val shownRemoveDialog = remember {
+        mutableStateOf(false)
+    }
+
     val title = remember {
         mutableStateOf(gameInfo.title)
     }
@@ -303,18 +316,6 @@ private fun MySetItem(
 
     val text = remember {
         mutableStateOf(gameInfo.text)
-    }
-
-    val isRemoved = remember {
-        mutableStateOf(false)
-    }
-
-    val shownEditDialog = remember {
-        mutableStateOf(false)
-    }
-
-    val shownRemoveDialog = remember {
-        mutableStateOf(false)
     }
 
     if (!isRemoved.value) {
@@ -372,10 +373,20 @@ private fun AddMySetDialog(
     shown: MutableState<Boolean>,
     files: MutableState<List<File>>
 ) {
+    var shownWarning by remember {
+        mutableStateOf(false)
+    }
     val fileEditor = FileEditor(LocalContext.current)
 
     val title = remember {
         mutableStateOf("")
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            shownWarning = false
+            title.value = ""
+        }
     }
 
     if (shown.value) {
@@ -402,23 +413,38 @@ private fun AddMySetDialog(
                         hint = stringResource(id = R.string.hint_myset_title)
                     )
 
-                    TextButton(
-                        onClick = {
-                            val result = fileEditor.addMySet(title.value)
-                            if (result.isSuccess) {
-                                files.value += result.getOrNull()!!
-                                shown.value = false
-                            }
-                        },
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .wrapContentSize()
-                            .align(Alignment.End)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.dialog_poitive_add),
+
+                        DialogWarning(
+                            text = stringResource(id = R.string.dialog_warning_exists),
+                            shown = shownWarning
+                        )
+
+                        TextButton(
+                            onClick = {
+                                val result = fileEditor.addMySet(title.value)
+                                if (result.isSuccess) {
+                                    files.value += result.getOrNull()!!
+                                    shown.value = false
+                                } else {
+                                    shownWarning = true
+                                }
+                            },
                             modifier = Modifier
                                 .wrapContentSize()
-                        )
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.dialog_poitive_add),
+                                modifier = Modifier
+                                    .wrapContentSize()
+                            )
+                        }
                     }
                 }
             }
@@ -560,6 +586,10 @@ private fun AddGameInfoDialog(
     fileName: String,
     games:  MutableState<List<GameInfo>>
 ) {
+    var shownWarning by remember {
+        mutableStateOf(true)
+    }
+
     val fileEditor = FileEditor(LocalContext.current)
 
     val title = remember {
@@ -570,6 +600,15 @@ private fun AddGameInfoDialog(
     }
     val text = remember {
         mutableStateOf("")
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            shownWarning = false
+            title.value = ""
+            id.value = ""
+            text.value = ""
+        }
     }
 
     if (shown.value) {
@@ -606,25 +645,45 @@ private fun AddGameInfoDialog(
                         singleLine = false
                     )
 
-                    TextButton(
-                        onClick = {
-                            val result = fileEditor.addGameInfo(fileName, title.value, id.value, text.value)
-                            if (result.isSuccess) {
-                                games.value += result.getOrNull()!!
-                                shown.value = false
-                            }
-                        },
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .wrapContentSize()
-                            .align(Alignment.End)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
 
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.dialog_poitive_add),
+                        DialogWarning(
+                            text = stringResource(id = R.string.dialog_warning_exists),
+                            shown = shownWarning
+                        )
+
+                        TextButton(
+                            onClick = {
+                                val result =
+                                    fileEditor.addGameInfo(
+                                        fileName,
+                                        title.value,
+                                        id.value,
+                                        text.value
+                                    )
+                                if (result.isSuccess) {
+                                    games.value += result.getOrNull()!!
+                                    shown.value = false
+                                } else {
+                                    shownWarning = true
+                                }
+                            },
                             modifier = Modifier
                                 .wrapContentSize()
 
-                        )
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.dialog_poitive_add),
+                                modifier = Modifier
+                                    .wrapContentSize()
+
+                            )
+                        }
                     }
                 }
             }
@@ -815,6 +874,25 @@ private fun DialogMessage(
 }
 
 @Composable
+private fun DialogWarning(
+    text: String,
+    shown: Boolean
+) {
+    Text(
+        text = if (shown) text else "",
+        fontSize = 12.sp,
+        fontStyle = FontStyle.Italic,
+        style = TextStyle(
+            color = MaterialTheme.colorScheme.error
+        ),
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(start = 16.dp)
+
+    )
+}
+
+@Composable
 private fun DialogTextField(
     text: MutableState<String>,
     hint: String,
@@ -845,6 +923,7 @@ private fun DialogTextField(
     )
 }
 
+/*
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun LicensePreViewLight() {
@@ -891,6 +970,32 @@ private fun LicensePreViewLight2() {
                 fileName = "name",
                 id = "XXXXXXXXXXXXXXXXXXXXXX",
                 isParentRemoved = shown
+            )
+        }
+    }
+}
+
+ */
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun LicensePreViewLight3() {
+    NXSharingHelperTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            val shown = remember {
+                mutableStateOf(true)
+            }
+
+            val list = remember {
+                mutableStateOf(listOf(File(""), File("")))
+            }
+
+            AddMySetDialog(
+                shown = shown,
+                files = list
             )
         }
     }

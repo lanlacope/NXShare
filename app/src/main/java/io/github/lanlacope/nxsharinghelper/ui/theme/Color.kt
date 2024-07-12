@@ -2,6 +2,9 @@ package io.github.lanlacope.nxsharinghelper.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+val RedDark = Color(0xFFFF7F7F)
+val RedLight = Color(0xFFFFD1D1)
+
 val PaupleDark = Color(0xFF7F7FFF)
 val PaupleLight= Color(0xFFD1D1FF)
 
