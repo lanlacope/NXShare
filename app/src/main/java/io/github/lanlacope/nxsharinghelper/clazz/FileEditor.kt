@@ -9,14 +9,18 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 
-        val fileName = "myset_${getSimpleDate()}.json"
-        val result = getNewTypeFile(fileName)
-        val file = result.getOrNull()
-
-        if (result.isFailure) {
+        if (getTypeFileByTitle(name).isFailure) {
             return Result.failure(Exception())
         }
 
+        val fileName = "myset_${getSimpleDate()}.json"
+        val createFileResult = createNewTypeFile(fileName)
+
+        if (createFileResult.isFailure){
+            return Result.failure(Exception())
+        }
+
+        val file = createFileResult.getOrNull()
         val jsonObject = JSONObject().apply {
             put(SHARE_JSON_PROPATY.COMMON_TITLE, name)
             put(SHARE_JSON_PROPATY.COMMON_TEXT, "")
@@ -64,17 +68,17 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         val jsonArray = jsonObject.getJSONArray(SHARE_JSON_PROPATY.GAME_DATA)
 
-        val gameData = JSONObject().apply {
-            put(SHARE_JSON_PROPATY.GAME_TITLE, title)
-            put(SHARE_JSON_PROPATY.GAME_ID, id)
-            put(SHARE_JSON_PROPATY.GAME_TEXT, text)
-        }
-
         jsonArray.forEachIndexOnly { index ->
             val parsedData = jsonArray.getJSONObject(index)
             if (parsedData.getString(SHARE_JSON_PROPATY.GAME_ID) == id) {
                 return Result.failure(Exception())
             }
+        }
+
+        val gameData = JSONObject().apply {
+            put(SHARE_JSON_PROPATY.GAME_TITLE, title)
+            put(SHARE_JSON_PROPATY.GAME_ID, id)
+            put(SHARE_JSON_PROPATY.GAME_TEXT, text)
         }
 
         jsonArray.put(gameData)

@@ -41,18 +41,18 @@ open class FileSelector(private val context: Context) {
         return file
     }
 
-    fun getTypeFileByTitle(typeName: String): File? {
+    fun getTypeFileByTitle(typeName: String): Result<File> {
         val files = getTypeFiles()
         files.forEach { file ->
             val jsonObject = JSONObject(file.readText())
             if (jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE) == typeName) {
-                return file
+                return Result.success(file)
             }
         }
-        return null
+        return Result.failure(Exception())
     }
 
-    fun getNewTypeFile(fileName: String): Result<File> {
+    fun createNewTypeFile(fileName: String): Result<File> {
         try {
             val file = File(getTypeFolder(), fileName)
             val isSucces = file.createNewFile()
@@ -60,7 +60,7 @@ open class FileSelector(private val context: Context) {
             if (isSucces) {
                 return Result.success(file)
             } else {
-                return getNewTypeFile("${fileName}_")
+                return createNewTypeFile("${fileName}_")
             }
         } catch (e: Exception) {
             return Result.failure(e)

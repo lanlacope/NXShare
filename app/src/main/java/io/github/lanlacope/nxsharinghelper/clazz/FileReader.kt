@@ -76,8 +76,8 @@ class FileReader(context: Context) : FileSelector(context) {
     fun createCopyText(fileNames: List<String>, packageName: String): String? {
         try {
             val ids = getGameId(fileNames)
-            val typeName = getShareType(packageName) ?: ""
-            val file = getTypeFileByTitle(typeName)
+            val typeName = getShareType(packageName)
+            val file = getTypeFileByTitle(typeName!!).getOrNull()
 
             val rawJson = JSONObject(file!!.readText())
 
