@@ -1,20 +1,14 @@
 package io.github.lanlacope.nxsharinghelper.widgit
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.unit.dp
 
+@Suppress("unused")
 @Composable
 inline fun Box(
     noinline onClick: () -> Unit,
@@ -34,6 +28,7 @@ inline fun Box(
     )
 }
 
+@Suppress("unused")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 inline fun Box(
