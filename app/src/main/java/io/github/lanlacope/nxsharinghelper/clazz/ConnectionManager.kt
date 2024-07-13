@@ -2,6 +2,7 @@ package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
@@ -10,19 +11,19 @@ import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import androidx.annotation.RequiresApi
+import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity.WifiConfig
 
 class ConnectionManager(_context: Context) {
 
     private val context = _context.applicationContext
 
-    fun start(config: Pair<String, String>, onConnect: () -> Unit) {
+    fun start(config: WifiConfig, onConnect: () -> Unit) {
 
-        println("start connect")
         try {
             if (isAfterAndroidX()) {
-                connectSwitch(config.first, config.second, onConnect)
+                connectSwitch(config.ssid, config.password, onConnect)
             } else {
-                connectSwitchLegacy(config.first, config.second, onConnect)
+                connectSwitchLegacy(config.ssid, config.password, onConnect)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -32,6 +33,7 @@ class ConnectionManager(_context: Context) {
     companion object {
         lateinit var connectivityManager: ConnectivityManager
         lateinit var wifiManager: WifiManager
+        var networkCallback: NetworkCallback? = null
         var lastNetworkId = -1
     }
 
@@ -54,27 +56,33 @@ class ConnectionManager(_context: Context) {
             .setNetworkSpecifier(wifiNetworkSpecifier)
             .build()
 
-        connectivityManager.requestNetwork(
-            networkRequest,
-            object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    if (connectivityManager.bindProcessToNetwork(network)) {
-                        onConnect()
-                    }
-                }
-
-                override fun onLost(network: Network) {
-                    super.onLost(network)
-                    connectivityManager.unregisterNetworkCallback(this)
+        networkCallback = object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                networkCallback = this
+                if (connectivityManager.bindProcessToNetwork(network)) {
+                    onConnect()
                 }
             }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                connectivityManager.unregisterNetworkCallback(this)
+            }
+        }
+
+        connectivityManager.requestNetwork(
+            networkRequest,
+            networkCallback as NetworkCallback
         )
     }
 
     fun disconnection() {
         if (isAfterAndroidX()) {
             connectivityManager.bindProcessToNetwork(null)
+            if (networkCallback != null) {
+                connectivityManager.unregisterNetworkCallback(networkCallback!!)
+            }
         } else {
             @Suppress("DEPRECATION")
             if (lastNetworkId != -1) {

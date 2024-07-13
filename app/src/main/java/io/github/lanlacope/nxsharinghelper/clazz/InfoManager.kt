@@ -6,41 +6,41 @@ import android.content.pm.PackageManager
 import org.json.JSONObject
 import java.io.File
 
-data class AppInfo(
-    private val applicationInfo: ApplicationInfo,
-    private val packageManager: PackageManager,
-) {
-    val name = applicationInfo.loadLabel(packageManager).toString()
-    val icon = applicationInfo.loadIcon(packageManager)
-    val packageName = applicationInfo.packageName
-}
-
-data class ShareInfo(
-    private val packageName: String,
-    private val context: Context
-) {
-    private val fileReader = FileReader(context)
-    val shareEnabled = fileReader.getShareEnabled(packageName)
-    val type = fileReader.getShareType(packageName) ?: SHARE_JSON_PROPATY.TYPE_NONE
-    val types = fileReader.getTypeNamesWithNone()
-}
-
-data class CommonInfo(
-    private val jsonObject: JSONObject
-) {
-    val title = jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
-    val text = jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TEXT)
-}
-
-data class GameInfo(
-    private val jsonObject: JSONObject
-) {
-    val title = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TITLE)
-    val id = jsonObject.getString(SHARE_JSON_PROPATY.GAME_ID)
-    val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
-}
-
 class InfoManager(private val context: Context) : FileSelector(context) {
+
+    data class AppInfo(
+        private val applicationInfo: ApplicationInfo,
+        private val packageManager: PackageManager,
+    ) {
+        val name = applicationInfo.loadLabel(packageManager).toString()
+        val icon = applicationInfo.loadIcon(packageManager)
+        val packageName = applicationInfo.packageName
+    }
+
+    data class ShareInfo(
+        private val packageName: String,
+        private val context: Context
+    ) {
+        private val fileReader = FileReader(context)
+        val shareEnabled = fileReader.getShareEnabled(packageName)
+        val type = fileReader.getShareType(packageName) ?: SHARE_JSON_PROPATY.TYPE_NONE
+        val types = fileReader.getTypeNamesWithNone()
+    }
+
+    data class CommonInfo(
+        private val jsonObject: JSONObject
+    ) {
+        val title = jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE)
+        val text = jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TEXT)
+    }
+
+    data class GameInfo(
+        private val jsonObject: JSONObject
+    ) {
+        val title = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TITLE)
+        val id = jsonObject.getString(SHARE_JSON_PROPATY.GAME_ID)
+        val text = jsonObject.getString(SHARE_JSON_PROPATY.GAME_TEXT)
+    }
 
     fun getAppInfo(): List<AppInfo> {
         val contentsSharer = ContentsSharer(context)

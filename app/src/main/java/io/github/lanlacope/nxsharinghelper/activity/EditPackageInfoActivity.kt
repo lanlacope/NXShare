@@ -37,11 +37,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.clazz.AppInfo
+import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.clazz.SHARE_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.ShareInfo
+import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box

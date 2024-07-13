@@ -4,6 +4,7 @@ import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 
 class FileEditor(context: Context) : FileSelector(context) {
 

@@ -18,14 +18,27 @@ import java.io.FileOutputStream
 
 class ContentsSaver(_context: Context) {
 
-    val context = _context.applicationContext
+    private val context = _context.applicationContext
+    private var isSaving = false
 
     suspend fun save(data: DownloadData) {
+
+        isSaving = true
 
         if (isAfterAndroidX()) {
             saveFileToStorage(data)
         } else {
             saveFileToStorageLegasy(data)
+        }
+
+        isSaving = false
+    }
+
+    fun clearCache() {
+        if (!isSaving) {
+            context.cacheDir.listFiles()?.forEach { file ->
+                file.delete()
+            }
         }
     }
 

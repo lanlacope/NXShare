@@ -87,7 +87,12 @@ class SwitchCaptureActivity : Activity() {
         return barcodeScannerView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
     }
 
-    class Contract : ActivityResultContract<ScanOptions, Pair<String, String>?>() {
+    data class WifiConfig(
+        val ssid: String,
+        val password: String
+    )
+
+    class Contract : ActivityResultContract<ScanOptions, Result<WifiConfig>>() {
 
         override fun createIntent(context: Context, input: ScanOptions): Intent {
                 val intentScan = Intent(context, SwitchCaptureActivity::class.java)
@@ -96,14 +101,13 @@ class SwitchCaptureActivity : Activity() {
                 return intentScan
         }
 
-        override fun parseResult(resultCode: Int, intent: Intent?): Pair<String, String>? {
+        override fun parseResult(resultCode: Int, intent: Intent?): Result<WifiConfig> {
             if (resultCode == RESULT_OK) {
-                println(intent?.action)
                 val rawResult = intent?.action ?: ";"
                 val splitResult = rawResult.split(";").toTypedArray()
-                return Pair(splitResult[0], splitResult[1])
+                return Result.success(WifiConfig(splitResult[0], splitResult[1]))
             } else {
-                return null
+                return Result.failure(Exception())
             }
         }
     }

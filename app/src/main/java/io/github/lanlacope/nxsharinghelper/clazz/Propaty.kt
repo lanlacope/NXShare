@@ -1,8 +1,13 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
+import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import org.json.JSONArray
 import java.text.SimpleDateFormat
@@ -78,4 +83,32 @@ fun makeToast(
     duration: Int = Toast.LENGTH_SHORT
 ):Toast {
     return Toast.makeText(LocalContext.current, text, duration)
+}
+
+data class DownloadDataState(
+    private val context: Context,
+    private val data: MutableState<DownloadData>
+) {
+    val value = data.value
+
+    suspend fun download() {
+        val contentsDownloader = ContentsDownloader(context)
+        contentsDownloader.start()
+        data.value = contentsDownloader.downloadData
+    }
+}
+
+@Composable
+fun rememberContentsData(): DownloadDataState {
+    val context = LocalContext.current
+    val downloadData = rememberSaveable{
+        mutableStateOf(DownloadData())
+    }
+
+    return remember(downloadData) {
+        DownloadDataState(
+            context = context,
+            data = downloadData
+        )
+    }
 }
