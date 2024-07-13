@@ -68,14 +68,14 @@ fun Box(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Box(
-    onClick: () -> Unit,
+    onClick: (() -> Unit)? = null,
     onLongClick: () -> Unit,
     modifier: Modifier
 ) {
     androidx.compose.foundation.layout.Box(
         modifier = modifier
             .combinedClickable(
-                onClick = onClick,
+                onClick = onClick?: { },
                 onLongClick = onLongClick
             ),
 
