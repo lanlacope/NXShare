@@ -5,12 +5,14 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_GAME
 import org.json.JSONObject
 import java.io.File
 
-val FOLDER_THIS: String = "NXShare"
-val FOLDER_SETTING = "Setting"
-val FILE_APP = "app.json"
-val FOLDER_MYSET = "myset"
-
 open class FileSelector(private val context: Context) {
+
+    companion object {
+        val FOLDER_THIS: String = "NXShare"
+        val FOLDER_SETTING = "Setting"
+        val FILE_APP = "app.json"
+        val FOLDER_MYSET = "myset"
+    }
 
     fun getSettingFolder(): File {
         val file = File(context.getExternalFilesDir(null), FOLDER_SETTING)

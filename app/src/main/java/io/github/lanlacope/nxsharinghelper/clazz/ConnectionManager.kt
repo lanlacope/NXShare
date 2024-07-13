@@ -18,6 +18,13 @@ class ConnectionManager(_context: Context) {
 
     private val context = _context.applicationContext
 
+    companion object {
+        private lateinit var connectivityManager: ConnectivityManager
+        private lateinit var wifiManager: WifiManager
+        private var networkCallback: NetworkCallback? = null
+        private var lastNetworkId = -1
+    }
+
     fun start(config: WifiConfig, onConnect: () -> Unit) {
 
         try {
@@ -29,13 +36,6 @@ class ConnectionManager(_context: Context) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    companion object {
-        lateinit var connectivityManager: ConnectivityManager
-        lateinit var wifiManager: WifiManager
-        var networkCallback: NetworkCallback? = null
-        var lastNetworkId = -1
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -78,23 +78,6 @@ class ConnectionManager(_context: Context) {
         )
     }
 
-    fun disconnection() {
-        if (DevicePropaty.isAfterAndroidX()) {
-            connectivityManager.bindProcessToNetwork(null)
-            if (networkCallback != null) {
-                connectivityManager.unregisterNetworkCallback(networkCallback!!)
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            if (lastNetworkId != -1) {
-                wifiManager.disconnect()
-                wifiManager.enableNetwork(lastNetworkId, true)
-                wifiManager.reconnect()
-                lastNetworkId = -1
-            }
-        }
-    }
-
     @Suppress("DEPRECATION")
     private fun connectSwitchLegacy(
         ssid: String,
@@ -123,6 +106,23 @@ class ConnectionManager(_context: Context) {
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
             onConnect()
+        }
+    }
+
+    fun disconnection() {
+        if (DevicePropaty.isAfterAndroidX()) {
+            connectivityManager.bindProcessToNetwork(null)
+            if (networkCallback != null) {
+                connectivityManager.unregisterNetworkCallback(networkCallback!!)
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            if (lastNetworkId != -1) {
+                wifiManager.disconnect()
+                wifiManager.enableNetwork(lastNetworkId, true)
+                wifiManager.reconnect()
+                lastNetworkId = -1
+            }
         }
     }
 }

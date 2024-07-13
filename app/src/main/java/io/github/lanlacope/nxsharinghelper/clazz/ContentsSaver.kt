@@ -23,7 +23,10 @@ import java.io.FileOutputStream
 class ContentsSaver(_context: Context) {
 
     private val context = _context.applicationContext
-    private var isSaving = false
+
+    companion object {
+        private var isSaving = false
+    }
 
     suspend fun save(data: DownloadData) {
 
@@ -101,7 +104,7 @@ class ContentsSaver(_context: Context) {
                     put(MediaStore.Images.Media.IS_PENDING, true)
                     put(
                         MediaStore.Images.ImageColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_PICTURES}/$FOLDER_THIS/$consoleName/")
+                        "${Environment.DIRECTORY_PICTURES}/${FileSelector.FOLDER_THIS}/$consoleName/")
                 }
                 SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.DISPLAY_NAME, fileName)
@@ -109,7 +112,7 @@ class ContentsSaver(_context: Context) {
                     put(MediaStore.Video.Media.IS_PENDING, true)
                     put(
                         MediaStore.Video.VideoColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_MOVIES}/$FOLDER_THIS/$consoleName/")
+                        "${Environment.DIRECTORY_MOVIES}/${FileSelector.FOLDER_THIS}/$consoleName/")
                 }
             }
         }
@@ -129,12 +132,10 @@ class ContentsSaver(_context: Context) {
         }
     }
 
-    /*****FOR BEFORE API 28 *****/
-
     private suspend fun saveFileToStorageLegasy(data: DownloadData) = withContext(Dispatchers.IO) {
 
         try {
-            val appFolder = File(Environment.getExternalStorageDirectory(), FOLDER_THIS)
+            val appFolder = File(Environment.getExternalStorageDirectory(), FileSelector.FOLDER_THIS)
 
             val consoleFolder = File(appFolder, removeStringsForFile(data.consoleName))
 
@@ -172,6 +173,4 @@ class ContentsSaver(_context: Context) {
             else -> throw IllegalAccessException()
         }
     }
-
-    /*****FOR BEFORE API 28 *****/
 }

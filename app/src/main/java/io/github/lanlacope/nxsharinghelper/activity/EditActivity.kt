@@ -56,6 +56,7 @@ fun SettingList() {
             .fillMaxSize()
     ) {
         val TEXT_PADDING = 10.dp
+        
         val context = LocalContext.current
 
         var cheacked by remember {

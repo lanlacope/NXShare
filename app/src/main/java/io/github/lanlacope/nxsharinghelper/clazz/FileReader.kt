@@ -14,7 +14,6 @@ class FileReader(context: Context) : FileSelector(context) {
 
     fun getShareEnabled(packageName: String): Boolean {
         try {
-            Log.d("Q", packageName)
             val file = getAppSettingFile()
             val jsonArray = JSONArray(file.readText())
             jsonArray.forEachIndexOnly { index ->
@@ -25,10 +24,8 @@ class FileReader(context: Context) : FileSelector(context) {
                 }
             }
         } catch (e: Exception) {
-            Log.d("Q", e.toString())
             return false
         }
-        Log.d("Q", "FUQ")
         return false
     }
 
