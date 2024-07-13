@@ -1,20 +1,8 @@
 package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
-import android.content.Context
-import android.os.Build
-import android.os.Bundle
 import android.widget.Toast
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.os.bundleOf
-import io.github.lanlacope.nxsharinghelper.clazz.ContentsDownloader
-import io.github.lanlacope.nxsharinghelper.clazz.DownloadData
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
 import org.json.JSONArray
 
 

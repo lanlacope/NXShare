@@ -39,7 +39,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.makeToast
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentsData
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import kotlinx.coroutines.launch
