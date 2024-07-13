@@ -52,6 +52,7 @@ inline fun Box(
     )
 }
 
+@Suppress("unused")
 @Composable
 fun Box(
     onClick: () -> Unit,
@@ -65,6 +66,7 @@ fun Box(
         )
 }
 
+@Suppress("unused")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Box(
