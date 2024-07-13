@@ -70,6 +70,6 @@ open class FileSelector(private val context: Context) {
 
     // マイセットファイルを全て取得
     fun getMySetFiles(): List<File> {
-        return getMySetFolder().listFiles()?.toList() ?: listOf()
+        return getMySetFolder().listFiles()?.toList()?: emptyList()
     }
 }

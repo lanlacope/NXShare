@@ -5,7 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import org.json.JSONArray
 
+fun <T> Iterable<T>.toArrayList(): ArrayList<T> {
+    if (this is Collection<T>)
+        return this.toArrayList()
+    return toCollection(ArrayList<T>())
+}
 
+fun <T> Collection<T>.toArrayList(): ArrayList<T> {
+    return ArrayList(this)
+}
 
 inline fun JSONArray.forEachIndexOnly(action: (Int) -> Unit) {
     for (index in 0 until length()) action(index)
@@ -23,7 +31,7 @@ fun getGameId(fileNames: List<String>): List<String> {
     val regex = Regex(""".*-(.*?)\..*?$""")
     val ids = fileNames.map { rawId ->
         val matchResult = regex.find(rawId)
-        matchResult?.groupValues?.get(1) ?: ""
+        matchResult?.groupValues?.get(1)?: ""
     }.distinct()
     return ids
 }

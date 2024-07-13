@@ -63,7 +63,7 @@ class FileReader(context: Context) : FileSelector(context) {
             }
             return types
         } catch (e: Exception) {
-            return listOf()
+            return emptyList()
         }
     }
 

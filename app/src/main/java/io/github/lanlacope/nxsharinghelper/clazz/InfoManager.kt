@@ -27,7 +27,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     ) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
-        val type = fileReader.getShareType(packageName) ?: SETTING_APP_JSON_PROPATY.TYPE_NONE
+        val type = fileReader.getShareType(packageName)?: SETTING_APP_JSON_PROPATY.TYPE_NONE
         val types = fileReader.getTypeNamesWithNone()
     }
 

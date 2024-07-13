@@ -59,7 +59,8 @@ data class PermissionResultLauncher(
 }
 
 @Composable
-fun rememberCameraParmissionResult(
+fun rememberParmissionResult(
+    permission: String,
     onGrant: () -> Unit
 ): PermissionResultLauncher {
     val context = LocalContext.current
@@ -72,26 +73,7 @@ fun rememberCameraParmissionResult(
     }
     return PermissionResultLauncher(
         context = context,
-        permission = Manifest.permission.CAMERA,
-        launcher = launcher
-    )
-}
-
-@Composable
-fun rememberStorageParmissionResult(
-    onGrant: () -> Unit
-): PermissionResultLauncher {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGrant ->
-        if (isGrant) {
-            onGrant()
-        }
-    }
-    return PermissionResultLauncher(
-        context = context,
-        permission = Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        permission = permission,
         launcher = launcher
     )
 }

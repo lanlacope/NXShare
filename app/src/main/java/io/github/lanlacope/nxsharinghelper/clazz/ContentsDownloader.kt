@@ -13,6 +13,7 @@ import androidx.core.os.bundleOf
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_LOCALHOST
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -25,7 +26,7 @@ import java.net.URL
 data class DownloadData(
     val fileType: String = "",
     val consoleName: String = "",
-    val fileNames: List<String> = listOf()
+    val fileNames: List<String> = emptyList()
 )
 
 data class DownloadDataState(
@@ -67,7 +68,7 @@ private val DownloadDataSaver = Saver<DownloadData, Bundle>(
         DownloadData(
             fileType = bundle.getString(SWITCH_JSON_PROPATY.FILETYPE, ""),
             consoleName = bundle.getString(SWITCH_JSON_PROPATY.CONSOLENAME, ""),
-            fileNames = bundle.getStringArray(SWITCH_JSON_PROPATY.FILENAMES)?.toList() ?: emptyList()
+            fileNames = bundle.getStringArray(SWITCH_JSON_PROPATY.FILENAMES)?.toList()?: emptyList()
         )
     }
 )
@@ -94,11 +95,8 @@ class ContentsDownloader(val context: Context) {
         val fileType = rawJson.getString(SWITCH_JSON_PROPATY.FILETYPE)
         val consoleName = rawJson.getString(SWITCH_JSON_PROPATY.CONSOLENAME)
         val jsonArray = rawJson.getJSONArray(SWITCH_JSON_PROPATY.FILENAMES)
-        val fileNames = arrayListOf<String>()
-
-        jsonArray.forEachIndexOnly { index ->
-            val fileName = jsonArray.getString(index)
-            fileNames.add(fileName)
+        val fileNames = jsonArray.mapIndexOnly { index ->
+            jsonArray.getString(index)
         }
 
         downloadData = DownloadData(

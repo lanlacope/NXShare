@@ -1,5 +1,6 @@
 package io.github.lanlacope.nxsharinghelper.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,9 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberCameraParmissionResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberStorageParmissionResult
+import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiResult
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
@@ -210,7 +210,7 @@ private fun Navigation() {
                 }
             }
 
-            val storagePermissionResult = rememberStorageParmissionResult {
+            val storagePermissionResult = rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
                 save()
             }
 
@@ -294,7 +294,7 @@ private fun Navigation() {
             captureResult.launch()
         }
 
-        val cameraParmissionResult = rememberCameraParmissionResult {
+        val cameraParmissionResult = rememberParmissionResult(permission = Manifest.permission.CAMERA) {
             wifiResult.launch()
         }
 

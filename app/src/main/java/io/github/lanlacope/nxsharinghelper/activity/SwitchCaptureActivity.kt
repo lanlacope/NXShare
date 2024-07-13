@@ -103,7 +103,7 @@ class SwitchCaptureActivity : Activity() {
 
         override fun parseResult(resultCode: Int, intent: Intent?): Result<WifiConfig> {
             if (resultCode == RESULT_OK) {
-                val rawResult = intent?.action ?: ";"
+                val rawResult = intent?.action?: ";"
                 val splitResult = rawResult.split(";").toTypedArray()
                 return Result.success(WifiConfig(splitResult[0], splitResult[1]))
             } else {

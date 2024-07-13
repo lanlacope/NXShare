@@ -18,6 +18,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MINETYPE
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.toArrayList
 import java.io.File
 
 class ContentsSharer(val context: Context) {
@@ -49,10 +50,11 @@ class ContentsSharer(val context: Context) {
                 val uri = data.fileNames.map { fileName ->
                     val file = File(context.cacheDir, fileName)
                     FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
-                }
+                }.toArrayList()
+
                 setStream(uri[0])
                     .createChooserIntent()
-                    .putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uri))
+                    .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uri)
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             }
@@ -158,17 +160,15 @@ class ContentsSharer(val context: Context) {
             } else {
                 setAction(Intent.ACTION_SEND_MULTIPLE)
 
-                val uri: ArrayList<Uri> = arrayListOf()
-                data.fileNames.forEach { fileName ->
+                val uri = data.fileNames.map { fileName ->
                     val file = File(context.cacheDir, fileName)
-                    uri.add(
-                        FileProvider.getUriForFile(
-                            context,
-                            "${context.packageName}.fileProvider",
-                            file
-                        )
+
+                    FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileProvider",
+                        file
                     )
-                }
+                }.toArrayList()
                 putParcelableArrayListExtra(Intent.EXTRA_STREAM, uri)
             }
 
@@ -200,7 +200,7 @@ class ContentsSharer(val context: Context) {
 
             val fileReader = FileReader(context)
 
-            val fileNames = intent.getStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE)?.toList() ?: listOf()
+            val fileNames = intent.getStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE)?.toList()?: emptyList()
 
             val componentName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT, ComponentName::class.java)
@@ -209,7 +209,7 @@ class ContentsSharer(val context: Context) {
                 intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT)
             }
 
-            val packageName = componentName?.packageName ?: ""
+            val packageName = componentName?.packageName?: ""
 
             val text = fileReader.createCopyText(fileNames, packageName)
 
