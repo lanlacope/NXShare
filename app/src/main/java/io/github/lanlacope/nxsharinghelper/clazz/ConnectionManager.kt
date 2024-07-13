@@ -12,6 +12,7 @@ import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity.WifiConfig
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 
 class ConnectionManager(_context: Context) {
 
@@ -20,7 +21,7 @@ class ConnectionManager(_context: Context) {
     fun start(config: WifiConfig, onConnect: () -> Unit) {
 
         try {
-            if (isAfterAndroidX()) {
+            if (DevicePropaty.isAfterAndroidX()) {
                 connectSwitch(config.ssid, config.password, onConnect)
             } else {
                 connectSwitchLegacy(config.ssid, config.password, onConnect)
@@ -78,7 +79,7 @@ class ConnectionManager(_context: Context) {
     }
 
     fun disconnection() {
-        if (isAfterAndroidX()) {
+        if (DevicePropaty.isAfterAndroidX()) {
             connectivityManager.bindProcessToNetwork(null)
             if (networkCallback != null) {
                 connectivityManager.unregisterNetworkCallback(networkCallback!!)

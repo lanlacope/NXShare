@@ -1,6 +1,7 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_GAME_JSON_PROPATY
 import org.json.JSONObject
 import java.io.File
 
@@ -45,7 +46,7 @@ open class FileSelector(private val context: Context) {
         val files = getMySetFiles()
         files.forEach { file ->
             val jsonObject = JSONObject(file.readText())
-            if (jsonObject.getString(SHARE_JSON_PROPATY.COMMON_TITLE) == typeName) {
+            if (jsonObject.getString(SETTING_GAME_JSON_PROPATY.COMMON_TITLE) == typeName) {
                 return Result.success(file)
             }
         }

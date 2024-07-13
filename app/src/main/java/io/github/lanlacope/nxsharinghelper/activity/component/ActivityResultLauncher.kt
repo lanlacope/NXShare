@@ -8,18 +8,20 @@ import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity
-import io.github.lanlacope.nxsharinghelper.clazz.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity.WifiConfig
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 
 data class CaptureResultLauncher(
     private val launcher: ManagedActivityResultLauncher<ScanOptions, Result<WifiConfig>>
@@ -28,7 +30,9 @@ data class CaptureResultLauncher(
         .setOrientationLocked(false)
         .setBeepEnabled(false)
 
-    val launch = launcher.launch(scanOption)
+    val launch = {
+        launcher.launch(scanOption)
+    }
 }
 
 @Composable
@@ -42,7 +46,7 @@ fun rememberCaptureResult(
             onCapture(result.getOrNull()!!)
         }
     }
-    return CaptureResultLauncher(launcher)
+    return CaptureResultLauncher(launcher = launcher)
 }
 
 data class PermissionResultLauncher(
@@ -50,17 +54,18 @@ data class PermissionResultLauncher(
     private val permission: String,
     private val launcher: ManagedActivityResultLauncher<String, Boolean>
 ) {
-    val launch = launcher.launch(permission)
-    val isGranted = if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
-        true
-    } else false
+    val launch = {
+        launcher.launch(permission)
+    }
+    val isGranted = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 }
 
 @Composable
 fun rememberCameraParmissionResult(
     onGrant: () -> Unit
 ): PermissionResultLauncher {
-    val launcher =  rememberLauncherForActivityResult(
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGrant ->
         if (isGrant) {
@@ -68,9 +73,9 @@ fun rememberCameraParmissionResult(
         }
     }
     return PermissionResultLauncher(
-        LocalContext.current,
-        Manifest.permission.CAMERA,
-        launcher
+        context = context,
+        permission = Manifest.permission.CAMERA,
+        launcher = launcher
     )
 }
 
@@ -78,7 +83,8 @@ fun rememberCameraParmissionResult(
 fun rememberStorageParmissionResult(
     onGrant: () -> Unit
 ): PermissionResultLauncher {
-    val launcher =  rememberLauncherForActivityResult(
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGrant ->
         if (isGrant) {
@@ -86,20 +92,21 @@ fun rememberStorageParmissionResult(
         }
     }
     return PermissionResultLauncher(
-        LocalContext.current,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        launcher
+        context = context,
+        permission = Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        launcher = launcher
     )
 }
 
 data class WifiResultLauncher(
-    private val context: Context,
+    private val wifiManager: WifiManager,
     private val launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
 ) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
-    private val wifiManager = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-    val launch = if (isAfterAndroidX()) launcher.launch(intent) else { }
+    val launch = {
+        if (DevicePropaty.isAfterAndroidX()) launcher.launch(intent)
+    }
     val isEnabled = wifiManager.isWifiEnabled
 }
 
@@ -107,20 +114,17 @@ data class WifiResultLauncher(
 fun rememberWifiResult(
     onEnable: () -> Unit
 ): WifiResultLauncher {
-    val launcher =  rememberLauncherForActivityResult(
+    val wifiManager =
+        LocalContext.current.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+    val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
-        onEnable()
+        if (wifiManager.isWifiEnabled) {
+            onEnable()
+        }
     }
-    return if (isAfterAndroidX()) {
-        WifiResultLauncher(
-            LocalContext.current,
-            launcher
-        )
-    } else {
-        WifiResultLauncher(
-            LocalContext.current,
-            launcher
-        )
-    }
+    return WifiResultLauncher(
+        wifiManager = wifiManager,
+        launcher = launcher
+    )
 }

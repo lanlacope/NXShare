@@ -10,6 +10,10 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MINETYPE
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.removeStringsForFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -25,7 +29,7 @@ class ContentsSaver(_context: Context) {
 
         isSaving = true
 
-        if (isAfterAndroidX()) {
+        if (DevicePropaty.isAfterAndroidX()) {
             saveFileToStorage(data)
         } else {
             saveFileToStorageLegasy(data)
@@ -77,10 +81,10 @@ class ContentsSaver(_context: Context) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun createCollection(type: String): Uri {
         when(type) {
-            DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
+            SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
                 return MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
-            DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
+            SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
                 return MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
         }
@@ -91,7 +95,7 @@ class ContentsSaver(_context: Context) {
     private fun createContentsValue(type: String, fileName: String, consoleName: String): ContentValues {
         return ContentValues().apply {
             when(type) {
-                DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
+                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, MINETYPE.JPG)
                     put(MediaStore.Images.Media.IS_PENDING, true)
@@ -99,7 +103,7 @@ class ContentsSaver(_context: Context) {
                         MediaStore.Images.ImageColumns.RELATIVE_PATH,
                         "${Environment.DIRECTORY_PICTURES}/$FOLDER_THIS/$consoleName/")
                 }
-                DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
+                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Video.Media.MIME_TYPE, MINETYPE.MP4)
                     put(MediaStore.Video.Media.IS_PENDING, true)
@@ -115,10 +119,10 @@ class ContentsSaver(_context: Context) {
     private fun updateContentsValue(type: String): ContentValues {
         return ContentValues().apply {
             when(type) {
-                DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
+                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.IS_PENDING, false)
                 }
-                DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
+                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.IS_PENDING, false)
                 }
             }
@@ -163,8 +167,8 @@ class ContentsSaver(_context: Context) {
 
     private fun selectDirectory(type: String): String {
         when (type) {
-            DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
-            DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
+            SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
+            SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
             else -> throw IllegalAccessException()
         }
     }

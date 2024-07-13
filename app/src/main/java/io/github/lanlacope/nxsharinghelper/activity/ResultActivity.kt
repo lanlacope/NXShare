@@ -38,7 +38,8 @@ import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiResult
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
-import io.github.lanlacope.nxsharinghelper.clazz.getGameId
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.makeToast
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentsData
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import kotlinx.coroutines.launch
@@ -159,7 +160,6 @@ private fun Navigation() {
         )
 
         if (isScanned) {
-
             val onShareButtonClick = {
                 val contentsSharer = ContentsSharer(context)
                 val intent = contentsSharer.createCustomChooserIntrnt(contentsData.value.copy())
@@ -219,7 +219,7 @@ private fun Navigation() {
                 if (storagePermissionResult.isGranted) {
                     save()
                 } else {
-                    storagePermissionResult.launch
+                    storagePermissionResult.launch()
                 }
             }
 
@@ -279,7 +279,7 @@ private fun Navigation() {
             }
         }
 
-        val captureResulte =  rememberCaptureResult { wifiConfig ->
+        val captureResult =  rememberCaptureResult { wifiConfig ->
 
             // ビューの更新
             isScanned = false
@@ -292,24 +292,22 @@ private fun Navigation() {
         }
 
         val wifiResult = rememberWifiResult {
-            captureResulte.launch
+            captureResult.launch()
         }
 
         val cameraParmissionResult = rememberCameraParmissionResult {
-            wifiResult.launch
+            wifiResult.launch()
         }
 
-
-
-        val onScanButtonClick = {
+        val onScanButtonClick: () -> Unit = {
             if (cameraParmissionResult.isGranted) {
                 if (wifiResult.isEnabled) {
-                    cameraParmissionResult.launch
+                    captureResult.launch()
                 } else {
-                    wifiResult.launch
+                    wifiResult.launch()
                 }
             } else {
-                cameraParmissionResult.launch
+                cameraParmissionResult.launch()
             }
         }
 

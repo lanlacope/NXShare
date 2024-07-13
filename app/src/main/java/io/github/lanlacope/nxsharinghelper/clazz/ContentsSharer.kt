@@ -15,6 +15,9 @@ import android.widget.Toast
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MINETYPE
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import java.io.File
 
 class ContentsSharer(val context: Context) {
@@ -23,12 +26,12 @@ class ContentsSharer(val context: Context) {
 
         val intent = ShareCompat.IntentBuilder(context).apply {
             when (data.fileType) {
-                DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
+                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
                     setType(MINETYPE.JPG)
                     setChooserTitle(context.getString(R.string.permission_share_photo))
                 }
 
-                DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
+                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
                     setType(MINETYPE.MP4)
                     setChooserTitle(context.getString(R.string.permission_share_movie))
                 }
@@ -61,7 +64,7 @@ class ContentsSharer(val context: Context) {
     fun createCustomChooserIntrnt(data: DownloadData) : Intent {
 
         val title = when (data.fileType) {
-            DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
+            SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
                 context.getString(R.string.permission_share_photo)
             }
 
@@ -83,7 +86,7 @@ class ContentsSharer(val context: Context) {
                 PackageManager.MATCH_DEFAULT_ONLY
             )
 
-        if (isAfterAndroidX()) {
+        if (DevicePropaty.isAfterAndroidX()) {
 
             val chooserIntent = Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
 
@@ -136,11 +139,11 @@ class ContentsSharer(val context: Context) {
     fun createSendableIntent(data: DownloadData): Intent {
         return Intent().apply {
             when (data.fileType) {
-                DOWNLOAD_JSON_PROPATY.FILETYPE_PHOTO -> {
+                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
                     setType(MINETYPE.JPG)
                 }
 
-                DOWNLOAD_JSON_PROPATY.FILETYPE_MOVIE -> {
+                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
                     setType(MINETYPE.MP4)
                 }
             }
