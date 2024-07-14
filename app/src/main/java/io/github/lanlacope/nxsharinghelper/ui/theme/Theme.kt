@@ -5,6 +5,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 
 private val LightColorScheme = lightColorScheme(
     primary = PaupleDark,
@@ -29,9 +32,14 @@ fun NXSharingHelperTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
+    var colorScheme = when {
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+
+    when (SettingManager(LocalContext.current).getAppTheme()) {
+        SETTING_JSON_PROPATY.THEME_LIGHT -> LightColorScheme
+        SETTING_JSON_PROPATY.THEME_DARK -> DarkColorScheme
     }
 
     /*

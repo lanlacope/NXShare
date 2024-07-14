@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,10 +38,121 @@ import androidx.compose.ui.window.Dialog
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
+import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
+import io.github.lanlacope.nxsharinghelper.widgit.Row
 import java.io.File
+
+@Composable
+fun ChangeAppThemeDialog(
+    shown: MutableState<Boolean>,
+    selectedTheme: MutableState<String>
+) {
+
+    var _selectedTheme by remember {
+        mutableStateOf(selectedTheme.value)
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            _selectedTheme = selectedTheme.value
+        }
+    }
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+                selectedTheme.value = _selectedTheme
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
+
+                    SETTING_JSON_PROPATY.APP_THEME_LIST.forEach { theme ->
+                        ThemeSelector(
+                            theme = theme,
+                            selectedTheme = selectedTheme
+                        )
+                    }
+
+                    TextButton(
+                        onClick = {
+                            TODO()
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.End)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.dialog_poitive_apply),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ThemeSelector(
+    theme: String,
+    selectedTheme: MutableState<String>
+) {
+    val settingManager = SettingManager(LocalContext.current)
+    val onClick = {
+        selectedTheme.value = theme
+        settingManager.changeAppTheme(theme)
+    }
+
+    Row(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+
+    ) {
+        RadioButton(
+            selected = theme == selectedTheme.value,
+            onClick = onClick,
+            modifier = Modifier
+                .wrapContentSize()
+                .align(Alignment.CenterVertically)
+                .padding(start = 10.dp)
+
+        )
+
+        Text(
+            text = when (theme) {
+                SETTING_JSON_PROPATY.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
+                SETTING_JSON_PROPATY.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
+                else -> stringResource(id = R.string.summary_theme_system)
+            },
+            maxLines = 1,
+            minLines = 1,
+            modifier = Modifier
+                .wrapContentSize()
+                .align(Alignment.CenterVertically)
+
+        )
+    }
+}
 
 @Composable
 fun AddMySetDialog(

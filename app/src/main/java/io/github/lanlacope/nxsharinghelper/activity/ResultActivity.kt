@@ -257,26 +257,26 @@ private fun Navigation() {
             }
         }
 
-        val onConnection: () -> Unit = {
-            scope.launch {
-                try {
+        val onConnection = ConnectionManager.OnConnection(
+            onSuccesful = {
+                scope.launch {
                     // ビューの更新
                     navigationMessage = context.getString(R.string.waiting_download)
 
                     contentsData.download()
 
+                    ConnectionManager(context).disconnection()
+
                     // ビューの更新
                     isScanned = true
                     navigationMessage = context.getString(R.string.succesful_download)
-
-                } catch (e: Exception) {
-                    // ビューの更新
-                    navigationMessage = context.getString(R.string.failed_download)
-                } finally {
-                    ConnectionManager(context).disconnection()
                 }
+            },
+            onFailed = {
+                ConnectionManager(context).disconnection()
+                navigationMessage = context.getString(R.string.failed_connect)
             }
-        }
+        )
 
         val captureResult =  rememberCaptureResult { wifiConfig ->
 

@@ -21,13 +21,22 @@ object AppPropaty {
     }
 
     object SETTING_JSON_PROPATY {
-        val SUBSTITUTE_CONNECTION_ENABlED: String = "SubstituteConnectionEnabled"
+        val APP_THEME: String = "ThemeType"
+        val THEME_SYSTEM: String = "SystemTheme"
+        val THEME_LIGHT: String = "LightTheme"
+        val THEME_DARK: String = "DarkTheme"
+        val APP_THEME_LIST: List<String> = listOf(
+            THEME_SYSTEM,
+            THEME_LIGHT,
+            THEME_DARK
+        )
+        val ALTERNATIVE_CONNECTION_ENABlED: String = "AlternativeConnectionEnabled"
     }
 
     object APP_JSON_PROPATY {
         val PACKAGE_NAME: String = "PackageName"
         val PACKAGE_TYPE: String = "PackageType"
-        val TYPE_NONE: String = "NotUse"
+        val TYPE_NONE: String = "NONE"
         val PAKCAGE_ENABLED: String = "PackageEnabled"
     }
 

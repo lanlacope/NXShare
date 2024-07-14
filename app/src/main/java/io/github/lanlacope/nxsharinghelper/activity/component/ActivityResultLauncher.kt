@@ -1,6 +1,5 @@
 package io.github.lanlacope.nxsharinghelper.activity.component
 
-import android.Manifest
 import android.app.Activity.WIFI_SERVICE
 import android.content.Context
 import android.content.Intent
@@ -18,7 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity
-import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity.WifiConfig
+import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 
 data class CaptureResultLauncher(

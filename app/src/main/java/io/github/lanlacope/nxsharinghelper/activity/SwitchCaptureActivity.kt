@@ -14,6 +14,7 @@ import com.journeyapps.barcodescanner.CaptureManager
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_LOCALHOST
 import com.google.zxing.client.android.R as zR
 
@@ -86,11 +87,6 @@ class SwitchCaptureActivity : Activity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return barcodeScannerView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
     }
-
-    data class WifiConfig(
-        val ssid: String,
-        val password: String
-    )
 
     class Contract : ActivityResultContract<ScanOptions, Result<WifiConfig>>() {
 

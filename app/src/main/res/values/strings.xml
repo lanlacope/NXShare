@@ -30,6 +30,9 @@
     <string name="dialog_poitive_add">Add</string>
 
     <string name="dialog_title_comfirm">Confirm</string>
+
+    <string name="dialog_title_theme">Select App Theme</string>
+
     <string name="dialog_title_myset_add">Add New MySet</string>
     <string name="dialog_title_myset_edit">Edit MySet</string>
     <string name="dialog_title_game_add">Add New GameData</string>
@@ -57,8 +60,12 @@
     <string name="setting_app">Apps</string>
     <string name="setting_myset">MySets</string>
 
-    <string name="summary_substituteconnection_enabbled">Use Substitute Connection</string>
-    <string name="summary_app_enabled">Use this app</string>
+    <string name="summary_theme">App Theme</string>
+    <string name="summary_theme_system">Follow the System\'s Theme</string>
+    <string name="summary_theme_light">Light Theme</string>
+    <string name="summary_theme_dark">Dark Theme</string>
+    <string name="summary_alternative_connection_enabled">Use Alternative Connection</string>
+    <string name="summary_app_enabled">Use This App</string>
     <string name="summary_app_type">MySet</string>
     <string name="summart_type_nothing">Use Nothing</string>
     <string name="summary_myset_removed"

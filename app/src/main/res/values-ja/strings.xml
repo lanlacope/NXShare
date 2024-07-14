@@ -31,6 +31,9 @@
     <string name="dialog_poitive_add">追加</string>
 
     <string name="dialog_title_comfirm">確認</string>
+
+    <string name="dialog_title_theme">アプリテーマ選択</string>
+
     <string name="dialog_title_myset_add">新規マイセット追加</string>
     <string name="dialog_title_myset_edit">マイセット編集</string>
     <string name="dialog_title_game_add">新規ゲーム追加</string>
@@ -52,7 +55,11 @@
     <string name="setting_app">アプリ</string>
     <string name="setting_myset">マイセット</string>
 
-    <string name="summary_substituteconnection_enabbled">代替的な説置く方法を使用</string>
+    <string name="summary_theme">アプリテーマ</string>
+    <string name="summary_theme_system">システムのテーマに従う</string>
+    <string name="summary_theme_light">ライトテーマ</string>
+    <string name="summary_theme_dark">ダークテーマ</string>
+    <string name="summary_alternative_connection_enabled">代替的な説置く方法を使用</string>
     <string name="summary_app_enabled">このアプリを使う</string>
     <string name="summary_app_type">マイセット</string>
     <string name="summart_type_nothing">何も使わない</string>

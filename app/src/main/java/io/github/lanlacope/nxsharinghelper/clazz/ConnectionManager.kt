@@ -11,13 +11,20 @@ import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity.WifiConfig
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 
 class ConnectionManager(_context: Context) {
+
+    data class WifiConfig(
+        val ssid: String,
+        val password: String
+    )
+
+    data class OnConnection(
+        val onSuccesful: () -> Unit,
+        val onFailed: () -> Unit
+    )
 
     private val context = _context.applicationContext
 
@@ -28,19 +35,19 @@ class ConnectionManager(_context: Context) {
         private var lastNetworkId = -1
     }
 
-    fun start(config: WifiConfig, onConnect: () -> Unit) {
+    fun start(config: WifiConfig, onConnection: OnConnection) {
         try {
             if (DevicePropaty.isAfterAndroidX()) {
-                if (SettingManager(context).getSubstituteConnectionEnabled()){
-                    connectSwitch(config.ssid, config.password, onConnect)
+                if (SettingManager(context).getAlternativeConnectionEnabled()){
+                    connectSwitch(config.ssid, config.password, onConnection)
                 } else {
-                    connectSwitchSubstitute(config.ssid, config.password, onConnect)
+                    connectSwitchSubstitute(config.ssid, config.password, onConnection)
                 }
             } else {
-                connectSwitchLegacy(config.ssid, config.password, onConnect)
+                connectSwitchLegacy(config.ssid, config.password, onConnection)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            onConnection.onFailed()
         }
     }
 
@@ -65,7 +72,7 @@ class ConnectionManager(_context: Context) {
     private fun connectSwitch(
         ssid: String,
         password: String,
-        onConnect: () -> Unit
+        onConnect: OnConnection
     ) {
 
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
@@ -85,9 +92,9 @@ class ConnectionManager(_context: Context) {
                 super.onAvailable(network)
                 networkCallback = this
                 if (connectivityManager.bindProcessToNetwork(network)) {
-                    onConnect()
+                    onConnect.onSuccesful
                 } else {
-                    noficateFaild()
+                    onConnect.onFailed
                     disconnection()
                 }
             }
@@ -108,7 +115,7 @@ class ConnectionManager(_context: Context) {
     private fun connectSwitchLegacy(
         ssid: String,
         password: String,
-        onConnect: () -> Unit
+        onConnect: OnConnection
     ) {
 
         wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -131,9 +138,9 @@ class ConnectionManager(_context: Context) {
             wifiManager.disconnect()
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
-            onConnect()
+            onConnect.onSuccesful()
         } else {
-            noficateFaild()
+            onConnect.onFailed()
         }
     }
 
@@ -141,7 +148,7 @@ class ConnectionManager(_context: Context) {
     private fun connectSwitchSubstitute(
         ssid: String,
         password: String,
-        onConnect: () -> Unit
+        onConnect: OnConnection
     ) {
         val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
             .setSsid(ssid)
@@ -157,7 +164,7 @@ class ConnectionManager(_context: Context) {
         val status = wifiManager.addNetworkSuggestions(suggestionsList)
 
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            noficateFaild()
+            onConnect.onFailed()
             return
         }
 
@@ -168,10 +175,10 @@ class ConnectionManager(_context: Context) {
                 super.onAvailable(network)
                 networkCallback = this
                 if (connectivityManager.bindProcessToNetwork(network)) {
-                    onConnect()
+                    onConnect.onSuccesful
                 } else {
                     disconnection()
-                    noficateFaild()
+                    onConnect.onFailed()
                 }
             }
 
@@ -185,10 +192,5 @@ class ConnectionManager(_context: Context) {
             networkRequest,
             networkCallback as NetworkCallback
         )
-    }
-
-    private fun noficateFaild() {
-        Toast.makeText(context, context.getString(R.string.failed_connect), Toast.LENGTH_SHORT)
-            .show()
     }
 }
