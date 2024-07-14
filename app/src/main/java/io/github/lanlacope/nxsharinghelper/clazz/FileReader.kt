@@ -44,12 +44,14 @@ class FileReader(context: Context) : FileSelector(context) {
         return null
     }
 
+    @Suppress("unused")
     fun getTypeName(file: File): String {
         val jsonObject = JSONObject(file.readText())
         return jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
     }
 
     // ファイルの表示用名
+    @Suppress("unused")
     fun getTypeNames(): List<String> {
         try {
             val files = getMySetFiles()

@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
@@ -48,7 +47,6 @@ class EditActivity: ComponentActivity() {
                 ) {
                     SettingList()
                 }
-
             }
         }
     }
