@@ -1,10 +1,23 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import androidx.compose.runtime.MutableState
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import org.json.JSONObject
 
 class SettingManager(context: Context) : FileSelector(context) {
+
+    companion object {
+        lateinit var activeTheme: MutableState<String>
+    }
+
+    fun setActiveTheme(_observedTheme: MutableState<String>) {
+        activeTheme = _observedTheme
+    }
+
+    private fun updateTheme(theme: String) {
+        activeTheme.value = theme
+    }
 
     fun getAppTheme(): String {
         val file = getSettingFile()
@@ -32,6 +45,8 @@ class SettingManager(context: Context) : FileSelector(context) {
         jsonObject.put(SETTING_JSON_PROPATY.APP_THEME, theme)
 
         file.writeText(jsonObject.toString())
+
+        updateTheme(theme)
     }
 
     fun getAlternativeConnectionEnabled(): Boolean {

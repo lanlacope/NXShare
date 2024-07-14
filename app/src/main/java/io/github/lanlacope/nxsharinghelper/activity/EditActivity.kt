@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.lanlacope.nxsharinghelper.R
@@ -94,7 +95,7 @@ fun SettingList() {
             )
             Text(
                 text = selectedTheme.value,
-                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
                 style = TextStyle(
                     color = Gray
                 ),
@@ -103,7 +104,7 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(all = 60.dp)
+                    .padding(end = 20.dp)
 
             )
 

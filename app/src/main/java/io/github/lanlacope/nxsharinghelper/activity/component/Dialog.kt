@@ -82,7 +82,7 @@ fun ChangeAppThemeDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_theme))
 
                     SETTING_JSON_PROPATY.APP_THEME_LIST.forEach { theme ->
                         ThemeSelector(
@@ -94,6 +94,7 @@ fun ChangeAppThemeDialog(
                     TextButton(
                         onClick = {
                             settingManager.changeAppTheme(selectedTheme.value)
+                            shown.value = false
                         },
                         modifier = Modifier
                             .wrapContentSize()
