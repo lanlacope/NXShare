@@ -42,7 +42,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
-import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
@@ -54,7 +54,7 @@ class EditPackageInfoActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NXSharingHelperTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

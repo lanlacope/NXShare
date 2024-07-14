@@ -31,7 +31,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
-import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 
 class EditActivity: ComponentActivity() {
@@ -40,7 +40,7 @@ class EditActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         setContent {
-            NXSharingHelperTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

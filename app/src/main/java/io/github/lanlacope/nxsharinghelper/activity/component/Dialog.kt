@@ -41,7 +41,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
-import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 import java.io.File
@@ -709,7 +709,7 @@ private fun DialogTextField(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun LicensePreViewLight() {
-    NXSharingHelperTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -738,7 +738,7 @@ private fun LicensePreViewLight() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun LicensePreViewLight2() {
-    NXSharingHelperTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -760,7 +760,7 @@ private fun LicensePreViewLight2() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun LicensePreViewLight3() {
-    NXSharingHelperTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

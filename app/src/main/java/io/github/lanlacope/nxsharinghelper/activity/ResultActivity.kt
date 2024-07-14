@@ -40,7 +40,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentsData
-import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +52,7 @@ class ResultActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NXSharingHelperTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

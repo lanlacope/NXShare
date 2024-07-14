@@ -48,7 +48,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
-import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
 import java.io.File
 
@@ -58,7 +58,7 @@ class EditGameInfoActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NXSharingHelperTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

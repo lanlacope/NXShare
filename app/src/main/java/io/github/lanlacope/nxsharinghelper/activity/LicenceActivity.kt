@@ -24,14 +24,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.text.HtmlCompat
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 
 class LicenceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NXSharingHelperTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -104,7 +104,7 @@ private fun Licence() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 private fun LicensePreViewLight() {
-    NXSharingHelperTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -117,7 +117,7 @@ private fun LicensePreViewLight() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun LicensePreViewDark() {
-    NXSharingHelperTheme {
+    AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background

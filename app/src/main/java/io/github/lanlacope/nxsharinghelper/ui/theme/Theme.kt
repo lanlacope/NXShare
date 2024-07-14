@@ -30,7 +30,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun NXSharingHelperTheme(
+fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
