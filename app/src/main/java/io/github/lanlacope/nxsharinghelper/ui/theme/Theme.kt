@@ -38,8 +38,8 @@ fun NXSharingHelperTheme(
     }
 
     when (SettingManager(LocalContext.current).getAppTheme()) {
-        SETTING_JSON_PROPATY.THEME_LIGHT -> LightColorScheme
-        SETTING_JSON_PROPATY.THEME_DARK -> DarkColorScheme
+        SETTING_JSON_PROPATY.THEME_LIGHT -> colorScheme = LightColorScheme
+        SETTING_JSON_PROPATY.THEME_DARK -> colorScheme = DarkColorScheme
     }
 
     /*

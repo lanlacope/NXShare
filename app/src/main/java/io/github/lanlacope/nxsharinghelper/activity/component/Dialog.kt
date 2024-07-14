@@ -39,7 +39,6 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
@@ -52,6 +51,8 @@ fun ChangeAppThemeDialog(
     shown: MutableState<Boolean>,
     selectedTheme: MutableState<String>
 ) {
+
+    val settingManager = SettingManager(LocalContext.current)
 
     var _selectedTheme by remember {
         mutableStateOf(selectedTheme.value)
@@ -92,7 +93,7 @@ fun ChangeAppThemeDialog(
 
                     TextButton(
                         onClick = {
-                            TODO()
+                            settingManager.changeAppTheme(selectedTheme.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()
@@ -115,10 +116,8 @@ fun ThemeSelector(
     theme: String,
     selectedTheme: MutableState<String>
 ) {
-    val settingManager = SettingManager(LocalContext.current)
     val onClick = {
         selectedTheme.value = theme
-        settingManager.changeAppTheme(theme)
     }
 
     Row(
