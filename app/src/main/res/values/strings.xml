@@ -2,14 +2,12 @@
     <string name="app_name">NXShare</string>
 
     <!-- Navigation Message -->
-    <string name="failed_connect">
-        Failed connecting Switch\n
-        Please retry
-    </string>
     <string name="waiting_connection">
         Now connection\n
         Please wait…
     </string>
+    <string name="failed_connect">Failed connecting Switch…</string>
+
     <string name="waiting_download">
         Now download\n
         Please wait…
@@ -59,6 +57,7 @@
     <string name="setting_app">Apps</string>
     <string name="setting_myset">MySets</string>
 
+    <string name="summary_substituteconnection_enabbled">Use Substitute Connection</string>
     <string name="summary_app_enabled">Use this app</string>
     <string name="summary_app_type">MySet</string>
     <string name="summart_type_nothing">Use Nothing</string>

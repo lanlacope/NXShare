@@ -45,7 +45,7 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_APP_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
 
 
 class EditPackageInfoActivity : ComponentActivity() {
@@ -294,7 +294,7 @@ private fun TypeSelector(
         )
 
         Text(
-            text = if (type != SETTING_APP_JSON_PROPATY.TYPE_NONE) type else stringResource(id = R.string.summart_type_nothing),
+            text = if (type != APP_JSON_PROPATY.TYPE_NONE) type else stringResource(id = R.string.summart_type_nothing),
             maxLines = 1,
             minLines = 1,
             modifier = Modifier

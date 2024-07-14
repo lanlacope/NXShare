@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_APP_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_GAME_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
 import org.json.JSONObject
 import java.io.File
@@ -27,23 +27,23 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     ) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
-        val type = fileReader.getShareType(packageName)?: SETTING_APP_JSON_PROPATY.TYPE_NONE
+        val type = fileReader.getShareType(packageName)?: APP_JSON_PROPATY.TYPE_NONE
         val types = fileReader.getTypeNamesWithNone()
     }
 
     data class CommonInfo(
         private val jsonObject: JSONObject
     ) {
-        val title = jsonObject.getString(SETTING_GAME_JSON_PROPATY.COMMON_TITLE)
-        val text = jsonObject.getString(SETTING_GAME_JSON_PROPATY.COMMON_TEXT)
+        val title = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
+        val text = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TEXT)
     }
 
     data class GameInfo(
         private val jsonObject: JSONObject
     ) {
-        val title = jsonObject.getString(SETTING_GAME_JSON_PROPATY.GAME_TITLE)
-        val id = jsonObject.getString(SETTING_GAME_JSON_PROPATY.GAME_ID)
-        val text = jsonObject.getString(SETTING_GAME_JSON_PROPATY.GAME_TEXT)
+        val title = jsonObject.getString(GAME_JSON_PROPATY.GAME_TITLE)
+        val id = jsonObject.getString(GAME_JSON_PROPATY.GAME_ID)
+        val text = jsonObject.getString(GAME_JSON_PROPATY.GAME_TEXT)
     }
 
     fun getAppInfo(): List<AppInfo> {
@@ -98,7 +98,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
     fun getGameInfo(file: File): List<GameInfo> {
         val jsonObject = JSONObject(file.readText())
-        val jsonArray = jsonObject.getJSONArray(SETTING_GAME_JSON_PROPATY.GAME_DATA)
+        val jsonArray = jsonObject.getJSONArray(GAME_JSON_PROPATY.GAME_DATA)
         val info = jsonArray.mapIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
             GameInfo(gameData)

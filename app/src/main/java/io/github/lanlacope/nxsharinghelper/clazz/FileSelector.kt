@@ -1,7 +1,7 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_GAME_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import org.json.JSONObject
 import java.io.File
 
@@ -9,7 +9,9 @@ open class FileSelector(private val context: Context) {
 
     companion object {
         val FOLDER_THIS: String = "NXShare"
-        val FOLDER_SETTING = "Setting"
+        val FOLDER_SETTING: String = "setting"
+        val FILE_SETTING: String = "setting"
+        val FOLDER_DATA = "data"
         val FILE_APP = "app.json"
         val FOLDER_MYSET = "myset"
     }
@@ -22,8 +24,22 @@ open class FileSelector(private val context: Context) {
         return file
     }
 
+    fun getSettingFile(): File {
+        val file = File(getSettingFolder(), FILE_SETTING)
+        file.createNewFile()
+        return file
+    }
+
+    fun getDataFolder(): File {
+        val file = File(context.getExternalFilesDir(null), FOLDER_DATA)
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        return file
+    }
+
     fun getMySetFolder(): File {
-        val file =  File(getSettingFolder(), FOLDER_MYSET)
+        val file =  File(getDataFolder(), FOLDER_MYSET)
         if (!file.exists()) {
             file.mkdir()
         }
@@ -31,8 +47,8 @@ open class FileSelector(private val context: Context) {
     }
 
     // パッケージごとの設定ファイルを個別取得
-    fun getAppSettingFile(): File {
-        val file = File(getSettingFolder(), FILE_APP)
+    fun getAppDataFile(): File {
+        val file = File(getDataFolder(), FILE_APP)
         file.createNewFile()
         return file
     }
@@ -48,7 +64,7 @@ open class FileSelector(private val context: Context) {
         val files = getMySetFiles()
         files.forEach { file ->
             val jsonObject = JSONObject(file.readText())
-            if (jsonObject.getString(SETTING_GAME_JSON_PROPATY.COMMON_TITLE) == typeName) {
+            if (jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE) == typeName) {
                 return Result.success(file)
             }
         }

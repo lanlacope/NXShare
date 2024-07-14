@@ -215,7 +215,7 @@ private fun Navigation() {
             }
 
             val onSaveButtonClick: () -> Unit = {
-                if (storagePermissionResult.isGranted) {
+                if (storagePermissionResult.isGranted()) {
                     save()
                 } else {
                     storagePermissionResult.launch()
@@ -299,8 +299,8 @@ private fun Navigation() {
         }
 
         val onScanButtonClick: () -> Unit = {
-            if (cameraParmissionResult.isGranted) {
-                if (wifiResult.isEnabled) {
+            if (cameraParmissionResult.isGranted()) {
+                if (wifiResult.isEnabled()) {
                     captureResult.launch()
                 } else {
                     wifiResult.launch()

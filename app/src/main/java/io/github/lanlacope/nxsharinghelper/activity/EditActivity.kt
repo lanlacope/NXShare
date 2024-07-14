@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXSharingHelperTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 
@@ -58,21 +59,26 @@ fun SettingList() {
         val TEXT_PADDING = 10.dp
         
         val context = LocalContext.current
+        val settingManager = SettingManager(context)
 
-        var cheacked by remember {
-            mutableStateOf(false)
+        var substituteConnectionEnabled by remember {
+            mutableStateOf(settingManager.getSubstituteConnectionEnabled())
         }
+
+        val onSwitchChange = {
+            substituteConnectionEnabled = !substituteConnectionEnabled
+            settingManager.changeSubstituteConnectionEnabled(substituteConnectionEnabled)
+        }
+
         Box(
-            onClick = {
-                cheacked = !cheacked
-            },
+            onClick = onSwitchChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
 
         ) {
             Text(
-                text = "未実装",
+                text = stringResource(id = R.string.summary_substituteconnection_enabbled),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier
@@ -83,9 +89,10 @@ fun SettingList() {
             )
 
             Switch(
-                checked = cheacked,
+                checked = substituteConnectionEnabled,
                 onCheckedChange = {
-                    cheacked = !cheacked
+                    substituteConnectionEnabled = !substituteConnectionEnabled
+                    settingManager.changeSubstituteConnectionEnabled(substituteConnectionEnabled)
                 },
                 modifier = Modifier
                     .wrapContentSize()

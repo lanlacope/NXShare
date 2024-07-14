@@ -9,8 +9,11 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
+import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity.WifiConfig
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 
@@ -26,15 +29,35 @@ class ConnectionManager(_context: Context) {
     }
 
     fun start(config: WifiConfig, onConnect: () -> Unit) {
-
         try {
             if (DevicePropaty.isAfterAndroidX()) {
-                connectSwitch(config.ssid, config.password, onConnect)
+                if (SettingManager(context).getSubstituteConnectionEnabled()){
+                    connectSwitch(config.ssid, config.password, onConnect)
+                } else {
+                    connectSwitchSubstitute(config.ssid, config.password, onConnect)
+                }
             } else {
                 connectSwitchLegacy(config.ssid, config.password, onConnect)
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    fun disconnection() {
+        if (DevicePropaty.isAfterAndroidX()) {
+            connectivityManager.bindProcessToNetwork(null)
+            if (networkCallback != null) {
+                connectivityManager.unregisterNetworkCallback(networkCallback!!)
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            if (lastNetworkId != -1) {
+                wifiManager.disconnect()
+                wifiManager.enableNetwork(lastNetworkId, true)
+                wifiManager.reconnect()
+                lastNetworkId = -1
+            }
         }
     }
 
@@ -44,8 +67,6 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: () -> Unit
     ) {
-
-        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
@@ -57,18 +78,23 @@ class ConnectionManager(_context: Context) {
             .setNetworkSpecifier(wifiNetworkSpecifier)
             .build()
 
+        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
         networkCallback = object : NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
                 networkCallback = this
                 if (connectivityManager.bindProcessToNetwork(network)) {
                     onConnect()
+                } else {
+                    noficateFaild()
+                    disconnection()
                 }
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                connectivityManager.unregisterNetworkCallback(this)
+                disconnection()
             }
         }
 
@@ -106,23 +132,63 @@ class ConnectionManager(_context: Context) {
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
             onConnect()
+        } else {
+            noficateFaild()
         }
     }
 
-    fun disconnection() {
-        if (DevicePropaty.isAfterAndroidX()) {
-            connectivityManager.bindProcessToNetwork(null)
-            if (networkCallback != null) {
-                connectivityManager.unregisterNetworkCallback(networkCallback!!)
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun connectSwitchSubstitute(
+        ssid: String,
+        password: String,
+        onConnect: () -> Unit
+    ) {
+        val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
+            .setSsid(ssid)
+            .setWpa2Passphrase(password)
+            .setIsAppInteractionRequired(true)
+            .build()
+
+        val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+
+        val suggestionsList = listOf(wifiNetworkSuggestion)
+        val status = wifiManager.addNetworkSuggestions(suggestionsList)
+
+        if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+            noficateFaild()
+            return
+        }
+
+        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        networkCallback = object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                networkCallback = this
+                if (connectivityManager.bindProcessToNetwork(network)) {
+                    onConnect()
+                } else {
+                    disconnection()
+                    noficateFaild()
+                }
             }
-        } else {
-            @Suppress("DEPRECATION")
-            if (lastNetworkId != -1) {
-                wifiManager.disconnect()
-                wifiManager.enableNetwork(lastNetworkId, true)
-                wifiManager.reconnect()
-                lastNetworkId = -1
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                disconnection()
             }
         }
+
+        connectivityManager.registerNetworkCallback(
+            networkRequest,
+            networkCallback as NetworkCallback
+        )
+    }
+
+    private fun noficateFaild() {
+        Toast.makeText(context, context.getString(R.string.failed_connect), Toast.LENGTH_SHORT)
+            .show()
     }
 }

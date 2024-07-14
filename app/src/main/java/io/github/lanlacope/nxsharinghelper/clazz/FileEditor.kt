@@ -5,8 +5,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_APP_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_GAME_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
 
@@ -14,7 +14,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {
 
-        val isExists = (getMySetFileByTitle(name).isSuccess || name == SETTING_APP_JSON_PROPATY.TYPE_NONE)
+        val isExists = (getMySetFileByTitle(name).isSuccess || name == APP_JSON_PROPATY.TYPE_NONE)
         if (isExists) {
             return Result.failure(Exception())
         }
@@ -28,9 +28,9 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         val file = createFileResult.getOrNull()
         val jsonObject = JSONObject().apply {
-            put(SETTING_GAME_JSON_PROPATY.COMMON_TITLE, name)
-            put(SETTING_GAME_JSON_PROPATY.COMMON_TEXT, "")
-            put(SETTING_GAME_JSON_PROPATY.GAME_DATA, JSONArray())
+            put(GAME_JSON_PROPATY.COMMON_TITLE, name)
+            put(GAME_JSON_PROPATY.COMMON_TEXT, "")
+            put(GAME_JSON_PROPATY.GAME_DATA, JSONArray())
         }
         file!!.writeText(jsonObject.toString())
         return Result.success(file)
@@ -49,12 +49,12 @@ class FileEditor(context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
         val lastTitle = try {
-            jsonObject.getString(SETTING_GAME_JSON_PROPATY.COMMON_TITLE)
+            jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
         } catch (e: Exception) {
             title
         }
-        jsonObject.put(SETTING_GAME_JSON_PROPATY.COMMON_TITLE, title)
-        jsonObject.put(SETTING_GAME_JSON_PROPATY.COMMON_TEXT, text)
+        jsonObject.put(GAME_JSON_PROPATY.COMMON_TITLE, title)
+        jsonObject.put(GAME_JSON_PROPATY.COMMON_TEXT, text)
         file.writeText(jsonObject.toString())
 
         if (title != lastTitle) {
@@ -72,23 +72,23 @@ class FileEditor(context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
-        val jsonArray = jsonObject.getJSONArray(SETTING_GAME_JSON_PROPATY.GAME_DATA)
+        val jsonArray = jsonObject.getJSONArray(GAME_JSON_PROPATY.GAME_DATA)
 
         jsonArray.forEachIndexOnly { index ->
             val parsedData = jsonArray.getJSONObject(index)
-            if (parsedData.getString(SETTING_GAME_JSON_PROPATY.GAME_ID) == id) {
+            if (parsedData.getString(GAME_JSON_PROPATY.GAME_ID) == id) {
                 return Result.failure(Exception())
             }
         }
 
         val gameData = JSONObject().apply {
-            put(SETTING_GAME_JSON_PROPATY.GAME_TITLE, title)
-            put(SETTING_GAME_JSON_PROPATY.GAME_ID, id)
-            put(SETTING_GAME_JSON_PROPATY.GAME_TEXT, text)
+            put(GAME_JSON_PROPATY.GAME_TITLE, title)
+            put(GAME_JSON_PROPATY.GAME_ID, id)
+            put(GAME_JSON_PROPATY.GAME_TEXT, text)
         }
 
         jsonArray.put(gameData)
-        jsonObject.put(SETTING_GAME_JSON_PROPATY.GAME_DATA, jsonArray)
+        jsonObject.put(GAME_JSON_PROPATY.GAME_DATA, jsonArray)
         file.writeText(jsonObject.toString())
         return Result.success(GameInfo(gameData))
     }
@@ -102,17 +102,17 @@ class FileEditor(context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
-        val jsonArray = jsonObject.getJSONArray(SETTING_GAME_JSON_PROPATY.GAME_DATA)
+        val jsonArray = jsonObject.getJSONArray(GAME_JSON_PROPATY.GAME_DATA)
 
         jsonArray.forEachIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
-            if (gameData.getString(SETTING_GAME_JSON_PROPATY.GAME_ID) == id) {
+            if (gameData.getString(GAME_JSON_PROPATY.GAME_ID) == id) {
                 gameData.apply {
-                    put(SETTING_GAME_JSON_PROPATY.GAME_TITLE, title)
-                    put(SETTING_GAME_JSON_PROPATY.GAME_TEXT, text)
+                    put(GAME_JSON_PROPATY.GAME_TITLE, title)
+                    put(GAME_JSON_PROPATY.GAME_TEXT, text)
                 }
                 jsonArray.put(index, gameData)
-                jsonObject.put(SETTING_GAME_JSON_PROPATY.GAME_DATA, jsonArray)
+                jsonObject.put(GAME_JSON_PROPATY.GAME_DATA, jsonArray)
                 file.writeText(jsonObject.toString())
                 return
             }
@@ -126,13 +126,13 @@ class FileEditor(context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
-        val jsonArray = jsonObject.getJSONArray(SETTING_GAME_JSON_PROPATY.GAME_DATA)
+        val jsonArray = jsonObject.getJSONArray(GAME_JSON_PROPATY.GAME_DATA)
 
         jsonArray.forEachIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
-            if (gameData.getString(SETTING_GAME_JSON_PROPATY.GAME_ID) == id) {
+            if (gameData.getString(GAME_JSON_PROPATY.GAME_ID) == id) {
                 jsonArray.remove(index)
-                jsonObject.put(SETTING_GAME_JSON_PROPATY.GAME_DATA, jsonArray)
+                jsonObject.put(GAME_JSON_PROPATY.GAME_DATA, jsonArray)
                 file.writeText(jsonObject.toString())
                 return
             }
@@ -140,7 +140,7 @@ class FileEditor(context: Context) : FileSelector(context) {
     }
 
     fun changeShareEnabled(packageName: String, isEnable: Boolean) {
-        val file = getAppSettingFile()
+        val file = getAppDataFile()
         val jsonArray = try {
             JSONArray(file.readText())
         } catch (e: Exception) {
@@ -151,8 +151,8 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
-            if (jsonObject.getString(SETTING_APP_JSON_PROPATY.PACKAGE_NAME) == packageName) {
-                jsonObject.put(SETTING_APP_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
+            if (jsonObject.getString(APP_JSON_PROPATY.PACKAGE_NAME) == packageName) {
+                jsonObject.put(APP_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
                 jsonArray.put(index, jsonObject)
                 isFound = true
             }
@@ -160,8 +160,8 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         if (!isFound) {
             val jsonObject = JSONObject().apply {
-                put(SETTING_APP_JSON_PROPATY.PACKAGE_NAME, packageName)
-                put(SETTING_APP_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
+                put(APP_JSON_PROPATY.PACKAGE_NAME, packageName)
+                put(APP_JSON_PROPATY.PAKCAGE_ENABLED, isEnable)
             }
             jsonArray.put(jsonObject)
         }
@@ -170,7 +170,7 @@ class FileEditor(context: Context) : FileSelector(context) {
     }
 
     fun changeShareType (packageName: String, name: String) {
-        val file = getAppSettingFile()
+        val file = getAppDataFile()
         val jsonArray = try {
             JSONArray(file.readText())
         } catch (e: Exception) {
@@ -181,8 +181,8 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
-            if (jsonObject.getString(SETTING_APP_JSON_PROPATY.PACKAGE_NAME) == packageName) {
-                jsonObject.put(SETTING_APP_JSON_PROPATY.PACKAGE_TYPE, name)
+            if (jsonObject.getString(APP_JSON_PROPATY.PACKAGE_NAME) == packageName) {
+                jsonObject.put(APP_JSON_PROPATY.PACKAGE_TYPE, name)
                 jsonArray.put(index, jsonObject)
                 isFound = true
                 return@forEachIndexOnly
@@ -191,8 +191,8 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         if (!isFound) {
             val jsonObject = JSONObject().apply {
-                put(SETTING_APP_JSON_PROPATY.PACKAGE_NAME, packageName)
-                put(SETTING_APP_JSON_PROPATY.PACKAGE_TYPE, name)
+                put(APP_JSON_PROPATY.PACKAGE_NAME, packageName)
+                put(APP_JSON_PROPATY.PACKAGE_TYPE, name)
             }
             jsonArray.put(jsonObject)
         }
@@ -202,7 +202,7 @@ class FileEditor(context: Context) : FileSelector(context) {
 
     fun updateShareType(newType: String, lastType: String) {
 
-        val file = getAppSettingFile()
+        val file = getAppDataFile()
         val jsonArray = try {
             JSONArray(file.readText())
         } catch (e: Exception) {
@@ -211,8 +211,8 @@ class FileEditor(context: Context) : FileSelector(context) {
 
         jsonArray.forEachIndexOnly { index ->
             val jsonObject = jsonArray.getJSONObject(index)
-            if (jsonObject.getString(SETTING_GAME_JSON_PROPATY.COMMON_TITLE) == lastType) {
-                jsonObject.put(SETTING_GAME_JSON_PROPATY.COMMON_TITLE, newType)
+            if (jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE) == lastType) {
+                jsonObject.put(GAME_JSON_PROPATY.COMMON_TITLE, newType)
                 jsonArray.put(index, jsonObject)
             }
         }

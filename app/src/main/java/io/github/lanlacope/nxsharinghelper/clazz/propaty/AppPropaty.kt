@@ -20,14 +20,18 @@ object AppPropaty {
         val FILETYPE_MOVIE: String = "movie"
     }
 
-    object SETTING_APP_JSON_PROPATY {
+    object SETTING_JSON_PROPATY {
+        val SUBSTITUTE_CONNECTION_ENABlED: String = "SubstituteConnectionEnabled"
+    }
+
+    object APP_JSON_PROPATY {
         val PACKAGE_NAME: String = "PackageName"
         val PACKAGE_TYPE: String = "PackageType"
         val TYPE_NONE: String = "NotUse"
         val PAKCAGE_ENABLED: String = "PackageEnabled"
     }
 
-    object SETTING_GAME_JSON_PROPATY {
+    object GAME_JSON_PROPATY {
         val COMMON_TITLE: String = "CommonTitle"
         val COMMON_TEXT: String = "CommonText"
         val GAME_DATA: String = "GameData"

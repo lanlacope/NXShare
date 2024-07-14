@@ -3,14 +3,12 @@
     <string name="app_name">NXシェア</string>
 
     <!-- Navigation Message -->
-    <string name="failed_connect">
-        Switchと接続できませんでした\n
-        もう一度試してください
-    </string>
-        <string name="waiting_connection">
+    <string name="waiting_connection">
         接続中です\n
         しばらく待ってください
     </string>
+    <string name="failed_connect">Switchと接続できませんでした……</string>
+
     <string name="waiting_download">
         ダウンロード中です\n
         しばらく待ってください
@@ -54,6 +52,7 @@
     <string name="setting_app">アプリ</string>
     <string name="setting_myset">マイセット</string>
 
+    <string name="summary_substituteconnection_enabbled">代替的な説置く方法を使用</string>
     <string name="summary_app_enabled">このアプリを使う</string>
     <string name="summary_app_type">マイセット</string>
     <string name="summart_type_nothing">何も使わない</string>
