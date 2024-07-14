@@ -37,6 +37,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.activity.component.DrawOutAnimated
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
@@ -92,7 +93,7 @@ private fun PackageList() {
                     app = app
                 )
             }
-            if (isExpanded) {
+            DrawOutAnimated(visible = isExpanded) {
                 PackageSetting(
                     packageName = app.packageName
                 )
@@ -247,7 +248,7 @@ private fun PackageSetting(
             )
         }
 
-        if (isExpanded) {
+        DrawOutAnimated(visible = isExpanded) {
             val selectedType = remember {
                 mutableStateOf(shareInfo.type)
             }

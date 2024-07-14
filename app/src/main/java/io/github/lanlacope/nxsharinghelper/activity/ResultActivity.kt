@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -32,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.activity.component.DrawOutAnimated
+import io.github.lanlacope.nxsharinghelper.activity.component.SlideInAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiResult
@@ -142,23 +145,26 @@ private fun Navigation() {
             )
         }
 
-        Text(
-            textAlign = TextAlign.Center,
-            text = navigationMessage,
-            modifier = Modifier
-                .wrapContentSize()
-                .constrainAs(navigation) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.matchParent
-                    height = Dimension.wrapContent
-                }
+        AnimatedContent(targetState = navigationMessage) { message ->
+            Text(
+                textAlign = TextAlign.Center,
+                text = message,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .constrainAs(navigation) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.matchParent
+                        height = Dimension.wrapContent
+                    }
 
-        )
+            )
+        }
 
-        if (isScanned) {
+        SlideInAnimated(visible = isScanned) {
+
             val onShareButtonClick = {
                 val contentsSharer = ContentsSharer(context)
                 val intent = contentsSharer.createCustomChooserIntrnt(contentsData.value.copy())
@@ -210,9 +216,10 @@ private fun Navigation() {
                 }
             }
 
-            val storagePermissionResult = rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-                save()
-            }
+            val storagePermissionResult =
+                rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+                    save()
+                }
 
             val onSaveButtonClick: () -> Unit = {
                 if (storagePermissionResult.isGranted()) {
@@ -278,7 +285,7 @@ private fun Navigation() {
             }
         )
 
-        val captureResult =  rememberCaptureResult { wifiConfig ->
+        val captureResult = rememberCaptureResult { wifiConfig ->
 
             // ビューの更新
             isScanned = false
@@ -294,9 +301,10 @@ private fun Navigation() {
             captureResult.launch()
         }
 
-        val cameraParmissionResult = rememberParmissionResult(permission = Manifest.permission.CAMERA) {
-            wifiResult.launch()
-        }
+        val cameraParmissionResult =
+            rememberParmissionResult(permission = Manifest.permission.CAMERA) {
+                wifiResult.launch()
+            }
 
         val onScanButtonClick: () -> Unit = {
             if (cameraParmissionResult.isGranted()) {
