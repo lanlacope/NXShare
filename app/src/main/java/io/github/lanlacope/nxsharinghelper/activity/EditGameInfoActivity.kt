@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
@@ -27,6 +26,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,10 +39,12 @@ import androidx.compose.ui.unit.sp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.AddGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.AddMySetDialog
+import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.EditCommonInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.EditGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
+import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
 import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
@@ -70,13 +72,12 @@ class EditGameInfoActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MySetList(
 ) {
     val fileSelector = FileSelector(LocalContext.current)
     val files = remember {
-        mutableStateOf(fileSelector.getMySetFiles())
+        fileSelector.getMySetFiles().toMutableStateList()
     }
 
     Column(
@@ -106,13 +107,13 @@ private fun MySetList(
         }
         HorizontalPager(
             state = rememberPagerState(
-                pageCount = { files.value.size }
+                pageCount = { files.size }
             ),
             modifier = Modifier.fillMaxSize()
 
         ) { page ->
             MySet(
-                file = files.value[page]
+                file = files[page]
             )
         }
 
@@ -150,7 +151,8 @@ private fun MySet(
         ) {
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 item {
                     MySetCommon(
@@ -159,7 +161,10 @@ private fun MySet(
                         isParentRemoved = isRemoved
                     )
                 }
-                items(games.value) { game ->
+                animatedItems(
+                    items = games.value,
+                    key = { it.id }
+                ) { game ->
                     MySetItem(
                         gameInfo = game,
                         fileName = file.name
@@ -305,12 +310,11 @@ private fun MySetItem(
         mutableStateOf(gameInfo.title)
     }
     val id = gameInfo.id
-
     val text = remember {
         mutableStateOf(gameInfo.text)
     }
 
-    if (!isRemoved.value) {
+    DrawDownAnimated(visible = !isRemoved.value) {
         Column(
             onClick = {
                 shownEditDialog.value = true
@@ -321,7 +325,6 @@ private fun MySetItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-
 
         ) {
             Text(

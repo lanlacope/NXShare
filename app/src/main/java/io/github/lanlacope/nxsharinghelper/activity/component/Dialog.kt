@@ -19,9 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -157,7 +159,7 @@ fun ThemeSelector(
 @Composable
 fun AddMySetDialog(
     shown: MutableState<Boolean>,
-    files: MutableState<List<File>>
+    files: SnapshotStateList<File>
 ) {
     var shownWarning by remember {
         mutableStateOf(false)
@@ -216,7 +218,7 @@ fun AddMySetDialog(
                             onClick = {
                                 val result = fileEditor.addMySet(title.value)
                                 if (result.isSuccess) {
-                                    files.value += result.getOrNull()!!
+                                    files.add(result.getOrNull()!!)
                                     shown.value = false
                                 } else {
                                     shownWarning = true
@@ -770,7 +772,7 @@ private fun LicensePreViewLight3() {
             }
 
             val list = remember {
-                mutableStateOf(listOf(File(""), File("")))
+                mutableStateListOf(File(""), File(""))
             }
 
             AddMySetDialog(

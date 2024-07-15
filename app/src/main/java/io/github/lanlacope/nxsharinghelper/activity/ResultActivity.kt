@@ -10,6 +10,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.FloatingActionButton
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.DrawOutAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.SlideInAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionResult
@@ -145,25 +145,24 @@ private fun Navigation() {
             )
         }
 
-        AnimatedContent(targetState = navigationMessage) { message ->
+        AnimatedContent(
+            targetState = navigationMessage,
+            modifier = Modifier.fillMaxSize()
+        ) { message ->
             Text(
                 textAlign = TextAlign.Center,
                 text = message,
                 modifier = Modifier
                     .wrapContentSize()
-                    .constrainAs(navigation) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        width = Dimension.matchParent
-                        height = Dimension.wrapContent
-                    }
+
 
             )
         }
 
-        SlideInAnimated(visible = isScanned) {
+        SlideInAnimated(
+            visible = isScanned,
+            modifier = Modifier.fillMaxSize()
+        ) {
 
             val onShareButtonClick = {
                 val contentsSharer = ContentsSharer(context)

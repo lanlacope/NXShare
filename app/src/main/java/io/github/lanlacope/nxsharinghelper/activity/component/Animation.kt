@@ -1,20 +1,59 @@
 package io.github.lanlacope.nxsharinghelper.activity.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 
+
+@Suppress("unused")
 @Composable
-fun DrawOutAnimated(
+fun FadeInAnimated(
+    visible: Boolean,
+    modifier: Modifier = Modifier,
+    label: String = "AnimatedVisibility",
+    content: @Composable() (AnimatedVisibilityScope.() -> Unit)
+) {
+    val enter: EnterTransition = fadeIn()
+    val exit: ExitTransition = fadeOut()
+    AnimatedVisibility(
+        visible = visible,
+        enter = enter,
+        exit = exit,
+        modifier = modifier,
+        label = label,
+        content = content
+    )
+}
+
+@Suppress("unused")
+@Composable
+fun DrawDownAnimated(
     visible: Boolean,
     modifier: Modifier = Modifier,
     label: String = "AnimatedVisibility",
@@ -55,4 +94,49 @@ fun SlideInAnimated(
         label = label,
         content = content
     )
+}
+
+@Composable
+fun FadeInSpaceableAnimated(
+    visible: Boolean,
+    space: Dp,
+    modifier: Modifier = Modifier,
+    contentAlignment: Alignment = Alignment.TopStart,
+    label: String = "AnimatedContent",
+    contentKey: (targetState: Boolean) -> Any? = { it },
+    content: @Composable() AnimatedContentScope.() -> Unit
+) {
+    val transitionSpec: AnimatedContentTransitionScope<Boolean>.() -> ContentTransform = {
+        (fadeIn(animationSpec = tween(300, delayMillis = 90)))
+            .togetherWith(fadeOut(animationSpec = tween(90)))
+    }
+    AnimatedContent(
+        targetState = visible,
+        modifier = modifier,
+        transitionSpec = transitionSpec,
+        contentAlignment = contentAlignment,
+        label = label,
+        contentKey = contentKey
+    ) { isVisible ->
+        if (isVisible) {
+            content()
+        } else {
+            Box(modifier = Modifier.size(space))
+        }
+    }
+}
+
+inline fun <T> LazyListScope.animatedItems(
+    items: List<T>,
+    noinline key: ((item: T) -> Any)? = null,
+    noinline contentType: (item: T) -> Any? = { null },
+    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
+) = items(
+    count = items.size,
+    key = if (key != null) { index: Int -> key(items[index]) } else null,
+    contentType = { index: Int -> contentType(items[index]) }
+) { index ->
+    Box(modifier = Modifier.animateItem()) {
+        itemContent(items[index])
+    }
 }

@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -37,7 +35,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.DrawOutAnimated
+import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
+import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
@@ -75,28 +74,33 @@ private fun PackageList() {
     val apps = infoManager.getAppInfo()
 
     LazyColumn(
+        state = rememberLazyListState(),
         modifier = Modifier
             .fillMaxSize()
     ) {
-        items(apps) { app ->
+        animatedItems(items = apps) { app ->
             var isExpanded by remember {
                 mutableStateOf(false)
             }
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable {
+            Column {
+                Box(
+                    onClick = {
                         isExpanded = !isExpanded
-                    }
-            ) {
-                PackageCard(
-                    app = app
-                )
-            }
-            DrawOutAnimated(visible = isExpanded) {
-                PackageSetting(
-                    packageName = app.packageName
-                )
+                    },
+                    modifier = Modifier
+                        .wrapContentSize()
+
+
+                ) {
+                    PackageCard(
+                        app = app
+                    )
+                }
+                DrawDownAnimated(visible = isExpanded) {
+                    PackageSetting(
+                        packageName = app.packageName
+                    )
+                }
             }
         }
     }
@@ -187,7 +191,6 @@ private fun PackageSetting(
             mutableStateOf(shareInfo.shareEnabled)
         }
 
-
         val onSwitchChange = {
                 cheacked = !cheacked
                 fileEditor.changeShareEnabled(packageName, cheacked)
@@ -248,7 +251,7 @@ private fun PackageSetting(
             )
         }
 
-        DrawOutAnimated(visible = isExpanded) {
+        DrawDownAnimated(visible = isExpanded) {
             val selectedType = remember {
                 mutableStateOf(shareInfo.type)
             }
