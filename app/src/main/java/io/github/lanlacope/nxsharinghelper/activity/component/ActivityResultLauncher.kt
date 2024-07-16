@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.journeyapps.barcodescanner.ScanOptions
@@ -43,7 +44,9 @@ fun rememberCaptureResult(
             onCapture(result.getOrNull()!!)
         }
     }
-    return CaptureResultLauncher(launcher = launcher)
+    return remember {
+        CaptureResultLauncher(launcher = launcher)
+    }
 }
 
 data class PermissionResultLauncher(
@@ -72,11 +75,13 @@ fun rememberParmissionResult(
             onGrant()
         }
     }
-    return PermissionResultLauncher(
-        context = context,
-        permission = permission,
-        launcher = launcher
-    )
+    return remember {
+        PermissionResultLauncher(
+            context = context,
+            permission = permission,
+            launcher = launcher
+        )
+    }
 }
 
 data class WifiResultLauncher(
@@ -106,8 +111,10 @@ fun rememberWifiResult(
             onEnable()
         }
     }
-    return WifiResultLauncher(
-        wifiManager = wifiManager,
-        launcher = launcher
-    )
+    return remember {
+        WifiResultLauncher(
+            wifiManager = wifiManager,
+            launcher = launcher
+        )
+    }
 }

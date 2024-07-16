@@ -12,6 +12,7 @@ import android.net.wifi.WifiNetworkSpecifier
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -54,9 +55,10 @@ class ConnectionManager(_context: Context) {
 
 
     fun start(config: WifiConfig, onConnection: OnConnection) {
+        println("startConnect")
         try {
             if (DevicePropaty.isAfterAndroidX()) {
-                if (SettingManager(context).getAlternativeConnectionEnabled()){
+                if (!SettingManager(context).getAlternativeConnectionEnabled()){
                     connectSwitch(config.ssid, config.password, onConnection)
                 } else {
                     connectSwitchSubstitute(config.ssid, config.password, onConnection)
@@ -65,6 +67,7 @@ class ConnectionManager(_context: Context) {
                 connectSwitchLegacy(config.ssid, config.password, onConnection)
             }
         } catch (e: Exception) {
+            println("oooooooooooooooo")
             onConnection.onFailed(this)
         }
     }
@@ -90,6 +93,8 @@ class ConnectionManager(_context: Context) {
         onConnect: OnConnection
     ) {
 
+        println("nowConnection")
+
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
             .setWpa2Passphrase(password)
@@ -106,14 +111,17 @@ class ConnectionManager(_context: Context) {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                     if (connectivityManager.bindProcessToNetwork(network)) {
+                        println("onAvailable OK")
                         onConnect.onSuccesful(this@ConnectionManager)
                     } else {
+                        println("onAvailable NO")
                         onConnect.onFailed(this@ConnectionManager)
                     }
                 }
 
                 override fun onLost(network: Network) {
                     super.onLost(network)
+                    Toast.makeText(context, "DDDDDDDDDDDDDDDDDd", Toast.LENGTH_LONG).show()
                     connectivityManager.unregisterNetworkCallback(this)
                 }
             }
@@ -126,6 +134,8 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: OnConnection
     ) {
+
+        println("nowConnectionL")
 
         lastNetworkId = wifiManager.connectionInfo.networkId
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -58,8 +59,6 @@ class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        LocalContext
-
         setContent {
             AppTheme {
                 Surface(
@@ -78,7 +77,7 @@ class ResultActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 private fun Navigation() {
     ConstraintLayout (
@@ -153,29 +152,31 @@ private fun Navigation() {
 
         AnimatedContent(
             targetState = navigationMessage,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .wrapContentSize()
+                .constrainAs(navigation) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+
         ) { message ->
             Text(
                 textAlign = TextAlign.Center,
                 text = message,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .constrainAs(navigation) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        end.linkTo(parent.end)
-                        bottom.linkTo(parent.bottom)
-                        width = Dimension.matchParent
-                        height = Dimension.wrapContent
-                    }
-
-
+                modifier = Modifier.wrapContentSize()
             )
         }
 
         SlideInAnimated(
             visible = isScanned,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .wrapContentSize()
+                .constrainAs(shareButton) {
+                    end.linkTo(parent.end)
+                    bottom.linkTo(saveButton.top)
+                }
         ) {
 
             val onShareButtonClick = {
@@ -195,19 +196,10 @@ private fun Navigation() {
                 onLongClick = onShareButtonLongClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
+                    .size(SOMEBUTTON_SIZE)
                     .padding(
                         end = BUTTON_PADDING,
                         bottom = BUTTON_PADDING
-                    )
-                    .constrainAs(shareButton) {
-                        end.linkTo(parent.end)
-                        bottom.linkTo(saveButton.top)
-                        width = Dimension.value(SOMEBUTTON_SIZE)
-                        height = Dimension.value(SOMEBUTTON_SIZE)
-                    }
-                    .combinedClickable(
-                        onClick = {},
-                        onLongClick = onShareButtonLongClick
                     )
 
             ) {
@@ -219,6 +211,17 @@ private fun Navigation() {
                         .padding(all = IMAGE_PADDING)
                 )
             }
+        }
+
+        SlideInAnimated(
+            visible = isScanned,
+            modifier = Modifier
+                .wrapContentSize()
+                .constrainAs(saveButton) {
+                    end.linkTo(parent.end)
+                    bottom.linkTo(scanButton.top)
+                }
+        ) {
 
             val storagePermissionResult =
                 rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
@@ -249,16 +252,12 @@ private fun Navigation() {
                 onLongClick = onSaveButtonLongClick,
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
+                    .size(SOMEBUTTON_SIZE)
                     .padding(
                         end = BUTTON_PADDING,
                         bottom = BUTTON_PADDING
                     )
-                    .constrainAs(saveButton) {
-                        end.linkTo(parent.end)
-                        bottom.linkTo(scanButton.top)
-                        width = Dimension.value(SOMEBUTTON_SIZE)
-                        height = Dimension.value(SOMEBUTTON_SIZE)
-                    }
+
 
             ) {
                 Image(
@@ -275,7 +274,7 @@ private fun Navigation() {
         val onConnection = ConnectionManager.OnConnection(
             onSuccesful = { connectionManager ->
                 scope.launch {
-                    Toast.makeText(context, "AAAAAAAAAAAAAAAAAA", Toast.LENGTH_LONG).show()
+                    println("onSucces")
                     // ビューの更新
                     navigationMessage = context.getString(R.string.waiting_download)
 
@@ -299,6 +298,7 @@ private fun Navigation() {
         )
 
         val captureResult = rememberCaptureResult { wifiConfig ->
+            println("onCapture")
             // ビューの更新
             isScanned = false
             navigationMessage = context.getString(R.string.app_name)

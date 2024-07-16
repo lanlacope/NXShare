@@ -64,7 +64,6 @@ class EditPackageInfoActivity : ComponentActivity() {
                 ) {
                     PackageList()
                 }
-
             }
         }
     }
