@@ -48,6 +48,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentsData
+import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
@@ -87,6 +88,8 @@ private fun Navigation() {
         val context = LocalContext.current
         val clipboardManager = LocalClipboardManager.current
         val scope = rememberCoroutineScope()
+
+        val settingManager = rememberSettingManager()
 
         var isScanned by rememberSaveable {
             mutableStateOf(false)
@@ -231,13 +234,11 @@ private fun Navigation() {
                 }
 
             val onSaveButtonClick: () -> Unit = {
-                if (storagePermissionResult.isGranted()) {
-                    scope.launch {
-                        ContentsSaver(context).save(contentsData.getData().copy())
-                    }
-                } else {
-                    storagePermissionResult.launch()
+                storagePermissionResult.launch()
+                scope.launch {
+                    ContentsSaver(context).save(contentsData.getData().copy())
                 }
+
             }
 
             val onSaveButtonLongClick = {
@@ -292,6 +293,7 @@ private fun Navigation() {
                 }
             },
             onFailed = { connectionManager ->
+                println("onFailed")
                 navigationMessage = context.getString(R.string.failed_connect)
                 connectionManager.disconnection()
             }
@@ -318,14 +320,17 @@ private fun Navigation() {
                 wifiResult.launch()
             }
 
+        val locationParmissionResult =
+            rememberParmissionResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
+                cameraParmissionResult.launch()
+            }
+
         val onScanButtonClick: () -> Unit = {
-            if (cameraParmissionResult.isGranted()) {
-                if (wifiResult.isEnabled()) {
-                    captureResult.launch()
-                } else {
-                    wifiResult.launch()
-                }
+            if (settingManager.getAlternativeConnectionEnabled()) {
+                println("lP")
+                locationParmissionResult.launch()
             } else {
+                println("cP")
                 cameraParmissionResult.launch()
             }
         }

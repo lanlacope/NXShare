@@ -55,7 +55,6 @@ class ConnectionManager(_context: Context) {
 
 
     fun start(config: WifiConfig, onConnection: OnConnection) {
-        println("startConnect")
         try {
             if (DevicePropaty.isAfterAndroidX()) {
                 if (!SettingManager(context).getAlternativeConnectionEnabled()){
@@ -67,7 +66,6 @@ class ConnectionManager(_context: Context) {
                 connectSwitchLegacy(config.ssid, config.password, onConnection)
             }
         } catch (e: Exception) {
-            println("oooooooooooooooo")
             onConnection.onFailed(this)
         }
     }
@@ -92,9 +90,6 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: OnConnection
     ) {
-
-        println("nowConnection")
-
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
             .setWpa2Passphrase(password)
@@ -121,7 +116,6 @@ class ConnectionManager(_context: Context) {
 
                 override fun onLost(network: Network) {
                     super.onLost(network)
-                    Toast.makeText(context, "DDDDDDDDDDDDDDDDDd", Toast.LENGTH_LONG).show()
                     connectivityManager.unregisterNetworkCallback(this)
                 }
             }
@@ -138,10 +132,6 @@ class ConnectionManager(_context: Context) {
         println("nowConnectionL")
 
         lastNetworkId = wifiManager.connectionInfo.networkId
-
-        if (!wifiManager.isWifiEnabled) {
-            wifiManager.isWifiEnabled = true
-        }
 
         val wifiConfig = WifiConfiguration().apply {
             SSID = "\"$ssid\""
@@ -167,6 +157,8 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: OnConnection
     ) {
+        println("nowConnectionS")
+
         val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
             .setSsid(ssid)
             .setWpa2Passphrase(password)
@@ -181,6 +173,7 @@ class ConnectionManager(_context: Context) {
         val status = wifiManager.addNetworkSuggestions(suggestionsList)
 
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+            println("STATUS_NETWORK_SUGGESTIONS_SUCCESS")
             onConnect.onFailed(this@ConnectionManager)
             return
         }
@@ -191,15 +184,17 @@ class ConnectionManager(_context: Context) {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
                     if (connectivityManager.bindProcessToNetwork(network)) {
+                        println("onAvailable ok")
                         onConnect.onSuccesful(this@ConnectionManager)
                     } else {
-                        disconnection()
+                        println("onAvailable no")
                         onConnect.onFailed(this@ConnectionManager)
                     }
                 }
 
                 override fun onLost(network: Network) {
                     super.onLost(network)
+                    println("lost")
                     connectivityManager.unregisterNetworkCallback(this)
                 }
             }
