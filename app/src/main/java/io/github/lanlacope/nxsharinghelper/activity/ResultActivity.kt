@@ -181,13 +181,13 @@ private fun Navigation() {
 
             val onShareButtonClick = {
                 val contentsSharer = ContentsSharer(context)
-                val intent = contentsSharer.createCustomChooserIntrnt(contentsData.value.copy())
+                val intent = contentsSharer.createCustomChooserIntrnt(contentsData.getData().copy())
                 context.startActivity(intent)
             }
 
             val onShareButtonLongClick = {
                 val contentsSharer = ContentsSharer(context)
-                val intent = contentsSharer.createChooserIntent(contentsData.value.copy())
+                val intent = contentsSharer.createChooserIntent(contentsData.getData().copy())
                 context.startActivity(intent)
             }
 
@@ -226,14 +226,14 @@ private fun Navigation() {
             val storagePermissionResult =
                 rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
                     scope.launch {
-                        ContentsSaver(context).save(contentsData.value.copy())
+                        ContentsSaver(context).save(contentsData.getData().copy())
                     }
                 }
 
             val onSaveButtonClick: () -> Unit = {
                 if (storagePermissionResult.isGranted()) {
                     scope.launch {
-                        ContentsSaver(context).save(contentsData.value.copy())
+                        ContentsSaver(context).save(contentsData.getData().copy())
                     }
                 } else {
                     storagePermissionResult.launch()
@@ -241,7 +241,7 @@ private fun Navigation() {
             }
 
             val onSaveButtonLongClick = {
-                val ids = getGameId(contentsData.value.fileNames)
+                val ids = getGameId(contentsData.getData().fileNames)
                 ids.forEach { id ->
                     clipboardManager.setText(AnnotatedString(id))
                 }

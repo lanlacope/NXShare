@@ -28,7 +28,7 @@ data class CaptureResultLauncher(
         .setOrientationLocked(false)
         .setBeepEnabled(false)
 
-    val launch:() -> Unit = {
+    fun launch() {
         launcher.launch(scanOption)
     }
 }
@@ -54,11 +54,11 @@ data class PermissionResultLauncher(
     private val permission: String,
     private val launcher: ManagedActivityResultLauncher<String, Boolean>
 ) {
-    val launch:() -> Unit = {
+    fun launch() {
         launcher.launch(permission)
     }
-    val isGranted:()-> Boolean = {
-        ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+    fun isGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
     }
 }
 
@@ -90,11 +90,11 @@ data class WifiResultLauncher(
 ) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
-    val launch:() -> Unit = {
+    fun launch() {
         if (DevicePropaty.isAfterAndroidX()) launcher.launch(intent)
     }
-    val isEnabled: ()-> Boolean = {
-        wifiManager.isWifiEnabled()
+    fun isEnabled(): Boolean {
+        return wifiManager.isWifiEnabled()
     }
 }
 

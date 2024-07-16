@@ -36,7 +36,9 @@ data class DownloadDataState(
     private val context: Context,
     private val data: MutableState<DownloadData>
 ) {
-    val value = data.value
+    fun getData(): DownloadData {
+        return data.value
+    }
 
     suspend fun download() {
         val contentsDownloader = ContentsDownloader(context)
@@ -76,7 +78,6 @@ private val DownloadDataSaver = Saver<DownloadData, Bundle>(
     }
 )
 
-@Stable
 class ContentsDownloader(val context: Context) {
 
     var downloadData = DownloadData()
