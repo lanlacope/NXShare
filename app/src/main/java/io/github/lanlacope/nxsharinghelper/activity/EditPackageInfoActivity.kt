@@ -46,6 +46,9 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
+import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
+import kotlinx.collections.immutable.toImmutableList
 
 
 class EditPackageInfoActivity : ComponentActivity() {
@@ -70,8 +73,8 @@ class EditPackageInfoActivity : ComponentActivity() {
 @Composable
 private fun PackageList() {
 
-    val infoManager = InfoManager(LocalContext.current)
-    val apps = infoManager.getAppInfo()
+    val infoManager = rememberInfoManager()
+    val apps = infoManager.getAppInfo().toImmutableList()
 
     LazyColumn(
         state = rememberLazyListState(),
@@ -184,7 +187,7 @@ private fun PackageSetting(
     ) {
         val TEXT_PADDING = 10.dp
 
-        val fileEditor = FileEditor(context)
+        val fileEditor = rememberFileEditor()
         val shareInfo = ShareInfo(packageName, context)
 
         var cheacked by remember {
@@ -274,7 +277,7 @@ private fun TypeSelector(
     type: String,
     selectedType: MutableState<String>
 ) {
-    val fileEditor = FileEditor(LocalContext.current)
+    val fileEditor = rememberFileEditor()
     val onClick = {
         selectedType.value = type
         fileEditor.changeShareType(packageName, type)

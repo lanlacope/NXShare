@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
+import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Row
@@ -56,7 +57,7 @@ class EditActivity: ComponentActivity() {
 fun SettingList() {
 
     val context = LocalContext.current
-    val settingManager = SettingManager(context)
+    val settingManager = rememberSettingManager()
 
     Column(
         modifier = Modifier

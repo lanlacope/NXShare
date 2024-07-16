@@ -1,6 +1,10 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -10,6 +14,16 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PR
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
 
+@Suppress("unused")
+@Composable
+fun rememberFileEditor(): FileEditor {
+    val context = LocalContext.current
+    return remember {
+        FileEditor(context)
+    }
+}
+
+@Immutable
 class FileEditor(context: Context) : FileSelector(context) {
 
     fun addMySet(name: String): Result<File> {

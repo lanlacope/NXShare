@@ -1,5 +1,6 @@
 package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
+
 object AppPropaty {
 
     object MINETYPE {

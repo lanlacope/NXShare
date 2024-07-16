@@ -1,10 +1,24 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import org.json.JSONObject
 import java.io.File
 
+@Suppress("unused")
+@Composable
+fun rememberFileSelector(): FileSelector {
+    val context = LocalContext.current
+    return remember {
+        FileSelector(context)
+    }
+}
+
+@Immutable
 open class FileSelector(private val context: Context) {
 
     companion object {

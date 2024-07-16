@@ -3,11 +3,14 @@ package io.github.lanlacope.nxsharinghelper.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CaptureManager
@@ -37,12 +40,15 @@ import com.google.zxing.client.android.R as zR
  * - Modified by pecolan.
  */
 
+@Stable
 class SwitchCaptureActivity : Activity() {
     private lateinit var capture: SwitchCaptureManager
     private lateinit var barcodeScannerView: DecoratedBarcodeView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_BEHIND
 
         barcodeScannerView = initializeContent()
 
@@ -88,6 +94,7 @@ class SwitchCaptureActivity : Activity() {
         return barcodeScannerView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event)
     }
 
+    @Immutable
     class Contract : ActivityResultContract<ScanOptions, Result<WifiConfig>>() {
 
         override fun createIntent(context: Context, input: ScanOptions): Intent {
@@ -110,6 +117,7 @@ class SwitchCaptureActivity : Activity() {
 }
 
 
+@Immutable
 class SwitchCaptureManager(
     val activity: Activity,
     val barcodeView: DecoratedBarcodeView,

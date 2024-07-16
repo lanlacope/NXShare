@@ -89,7 +89,7 @@ data class WifiResultLauncher(
         if (DevicePropaty.isAfterAndroidX()) launcher.launch(intent)
     }
     val isEnabled: ()-> Boolean = {
-        wifiManager.isWifiEnabled
+        wifiManager.isWifiEnabled()
     }
 }
 
@@ -102,7 +102,7 @@ fun rememberWifiResult(
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
-        if (wifiManager.isWifiEnabled) {
+        if (wifiManager.isWifiEnabled()) {
             onEnable()
         }
     }

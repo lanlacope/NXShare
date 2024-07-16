@@ -9,6 +9,10 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MINETYPE
@@ -20,6 +24,16 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
+@Suppress("unused")
+@Composable
+fun rememberContentsSaver(): ContentsSaver {
+    val context = LocalContext.current
+    return remember {
+        ContentsSaver(context)
+    }
+}
+
+@Stable
 class ContentsSaver(_context: Context) {
 
     private val context = _context.applicationContext

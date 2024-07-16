@@ -1,10 +1,25 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import org.json.JSONObject
+import java.io.File
 
+@Suppress("unused")
+@Composable
+fun rememberSettingManager(): SettingManager {
+    val context = LocalContext.current
+    return remember {
+        SettingManager(context)
+    }
+}
+
+@Stable
 class SettingManager(context: Context) : FileSelector(context) {
 
     companion object {

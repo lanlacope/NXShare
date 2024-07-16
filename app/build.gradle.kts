@@ -11,8 +11,8 @@ android {
         applicationId = "io.github.lanlacope.nxsharinghelper"
         minSdk = 23
         targetSdk = 34
-        versionCode = 112
-        versionName = "1.1-alpha-3"
+        versionCode = 120
+        versionName = "1.2-alpha-1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.7.0-beta05")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.activity:activity:1.9.0")
+    implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -73,6 +73,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
 }

@@ -42,6 +42,8 @@ import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
+import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
@@ -54,7 +56,7 @@ fun ChangeAppThemeDialog(
     selectedTheme: MutableState<String>
 ) {
 
-    val settingManager = SettingManager(LocalContext.current)
+    val settingManager = rememberSettingManager()
 
     var _selectedTheme by remember {
         mutableStateOf(selectedTheme.value)
@@ -164,7 +166,7 @@ fun AddMySetDialog(
     var shownWarning by remember {
         mutableStateOf(false)
     }
-    val fileEditor = FileEditor(LocalContext.current)
+    val fileEditor = rememberFileEditor()
 
     val title = remember {
         mutableStateOf("")
@@ -246,7 +248,7 @@ fun RemoveMySetDialog(
     fileName: String,
     isParentRemoved: MutableState<Boolean>
 ) {
-    val fileEditor = FileEditor(LocalContext.current)
+    val fileEditor = rememberFileEditor()
 
     if (shown.value) {
         Dialog(
@@ -298,7 +300,7 @@ fun EditCommonInfoDialog(
     title: MutableState<String>,
     text: MutableState<String>
 ) {
-    val fileEditor = FileEditor(LocalContext.current)
+    val fileEditor = rememberFileEditor()
 
     var _title by remember {
         mutableStateOf(title.value)
@@ -372,13 +374,13 @@ fun EditCommonInfoDialog(
 fun AddGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
-    games: MutableState<List<GameInfo>>
+    games: SnapshotStateList<GameInfo>
 ) {
     var shownWarning by remember {
         mutableStateOf(true)
     }
 
-    val fileEditor = FileEditor(LocalContext.current)
+    val fileEditor = rememberFileEditor()
 
     val title = remember {
         mutableStateOf("")
@@ -455,7 +457,7 @@ fun AddGameInfoDialog(
                                         text.value
                                     )
                                 if (result.isSuccess) {
-                                    games.value += result.getOrNull()!!
+                                    games.add(result.getOrNull()!!)
                                     shown.value = false
                                 } else {
                                     shownWarning = true
@@ -487,8 +489,8 @@ fun EditGameInfoDialog(
     id: String,
     text: MutableState<String>
 ) {
-    val fileEditor = FileEditor(LocalContext.current)
     val clipboardManager = LocalClipboardManager.current
+    val fileEditor = rememberFileEditor()
 
     var _title by remember {
         mutableStateOf(title.value)
@@ -585,7 +587,7 @@ fun RemoveGameInfoDialog(
     id: String,
     isParentRemoved: MutableState<Boolean>
 ) {
-    val fileEditor = FileEditor(LocalContext.current)
+    val fileEditor = rememberFileEditor()
 
     if (shown.value) {
         Dialog(
@@ -682,8 +684,6 @@ private fun DialogTextField(
     hint: String,
     singleLine: Boolean = true
 ) {
-    val maxLines = if (singleLine) 1 else Int.MAX_VALUE
-
     OutlinedTextField(
         value = text.value,
         onValueChange = { text.value = it },
@@ -697,7 +697,7 @@ private fun DialogTextField(
                 modifier = Modifier.wrapContentSize()
             )
         },
-        maxLines = maxLines,
+        maxLines = if (singleLine) 1 else Int.MAX_VALUE,
         singleLine = singleLine,
         modifier = Modifier
             .fillMaxWidth()

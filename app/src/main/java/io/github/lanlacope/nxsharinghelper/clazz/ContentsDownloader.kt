@@ -3,7 +3,9 @@ package io.github.lanlacope.nxsharinghelper.clazz
 import android.content.Context
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
@@ -22,6 +24,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+
 
 data class DownloadData(
     val fileType: String = "",
@@ -73,6 +76,7 @@ private val DownloadDataSaver = Saver<DownloadData, Bundle>(
     }
 )
 
+@Stable
 class ContentsDownloader(val context: Context) {
 
     var downloadData = DownloadData()

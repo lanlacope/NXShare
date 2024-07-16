@@ -11,9 +11,24 @@ import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 
+@Suppress("unused")
+@Composable
+fun rememberConnectionManager(): ConnectionManager {
+    val context = LocalContext.current
+    return remember {
+        ConnectionManager(context)
+    }
+}
+
+@Stable
 class ConnectionManager(_context: Context) {
 
     data class WifiConfig(
@@ -22,18 +37,21 @@ class ConnectionManager(_context: Context) {
     )
 
     data class OnConnection(
-        val onSuccesful: () -> Unit,
-        val onFailed: () -> Unit
+        val onSuccesful: (ConnectionManager) -> Unit,
+        val onFailed: (ConnectionManager) -> Unit
     )
 
     private val context = _context.applicationContext
 
-    companion object {
-        private lateinit var connectivityManager: ConnectivityManager
-        private lateinit var wifiManager: WifiManager
-        private var networkCallback: NetworkCallback? = null
-        private var lastNetworkId = -1
+    private val wifiManager by lazy {
+        context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     }
+    private val connectivityManager by lazy {
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    private var lastNetworkId = -1
+
 
     fun start(config: WifiConfig, onConnection: OnConnection) {
         try {
@@ -47,16 +65,13 @@ class ConnectionManager(_context: Context) {
                 connectSwitchLegacy(config.ssid, config.password, onConnection)
             }
         } catch (e: Exception) {
-            onConnection.onFailed()
+            onConnection.onFailed(this)
         }
     }
 
     fun disconnection() {
         if (DevicePropaty.isAfterAndroidX()) {
             connectivityManager.bindProcessToNetwork(null)
-            if (networkCallback != null) {
-                connectivityManager.unregisterNetworkCallback(networkCallback!!)
-            }
         } else {
             @Suppress("DEPRECATION")
             if (lastNetworkId != -1) {
@@ -85,29 +100,23 @@ class ConnectionManager(_context: Context) {
             .setNetworkSpecifier(wifiNetworkSpecifier)
             .build()
 
-        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        networkCallback = object : NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                networkCallback = this
-                if (connectivityManager.bindProcessToNetwork(network)) {
-                    onConnect.onSuccesful
-                } else {
-                    onConnect.onFailed
-                    disconnection()
-                }
-            }
-
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                disconnection()
-            }
-        }
-
         connectivityManager.requestNetwork(
             networkRequest,
-            networkCallback as NetworkCallback
+            object : NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    if (connectivityManager.bindProcessToNetwork(network)) {
+                        onConnect.onSuccesful(this@ConnectionManager)
+                    } else {
+                        onConnect.onFailed(this@ConnectionManager)
+                    }
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    connectivityManager.unregisterNetworkCallback(this)
+                }
+            }
         )
     }
 
@@ -117,8 +126,6 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: OnConnection
     ) {
-
-        wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         lastNetworkId = wifiManager.connectionInfo.networkId
 
@@ -138,9 +145,9 @@ class ConnectionManager(_context: Context) {
             wifiManager.disconnect()
             wifiManager.enableNetwork(networkId, true)
             wifiManager.reconnect()
-            onConnect.onSuccesful()
+            onConnect.onSuccesful(this@ConnectionManager)
         } else {
-            onConnect.onFailed()
+            onConnect.onFailed(this@ConnectionManager)
         }
     }
 
@@ -164,33 +171,28 @@ class ConnectionManager(_context: Context) {
         val status = wifiManager.addNetworkSuggestions(suggestionsList)
 
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            onConnect.onFailed()
+            onConnect.onFailed(this@ConnectionManager)
             return
-        }
-
-        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        networkCallback = object : NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                networkCallback = this
-                if (connectivityManager.bindProcessToNetwork(network)) {
-                    onConnect.onSuccesful
-                } else {
-                    disconnection()
-                    onConnect.onFailed()
-                }
-            }
-
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                disconnection()
-            }
         }
 
         connectivityManager.registerNetworkCallback(
             networkRequest,
-            networkCallback as NetworkCallback
+            object : NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    if (connectivityManager.bindProcessToNetwork(network)) {
+                        onConnect.onSuccesful(this@ConnectionManager)
+                    } else {
+                        disconnection()
+                        onConnect.onFailed(this@ConnectionManager)
+                    }
+                }
+
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    connectivityManager.unregisterNetworkCallback(this)
+                }
+            }
         )
     }
 }

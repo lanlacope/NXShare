@@ -3,13 +3,28 @@ package io.github.lanlacope.nxsharinghelper.clazz
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
+import kotlinx.collections.immutable.toImmutableList
 import org.json.JSONObject
 import java.io.File
 
+@Suppress("unused")
+@Composable
+fun rememberInfoManager(): InfoManager {
+    val context = LocalContext.current
+    return remember {
+        InfoManager(context)
+    }
+}
+
+@Immutable
 class InfoManager(private val context: Context) : FileSelector(context) {
 
     data class AppInfo(
@@ -21,6 +36,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         val packageName = applicationInfo.packageName
     }
 
+
     data class ShareInfo(
         private val packageName: String,
         private val context: Context
@@ -28,8 +44,9 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
         val type = fileReader.getShareType(packageName)?: APP_JSON_PROPATY.TYPE_NONE
-        val types = fileReader.getTypeNamesWithNone()
+        val types = fileReader.getTypeNamesWithNone().toImmutableList()
     }
+
 
     data class CommonInfo(
         private val jsonObject: JSONObject
@@ -37,6 +54,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         val title = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
         val text = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TEXT)
     }
+
 
     data class GameInfo(
         private val jsonObject: JSONObject

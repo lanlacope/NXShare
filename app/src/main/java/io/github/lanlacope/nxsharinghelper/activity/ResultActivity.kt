@@ -1,8 +1,12 @@
 package io.github.lanlacope.nxsharinghelper.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.net.ConnectivityManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
@@ -20,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -53,6 +58,8 @@ class ResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        LocalContext
+
         setContent {
             AppTheme {
                 Surface(
@@ -68,7 +75,6 @@ class ResultActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         ContentsSaver(this).clearCache()
-        finish()
     }
 }
 
@@ -80,7 +86,8 @@ private fun Navigation() {
             .fillMaxSize()
     ) {
         val context = LocalContext.current
-        val scope = CoroutineScope(Dispatchers.Main)
+        val clipboardManager = LocalClipboardManager.current
+        val scope = rememberCoroutineScope()
 
         var isScanned by rememberSaveable {
             mutableStateOf(false)
@@ -213,23 +220,18 @@ private fun Navigation() {
                 )
             }
 
-            val clipboardManager = LocalClipboardManager.current
-
-            val save = {
-                scope.launch {
-                    val contentsSaver = ContentsSaver(context)
-                    contentsSaver.save(contentsData.value.copy())
-                }
-            }
-
             val storagePermissionResult =
                 rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-                    save()
+                    scope.launch {
+                        ContentsSaver(context).save(contentsData.value.copy())
+                    }
                 }
 
             val onSaveButtonClick: () -> Unit = {
                 if (storagePermissionResult.isGranted()) {
-                    save()
+                    scope.launch {
+                        ContentsSaver(context).save(contentsData.value.copy())
+                    }
                 } else {
                     storagePermissionResult.launch()
                 }
@@ -271,28 +273,32 @@ private fun Navigation() {
         }
 
         val onConnection = ConnectionManager.OnConnection(
-            onSuccesful = {
+            onSuccesful = { connectionManager ->
                 scope.launch {
+                    Toast.makeText(context, "AAAAAAAAAAAAAAAAAA", Toast.LENGTH_LONG).show()
                     // ビューの更新
                     navigationMessage = context.getString(R.string.waiting_download)
 
-                    contentsData.download()
-
-                    ConnectionManager(context).disconnection()
+                    try {
+                        contentsData.download()
+                    } catch (e: Exception) {
+                        navigationMessage = context.getString(R.string.failed_download)
+                        connectionManager.disconnection()
+                    }
 
                     // ビューの更新
                     isScanned = true
                     navigationMessage = context.getString(R.string.succesful_download)
+                    connectionManager.disconnection()
                 }
             },
-            onFailed = {
-                ConnectionManager(context).disconnection()
+            onFailed = { connectionManager ->
                 navigationMessage = context.getString(R.string.failed_connect)
+                connectionManager.disconnection()
             }
         )
 
         val captureResult = rememberCaptureResult { wifiConfig ->
-
             // ビューの更新
             isScanned = false
             navigationMessage = context.getString(R.string.app_name)

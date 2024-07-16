@@ -12,6 +12,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
 import android.widget.Toast
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
@@ -21,6 +25,16 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.toArrayList
 import java.io.File
 
+@Suppress("unused")
+@Composable
+fun rememberContentsSharer(): ContentsSharer {
+    val context = LocalContext.current
+    return remember {
+        ContentsSharer(context)
+    }
+}
+
+@Immutable
 class ContentsSharer(val context: Context) {
 
     fun createChooserIntent(data: DownloadData): Intent {
@@ -194,6 +208,7 @@ class ContentsSharer(val context: Context) {
         return pendingIntent
     }
 
+    @Immutable
     class ShareReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {

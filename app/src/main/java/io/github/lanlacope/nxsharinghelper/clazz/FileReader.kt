@@ -1,6 +1,10 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
@@ -9,6 +13,16 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
+@Suppress("unused")
+@Composable
+fun rememberFileReader(): FileReader {
+    val context = LocalContext.current
+    return remember {
+        FileReader(context)
+    }
+}
+
+@Immutable
 class FileReader(context: Context) : FileSelector(context) {
 
     fun getShareEnabled(packageName: String): Boolean {

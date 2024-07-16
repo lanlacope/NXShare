@@ -45,9 +45,10 @@ import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDial
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
-import io.github.lanlacope.nxsharinghelper.clazz.FileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
+import io.github.lanlacope.nxsharinghelper.clazz.rememberFileSelector
+import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Column
@@ -74,7 +75,7 @@ class EditGameInfoActivity : ComponentActivity() {
 @Composable
 private fun MySetList(
 ) {
-    val fileSelector = FileSelector(LocalContext.current)
+    val fileSelector = rememberFileSelector()
     val files = remember {
         fileSelector.getMySetFiles().toMutableStateList()
     }
@@ -137,12 +138,12 @@ private fun MySet(
             mutableStateOf(false)
         }
 
-        val infoManager = InfoManager(LocalContext.current)
+        val infoManager = rememberInfoManager()
         val common by remember {
             mutableStateOf(infoManager.getCommonInfo(file))
         }
         val games = remember {
-            mutableStateOf(infoManager.getGameInfo(file))
+            infoManager.getGameInfo(file).toMutableStateList()
         }
 
         Box(
@@ -161,7 +162,7 @@ private fun MySet(
                     )
                 }
                 animatedItems(
-                    items = games.value,
+                    items = games,
                     key = { it.id }
                 ) { game ->
                     MySetItem(
