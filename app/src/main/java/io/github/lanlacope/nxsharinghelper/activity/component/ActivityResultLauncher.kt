@@ -105,6 +105,7 @@ data class WifiResultLauncher(
                 launcher.launch(intent)
             }
             else {
+                @Suppress("DEPRECATION")
                 wifiManager.isWifiEnabled = true
             }
         } else {
