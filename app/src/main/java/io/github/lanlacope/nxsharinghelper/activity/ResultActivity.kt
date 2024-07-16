@@ -1,18 +1,12 @@
 package io.github.lanlacope.nxsharinghelper.activity
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.net.ConnectivityManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -44,16 +38,14 @@ import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureRes
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiResult
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
-import io.github.lanlacope.nxsharinghelper.clazz.ContentsSaver
-import io.github.lanlacope.nxsharinghelper.clazz.ContentsSharer
+import io.github.lanlacope.nxsharinghelper.clazz.ContentSaver
+import io.github.lanlacope.nxsharinghelper.clazz.ContentSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
-import io.github.lanlacope.nxsharinghelper.clazz.rememberContentsData
+import io.github.lanlacope.nxsharinghelper.clazz.rememberContentData
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 class ResultActivity : ComponentActivity() {
 
@@ -74,7 +66,7 @@ class ResultActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ContentsSaver(this).clearCache()
+        ContentSaver(this).clearCache()
     }
 }
 
@@ -97,7 +89,7 @@ private fun Navigation() {
         var navigationMessage by rememberSaveable() {
             mutableStateOf(context.getString(R.string.app_name))
         }
-        val contentsData = rememberContentsData()
+        val contentsData = rememberContentData()
 
         val SOMEBUTTON_SIZE = 80.dp
         val BUTTON_PADDING = 30.dp
@@ -183,14 +175,14 @@ private fun Navigation() {
         ) {
 
             val onShareButtonClick = {
-                val contentsSharer = ContentsSharer(context)
-                val intent = contentsSharer.createCustomChooserIntrnt(contentsData.getData().copy())
+                val contentSharer = ContentSharer(context)
+                val intent = contentSharer.createCustomChooserIntrnt(contentsData.getData().copy())
                 context.startActivity(intent)
             }
 
             val onShareButtonLongClick = {
-                val contentsSharer = ContentsSharer(context)
-                val intent = contentsSharer.createChooserIntent(contentsData.getData().copy())
+                val contentSharer = ContentSharer(context)
+                val intent = contentSharer.createChooserIntent(contentsData.getData().copy())
                 context.startActivity(intent)
             }
 
@@ -229,14 +221,14 @@ private fun Navigation() {
             val storagePermissionResult =
                 rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
                     scope.launch {
-                        ContentsSaver(context).save(contentsData.getData().copy())
+                        ContentSaver(context).save(contentsData.getData().copy())
                     }
                 }
 
             val onSaveButtonClick: () -> Unit = {
                 storagePermissionResult.launch()
                 scope.launch {
-                    ContentsSaver(context).save(contentsData.getData().copy())
+                    ContentSaver(context).save(contentsData.getData().copy())
                 }
 
             }

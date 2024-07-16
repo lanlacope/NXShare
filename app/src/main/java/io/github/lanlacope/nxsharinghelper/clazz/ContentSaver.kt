@@ -26,15 +26,15 @@ import java.io.FileOutputStream
 
 @Suppress("unused")
 @Composable
-fun rememberContentsSaver(): ContentsSaver {
+fun rememberContentSaver(): ContentSaver {
     val context = LocalContext.current
     return remember {
-        ContentsSaver(context)
+        ContentSaver(context)
     }
 }
 
 @Stable
-class ContentsSaver(_context: Context) {
+class ContentSaver(_context: Context) {
 
     private val context = _context.applicationContext
 

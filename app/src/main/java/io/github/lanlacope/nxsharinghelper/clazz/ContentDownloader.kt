@@ -3,9 +3,7 @@ package io.github.lanlacope.nxsharinghelper.clazz
 import android.content.Context
 import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
@@ -14,7 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.bundleOf
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_LOCALHOST
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,14 +38,14 @@ data class DownloadDataState(
     }
 
     suspend fun download() {
-        val contentsDownloader = ContentsDownloader(context)
-        contentsDownloader.start()
-        data.value = contentsDownloader.downloadData
+        val contentDownloader = ContentDownloader(context)
+        contentDownloader.start()
+        data.value = contentDownloader.downloadData
     }
 }
 
 @Composable
-fun rememberContentsData(): DownloadDataState {
+fun rememberContentData(): DownloadDataState {
     val context = LocalContext.current
     val downloadData = rememberSaveable(stateSaver = DownloadDataSaver) {
         mutableStateOf(DownloadData())
@@ -78,7 +75,7 @@ private val DownloadDataSaver = Saver<DownloadData, Bundle>(
     }
 )
 
-class ContentsDownloader(val context: Context) {
+class ContentDownloader(val context: Context) {
 
     var downloadData = DownloadData()
         private set

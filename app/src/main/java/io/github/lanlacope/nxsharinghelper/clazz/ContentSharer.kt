@@ -8,7 +8,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Parcelable
 import android.widget.Toast
@@ -27,15 +26,15 @@ import java.io.File
 
 @Suppress("unused")
 @Composable
-fun rememberContentsSharer(): ContentsSharer {
+fun rememberContentSharer(): ContentSharer {
     val context = LocalContext.current
     return remember {
-        ContentsSharer(context)
+        ContentSharer(context)
     }
 }
 
 @Immutable
-class ContentsSharer(val context: Context) {
+class ContentSharer(val context: Context) {
 
     fun createChooserIntent(data: DownloadData): Intent {
 

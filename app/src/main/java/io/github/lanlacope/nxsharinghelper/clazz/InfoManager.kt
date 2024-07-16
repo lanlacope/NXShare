@@ -65,21 +65,21 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     }
 
     fun getAppInfo(): List<AppInfo> {
-        val contentsSharer = ContentsSharer(context)
+        val contentSharer = ContentSharer(context)
 
-        val sendJpgIntent = contentsSharer.createSendableIntent(
+        val sendJpgIntent = contentSharer.createSendableIntent(
             DownloadData(
                 fileType = SWITCH_JSON_PROPATY.FILETYPE_PHOTO,
                 fileNames = listOf("a.jpg")
             )
         )
-        val sendJpgsIntent = contentsSharer.createSendableIntent(
+        val sendJpgsIntent = contentSharer.createSendableIntent(
             DownloadData(
                 fileType = SWITCH_JSON_PROPATY.FILETYPE_PHOTO,
                 fileNames = listOf("a.jpg", "b.jpg")
             )
         )
-        val sendMp4Intent = contentsSharer.createSendableIntent(
+        val sendMp4Intent = contentSharer.createSendableIntent(
             DownloadData(
                 fileType = SWITCH_JSON_PROPATY.FILETYPE_MOVIE,
                 fileNames = listOf("a.mp4")
