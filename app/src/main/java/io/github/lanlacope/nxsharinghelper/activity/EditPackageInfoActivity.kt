@@ -38,8 +38,6 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
-import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
-import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
