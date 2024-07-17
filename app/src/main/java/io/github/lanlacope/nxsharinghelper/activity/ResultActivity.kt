@@ -81,8 +81,6 @@ private fun Navigation() {
         val clipboardManager = LocalClipboardManager.current
         val scope = rememberCoroutineScope()
 
-        val settingManager = rememberSettingManager()
-
         var isScanned by rememberSaveable {
             mutableStateOf(false)
         }
