@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -43,10 +42,10 @@ import io.github.lanlacope.nxsharinghelper.activity.component.EditCommonInfoDial
 import io.github.lanlacope.nxsharinghelper.activity.component.EditGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
+import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
-import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
@@ -264,6 +263,10 @@ private fun MySetCommon(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(Alignment.Start)
+                .padding(
+                    start = ComponentValue.DISPLAY_PADDING_START,
+                    end = ComponentValue.DISPLAY_PADDING_END
+                )
         )
         Text(
             text = text.value,
@@ -272,6 +275,11 @@ private fun MySetCommon(
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .align(Alignment.Start)
+                .padding(
+                    start = ComponentValue.DISPLAY_PADDING_START,
+                    end = ComponentValue.DISPLAY_PADDING_END,
+                    bottom = 20.dp
+                )
         )
     }
 
@@ -334,6 +342,10 @@ private fun MySetItem(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .align(Alignment.Start)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        end = ComponentValue.DISPLAY_PADDING_END
+                    )
             )
             Text(
                 text = text.value,
@@ -342,7 +354,11 @@ private fun MySetItem(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .align(Alignment.Start)
-
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        end = ComponentValue.DISPLAY_PADDING_END,
+                        bottom = 10.dp
+                    )
             )
         }
     }

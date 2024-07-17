@@ -2,6 +2,7 @@ package io.github.lanlacope.nxsharinghelper.activity
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
+import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionGrantResult
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
@@ -65,7 +67,7 @@ fun SettingList() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val TEXT_PADDING = 10.dp
+        val TEXT_VERTICAL_PADDING = 15.dp
 
         val shown = remember {
             mutableStateOf(false)
@@ -91,7 +93,11 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(all = TEXT_PADDING)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        top = TEXT_VERTICAL_PADDING,
+                        bottom = TEXT_VERTICAL_PADDING
+                    )
 
             )
             Text(
@@ -109,7 +115,7 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(end = 20.dp)
+                    .padding(end = TEXT_VERTICAL_PADDING)
 
             )
 
@@ -123,19 +129,19 @@ fun SettingList() {
             mutableStateOf(settingManager.getAlternativeConnectionEnabled())
         }
 
-        val wifiStateParmissionResult =
-            rememberParmissionGrantResult(permission = Manifest.permission.CHANGE_WIFI_STATE) {
+        val locationParmissionResult =
+            rememberParmissionGrantResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
                 alternativeConnectionEnabled = !alternativeConnectionEnabled
                 settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
             }
 
-        val locationParmissionResult =
-            rememberParmissionGrantResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
-                wifiStateParmissionResult.launch()
-            }
-
         val onSwitchChange = {
-            locationParmissionResult.launch()
+            if (Build.VERSION_CODES.TIRAMISU > Build.VERSION.SDK_INT) {
+                locationParmissionResult.launch()
+            } else {
+                alternativeConnectionEnabled = !alternativeConnectionEnabled
+                settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
+            }
         }
         Row(
             onClick = onSwitchChange,
@@ -152,7 +158,11 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(all = TEXT_PADDING)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        top = TEXT_VERTICAL_PADDING,
+                        bottom = TEXT_VERTICAL_PADDING
+                    )
 
             )
             Switch(
@@ -163,7 +173,7 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(end = 50.dp)
+                    .padding(end = ComponentValue.DISPLAY_PADDING_END + 30.dp)
 
             )
         }
@@ -186,7 +196,11 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(all = TEXT_PADDING)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        top = TEXT_VERTICAL_PADDING,
+                        bottom = TEXT_VERTICAL_PADDING
+                    )
 
             )
         }
@@ -209,7 +223,11 @@ fun SettingList() {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(all = TEXT_PADDING)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        top = TEXT_VERTICAL_PADDING,
+                        bottom = TEXT_VERTICAL_PADDING
+                    )
 
             )
         }

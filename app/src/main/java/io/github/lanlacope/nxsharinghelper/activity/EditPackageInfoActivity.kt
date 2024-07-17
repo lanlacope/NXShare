@@ -37,6 +37,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
@@ -136,7 +137,10 @@ private fun PackageCard(app: AppInfo) {
                     width = Dimension.value(ICON_SIZE)
                     height = Dimension.value(ICON_SIZE)
                 }
-                .padding(end = 10.dp)
+                .padding(
+                    start = ComponentValue.DISPLAY_PADDING_START,
+                    end = 16.dp
+                )
 
         )
 
@@ -184,7 +188,7 @@ private fun PackageSetting(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val TEXT_PADDING = 10.dp
+        val TEXT_VERTICAL_PADDING = 10.dp
 
         val fileEditor = rememberFileEditor()
         val shareInfo = ShareInfo(packageName, context)
@@ -198,8 +202,9 @@ private fun PackageSetting(
                 fileEditor.changeShareEnabled(packageName, cheacked)
             }
 
-        Box(
+        Row(
             onClick = onSwitchChange,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -211,8 +216,12 @@ private fun PackageSetting(
                 minLines = 1,
                 modifier = Modifier
                     .wrapContentSize()
-                    .align(Alignment.CenterStart)
-                    .padding(all = TEXT_PADDING)
+                    .align(Alignment.CenterVertically)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        top = TEXT_VERTICAL_PADDING,
+                        bottom = TEXT_VERTICAL_PADDING
+                    )
 
             )
 
@@ -223,8 +232,8 @@ private fun PackageSetting(
                 },
                 modifier = Modifier
                     .wrapContentSize()
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 50.dp)
+                    .align(Alignment.CenterVertically)
+                    .padding(end = ComponentValue.DISPLAY_PADDING_END + 30.dp)
 
             )
         }
@@ -240,7 +249,6 @@ private fun PackageSetting(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(end = 50.dp)
 
         ) {
             Text(
@@ -250,7 +258,11 @@ private fun PackageSetting(
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(all = TEXT_PADDING)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        top = TEXT_VERTICAL_PADDING,
+                        bottom = TEXT_VERTICAL_PADDING
+                    )
             )
             Image(
                 painter = painterResource(id = R.drawable.baseline_keyboard_arrow_down_24),
@@ -258,7 +270,7 @@ private fun PackageSetting(
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(end = 50.dp)
+                    .padding(end = ComponentValue.DISPLAY_PADDING_END + 40.dp)
             )
         }
 
@@ -268,12 +280,14 @@ private fun PackageSetting(
             }
             val typeNames = shareInfo.types
 
-            typeNames.forEach { type ->
-                TypeSelector(
-                    packageName = packageName,
-                    type = type,
-                    selectedType = selectedType,
-                )
+            Column {
+                typeNames.forEach { type ->
+                    TypeSelector(
+                        packageName = packageName,
+                        type = type,
+                        selectedType = selectedType,
+                    )
+                }
             }
         }
     }
@@ -285,6 +299,8 @@ private fun TypeSelector(
     type: String,
     selectedType: MutableState<String>
 ) {
+    val TEXT_VERTICAL_PADDING = 5.dp
+
     val fileEditor = rememberFileEditor()
     val onClick = {
         selectedType.value = type
@@ -304,7 +320,7 @@ private fun TypeSelector(
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.CenterVertically)
-                .padding(start = 10.dp)
+                .padding(start = ComponentValue.DISPLAY_PADDING_START)
 
         )
 
@@ -315,6 +331,10 @@ private fun TypeSelector(
             modifier = Modifier
                 .wrapContentSize()
                 .align(Alignment.CenterVertically)
+                .padding(
+                    top = TEXT_VERTICAL_PADDING,
+                    bottom = TEXT_VERTICAL_PADDING
+                )
 
         )
     }
