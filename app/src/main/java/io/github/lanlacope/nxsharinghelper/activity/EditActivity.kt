@@ -123,10 +123,15 @@ fun SettingList() {
             mutableStateOf(settingManager.getAlternativeConnectionEnabled())
         }
 
-        val locationParmissionResult =
-            rememberParmissionGrantResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
+        val wifiStateParmissionResult =
+            rememberParmissionGrantResult(permission = Manifest.permission.CHANGE_WIFI_STATE) {
                 alternativeConnectionEnabled = !alternativeConnectionEnabled
                 settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
+            }
+
+        val locationParmissionResult =
+            rememberParmissionGrantResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
+                wifiStateParmissionResult.launch()
             }
 
         val onSwitchChange = {
