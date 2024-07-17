@@ -153,8 +153,7 @@ fun SettingList() {
             Switch(
                 checked = alternativeConnectionEnabled,
                 onCheckedChange = {
-                    alternativeConnectionEnabled = !alternativeConnectionEnabled
-                    settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
+                    onSwitchChange()
                 },
                 modifier = Modifier
                     .wrapContentSize()
