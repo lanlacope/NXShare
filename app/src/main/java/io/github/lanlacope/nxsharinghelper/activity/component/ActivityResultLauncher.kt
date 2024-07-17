@@ -51,14 +51,14 @@ fun rememberCaptureResult(
     }
 }
 
-data class PermissionResultLauncher(
+data class PermissionGrantResultLauncher(
     private val context: Context,
     private val permission: String,
     private val launcher: ManagedActivityResultLauncher<String, Boolean>,
     private val onAlreadyGranted: () -> Unit
 ) {
     fun launch() {
-        if (isGranted()) {
+        if (!isGranted()) {
             launcher.launch(permission)
         } else {
             onAlreadyGranted()
@@ -70,10 +70,10 @@ data class PermissionResultLauncher(
 }
 
 @Composable
-fun rememberParmissionResult(
+fun rememberParmissionGrantResult(
     permission: String,
     onGrant: () -> Unit
-): PermissionResultLauncher {
+): PermissionGrantResultLauncher {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -83,7 +83,7 @@ fun rememberParmissionResult(
         }
     }
     return remember {
-        PermissionResultLauncher(
+        PermissionGrantResultLauncher(
             context = context,
             permission = permission,
             launcher = launcher,
@@ -92,7 +92,7 @@ fun rememberParmissionResult(
     }
 }
 
-data class WifiResultLauncher(
+data class WifiEnableResultLauncher(
     private val wifiManager: WifiManager,
     private val launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     private val onAlreadyEnabled: () -> Unit
@@ -100,7 +100,7 @@ data class WifiResultLauncher(
     @RequiresApi(Build.VERSION_CODES.Q)
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
     fun launch() {
-        if (isEnabled()) {
+        if (!isEnabled()) {
             if (DevicePropaty.isAfterAndroidX()) {
                 launcher.launch(intent)
             }
@@ -118,9 +118,9 @@ data class WifiResultLauncher(
 }
 
 @Composable
-fun rememberWifiResult(
+fun rememberWifiEnableResult(
     onEnable: () -> Unit
-): WifiResultLauncher {
+): WifiEnableResultLauncher {
     val wifiManager =
         LocalContext.current.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
     val launcher = rememberLauncherForActivityResult(
@@ -131,7 +131,7 @@ fun rememberWifiResult(
         }
     }
     return remember {
-        WifiResultLauncher(
+        WifiEnableResultLauncher(
             wifiManager = wifiManager,
             launcher = launcher,
             onAlreadyEnabled = onEnable

@@ -85,7 +85,7 @@ class ContentSaver(_context: Context) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
                     context,
-                    "${data.fileNames.size}${context.getString(R.string.saved_notification)}",
+                    context.getString(R.string.saved_notification, data.fileNames.size),
                     Toast.LENGTH_LONG
                 ).show()
             }

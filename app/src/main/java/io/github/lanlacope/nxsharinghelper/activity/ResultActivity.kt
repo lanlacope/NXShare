@@ -35,8 +35,8 @@ import androidx.constraintlayout.compose.Dimension
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.SlideInAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionResult
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiResult
+import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionGrantResult
+import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiEnableResult
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
 import io.github.lanlacope.nxsharinghelper.clazz.ContentSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentSharer
@@ -219,7 +219,7 @@ private fun Navigation() {
         ) {
 
             val storagePermissionResult =
-                rememberParmissionResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+                rememberParmissionGrantResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
                     scope.launch {
                         ContentSaver(context).save(contentsData.getData().copy())
                     }
@@ -303,28 +303,19 @@ private fun Navigation() {
             navigationMessage = context.getString(R.string.waiting_connection)
         }
 
-        val wifiResult = rememberWifiResult {
+
+        val wifiResult = rememberWifiEnableResult {
             captureResult.launch()
         }
 
+
         val cameraParmissionResult =
-            rememberParmissionResult(permission = Manifest.permission.CAMERA) {
+            rememberParmissionGrantResult(permission = Manifest.permission.CAMERA) {
                 wifiResult.launch()
             }
 
-        val locationParmissionResult =
-            rememberParmissionResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
-                cameraParmissionResult.launch()
-            }
-
         val onScanButtonClick: () -> Unit = {
-            if (settingManager.getAlternativeConnectionEnabled()) {
-                println("lP")
-                locationParmissionResult.launch()
-            } else {
-                println("cP")
-                cameraParmissionResult.launch()
-            }
+            cameraParmissionResult.launch()
         }
 
         FloatingActionButton(

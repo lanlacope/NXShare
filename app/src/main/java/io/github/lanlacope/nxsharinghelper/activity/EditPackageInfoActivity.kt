@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,8 +90,8 @@ private fun PackageList() {
                         isExpanded = !isExpanded
                     },
                     modifier = Modifier
-                        .wrapContentSize()
-
+                        .fillMaxWidth()
+                        .wrapContentHeight()
 
                 ) {
                     PackageCard(
@@ -230,14 +232,15 @@ private fun PackageSetting(
         var isExpanded by remember {
             mutableStateOf(false)
         }
-        Box(
+        Row(
             onClick = {
                 isExpanded = !isExpanded
             },
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-
+                .padding(end = 50.dp)
 
         ) {
             Text(
@@ -246,8 +249,16 @@ private fun PackageSetting(
                 minLines = 1,
                 modifier = Modifier
                     .wrapContentSize()
-                    .align(Alignment.CenterStart)
+                    .align(Alignment.CenterVertically)
                     .padding(all = TEXT_PADDING)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.baseline_keyboard_arrow_down_24),
+                contentDescription = "DrawDown",
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 50.dp)
             )
         }
 

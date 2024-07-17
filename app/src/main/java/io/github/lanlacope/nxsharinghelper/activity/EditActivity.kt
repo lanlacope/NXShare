@@ -1,5 +1,6 @@
 package io.github.lanlacope.nxsharinghelper.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,7 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
-import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
+import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionGrantResult
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
@@ -93,7 +95,11 @@ fun SettingList() {
 
             )
             Text(
-                text = selectedTheme.value,
+                text = when (selectedTheme.value) {
+                    SETTING_JSON_PROPATY.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
+                    SETTING_JSON_PROPATY.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
+                    else -> stringResource(id = R.string.summary_theme_system)
+                },
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(
                     color = Gray
@@ -113,12 +119,18 @@ fun SettingList() {
             selectedTheme = selectedTheme
         )
 
-        var substituteConnectionEnabled by remember {
+        var alternativeConnectionEnabled by remember {
             mutableStateOf(settingManager.getAlternativeConnectionEnabled())
         }
+
+        val locationParmissionResult =
+            rememberParmissionGrantResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
+                alternativeConnectionEnabled = !alternativeConnectionEnabled
+                settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
+            }
+
         val onSwitchChange = {
-            substituteConnectionEnabled = !substituteConnectionEnabled
-            settingManager.changeAlternativeConnectionEnabled(substituteConnectionEnabled)
+            locationParmissionResult.launch()
         }
         Row(
             onClick = onSwitchChange,
@@ -139,10 +151,10 @@ fun SettingList() {
 
             )
             Switch(
-                checked = substituteConnectionEnabled,
+                checked = alternativeConnectionEnabled,
                 onCheckedChange = {
-                    substituteConnectionEnabled = !substituteConnectionEnabled
-                    settingManager.changeAlternativeConnectionEnabled(substituteConnectionEnabled)
+                    alternativeConnectionEnabled = !alternativeConnectionEnabled
+                    settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
                 },
                 modifier = Modifier
                     .wrapContentSize()

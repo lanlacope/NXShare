@@ -1,16 +1,21 @@
 package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.net.wifi.WifiConfiguration
+import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
+import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -55,11 +60,7 @@ class ConnectionManager(_context: Context) {
     fun start(config: WifiConfig, onConnection: OnConnection) {
         try {
             if (DevicePropaty.isAfterAndroidX()) {
-                if (!SettingManager(context).getAlternativeConnectionEnabled()){
-                    connectSwitch(config.ssid, config.password, onConnection)
-                } else {
-                    connectSwitchSubstitute(config.ssid, config.password, onConnection)
-                }
+                connectSwitch(config.ssid, config.password, onConnection)
             } else {
                 connectSwitchLegacy(config.ssid, config.password, onConnection)
             }
@@ -88,6 +89,25 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: OnConnection
     ) {
+
+        if (SettingManager(context).getAlternativeConnectionEnabled()) {
+            val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
+                .setSsid(ssid)
+                .setWpa2Passphrase(password)
+                .setIsAppInteractionRequired(true)
+                .build()
+
+
+            val suggestionsList = listOf(wifiNetworkSuggestion)
+            val status = wifiManager.addNetworkSuggestions(suggestionsList)
+
+            if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+                onConnect.onFailed(this@ConnectionManager)
+                return
+            }
+        }
+
+
         val wifiNetworkSpecifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
             .setWpa2Passphrase(password)
@@ -149,6 +169,7 @@ class ConnectionManager(_context: Context) {
         }
     }
 
+    /*
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun connectSwitchSubstitute(
         ssid: String,
@@ -157,45 +178,91 @@ class ConnectionManager(_context: Context) {
     ) {
         println("nowConnectionS")
 
+        val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+
         val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
             .setSsid(ssid)
             .setWpa2Passphrase(password)
             .setIsAppInteractionRequired(true)
             .build()
 
-        val networkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .build()
 
         val suggestionsList = listOf(wifiNetworkSuggestion)
         val status = wifiManager.addNetworkSuggestions(suggestionsList)
 
         if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            println("STATUS_NETWORK_SUGGESTIONS_SUCCESS")
             onConnect.onFailed(this@ConnectionManager)
             return
         }
 
-        connectivityManager.registerNetworkCallback(
-            networkRequest,
-            object : NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    if (connectivityManager.bindProcessToNetwork(network)) {
-                        println("onAvailable ok")
-                        onConnect.onSuccesful(this@ConnectionManager)
-                    } else {
-                        println("onAvailable no")
-                        onConnect.onFailed(this@ConnectionManager)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            connectivityManager.registerNetworkCallback(
+                networkRequest,
+                @RequiresApi(Build.VERSION_CODES.S)
+                object : NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
+                    override fun onAvailable(network: Network) {
+                        super.onAvailable(network)
+                        println("RRRRRRRRRRRRRRRRR")
+                        val panelIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                        context.startActivity(panelIntent)
+                    }
+                    override fun onCapabilitiesChanged(
+                        network: Network,
+                        networkCapabilities: NetworkCapabilities
+                    ) {
+                        super.onCapabilitiesChanged(network, networkCapabilities)
+                        val wifi = networkCapabilities.transportInfo as WifiInfo
+                        println(wifi.ssid)
+                        println(ssid)
+                        if (wifi.ssid == ssid) {
+                            if (connectivityManager.bindProcessToNetwork(network)) {
+                                onConnect.onSuccesful(this@ConnectionManager)
+                            } else {
+                                onConnect.onFailed(this@ConnectionManager)
+                            }
+                        }
+                    }
+
+                    override fun onLost(network: Network) {
+                        super.onLost(network)
+                        connectivityManager.unregisterNetworkCallback(this)
                     }
                 }
+            )
+        } else {
+            connectivityManager.registerNetworkCallback(
+                networkRequest,
+                object : NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        super.onAvailable(network)
+                        val panelIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                        context.startActivity(panelIntent)
+                    }
+                    override fun onCapabilitiesChanged(
+                        network: Network,
+                        networkCapabilities: NetworkCapabilities
+                    ) {
+                        super.onCapabilitiesChanged(network, networkCapabilities)
+                        val wifi = networkCapabilities.transportInfo as WifiInfo
+                        if (wifi.ssid == ssid) {
+                            if (connectivityManager.bindProcessToNetwork(network)) {
+                                onConnect.onSuccesful(this@ConnectionManager)
+                            } else {
+                                onConnect.onFailed(this@ConnectionManager)
+                            }
+                        }
+                    }
 
-                override fun onLost(network: Network) {
-                    super.onLost(network)
-                    println("lost")
-                    connectivityManager.unregisterNetworkCallback(this)
+                    override fun onLost(network: Network) {
+                        super.onLost(network)
+                        connectivityManager.unregisterNetworkCallback(this)
+                    }
                 }
-            }
-        )
+            )
+        }
     }
+
+     */
 }
