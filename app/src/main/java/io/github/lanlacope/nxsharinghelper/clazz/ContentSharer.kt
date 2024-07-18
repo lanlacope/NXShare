@@ -51,7 +51,7 @@ class ContentSharer(val context: Context) {
                 }
             }
 
-            if (data.fileNames.size == 1) {
+            if (data.fileNames.size <= 1) {
                 val file = File(context.cacheDir, data.fileNames[0])
                 val uri =
                     FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
