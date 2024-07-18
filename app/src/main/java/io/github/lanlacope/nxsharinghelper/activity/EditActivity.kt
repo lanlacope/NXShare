@@ -1,8 +1,6 @@
 package io.github.lanlacope.nxsharinghelper.activity
 
-import android.Manifest
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionGrantResult
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
@@ -129,19 +126,9 @@ fun SettingList() {
             mutableStateOf(settingManager.getAlternativeConnectionEnabled())
         }
 
-        val locationParmissionResult =
-            rememberParmissionGrantResult(permission = Manifest.permission.ACCESS_FINE_LOCATION) {
-                alternativeConnectionEnabled = !alternativeConnectionEnabled
-                settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
-            }
-
         val onSwitchChange = {
-            if (Build.VERSION_CODES.TIRAMISU > Build.VERSION.SDK_INT) {
-                locationParmissionResult.launch()
-            } else {
-                alternativeConnectionEnabled = !alternativeConnectionEnabled
-                settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
-            }
+            alternativeConnectionEnabled = !alternativeConnectionEnabled
+            settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
         }
         Row(
             onClick = onSwitchChange,
