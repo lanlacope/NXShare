@@ -8,10 +8,14 @@ import android.text.style.CharacterStyle
 import android.text.style.URLSpan
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,8 +26,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 
 class LicenceActivity : ComponentActivity() {
@@ -82,10 +88,13 @@ private fun Licence() {
 
     ClickableText(
         text = text,
-        modifier = Modifier.fillMaxSize(),
-        style = TextStyle(
-            color = textColor
-        ),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = ComponentValue.DISPLAY_PADDING_START,
+                top = ComponentValue.DISPLAY_PADDING_TOP,
+                end = ComponentValue.DISPLAY_PADDING_END
+            ),
         onClick = {
             text.getStringAnnotations(
                 tag = "URL",
