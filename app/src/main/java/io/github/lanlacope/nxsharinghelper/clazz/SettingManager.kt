@@ -7,6 +7,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -38,13 +39,13 @@ class SettingManager(context: Context) : FileSelector(context) {
         val file = getSettingFile()
         val jsonObject = try {
             JSONObject(file.readText())
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             JSONObject()
         }
 
         try {
             return jsonObject.getString(SETTING_JSON_PROPATY.APP_THEME)
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             return SETTING_JSON_PROPATY.THEME_SYSTEM
         }
     }
@@ -53,7 +54,7 @@ class SettingManager(context: Context) : FileSelector(context) {
         val file = getSettingFile()
         val jsonObject = try {
             JSONObject(file.readText())
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             JSONObject()
         }
 
@@ -68,13 +69,13 @@ class SettingManager(context: Context) : FileSelector(context) {
         val file = getSettingFile()
         val jsonObject = try {
             JSONObject(file.readText())
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             JSONObject()
         }
 
         try {
             return jsonObject.getBoolean(SETTING_JSON_PROPATY.ALTERNATIVE_CONNECTION_ENABlED)
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             return false
         }
     }
@@ -83,7 +84,7 @@ class SettingManager(context: Context) : FileSelector(context) {
         val file = getSettingFile()
         val jsonObject = try {
             JSONObject(file.readText())
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             JSONObject()
         }
 

@@ -10,8 +10,8 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PR
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 
 @Suppress("unused")
 @Composable
@@ -36,7 +36,7 @@ class FileReader(context: Context) : FileSelector(context) {
                     return jsonObject.getBoolean(APP_JSON_PROPATY.PAKCAGE_ENABLED)
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             return false
         }
         return false
@@ -52,35 +52,14 @@ class FileReader(context: Context) : FileSelector(context) {
                     return jsonObject.getString(APP_JSON_PROPATY.PACKAGE_TYPE)
                 }
             }
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             return null
         }
         return null
     }
 
-    @Suppress("unused")
-    fun getTypeName(file: File): String {
-        val jsonObject = JSONObject(file.readText())
-        return jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
-    }
-
-    // ファイルの表示用名
-    @Suppress("unused")
-    fun getTypeNames(): List<String> {
-        try {
-            val files = getMySetFiles()
-            val types = files.map { file ->
-                val jsonObject = JSONObject(file.readText())
-                jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
-            }
-            return types
-        } catch (e: Exception) {
-            return emptyList()
-        }
-    }
-
     // ファイルの表示用名 + 非選択用名
-    fun getTypeNamesWithNone(): List<String> {
+    fun getTypeNames(): List<String> {
         val defaultType = listOf(APP_JSON_PROPATY.TYPE_NONE)
         try {
             val files = getMySetFiles()
@@ -89,7 +68,7 @@ class FileReader(context: Context) : FileSelector(context) {
                 jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
             }
             return defaultType + types
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             return defaultType
         }
     }
@@ -106,7 +85,7 @@ class FileReader(context: Context) : FileSelector(context) {
                 try {
                     val text = rawJson.getString(GAME_JSON_PROPATY.COMMON_TEXT)
                     append(text)
-                } catch (e: Exception) {
+                } catch (e: JSONException) {
                     // do nothing
                 }
                 try {
@@ -118,7 +97,7 @@ class FileReader(context: Context) : FileSelector(context) {
                                 val text = jsonObject.getString(GAME_JSON_PROPATY.GAME_TEXT)
                                 append(text)
                             }
-                        } catch (e: Exception) {
+                        } catch (e: JSONException) {
                             // do nothing
                         }
                     }

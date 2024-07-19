@@ -12,6 +12,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PRO
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
 import kotlinx.collections.immutable.toImmutableList
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
@@ -44,7 +45,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
         val type = fileReader.getShareType(packageName)?: APP_JSON_PROPATY.TYPE_NONE
-        val types = fileReader.getTypeNamesWithNone().toImmutableList()
+        val types = fileReader.getTypeNames().toImmutableList()
     }
 
 
@@ -52,16 +53,28 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         private val jsonObject: JSONObject
     ) {
         val title = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
-        val text = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TEXT)
+        val text = try {
+            jsonObject.getString(GAME_JSON_PROPATY.COMMON_TEXT)
+        } catch (e: JSONException) {
+            ""
+        }
     }
 
 
     data class GameInfo(
         private val jsonObject: JSONObject
     ) {
-        val title = jsonObject.getString(GAME_JSON_PROPATY.GAME_TITLE)
         val id = jsonObject.getString(GAME_JSON_PROPATY.GAME_ID)
-        val text = jsonObject.getString(GAME_JSON_PROPATY.GAME_TEXT)
+        val title = try {
+            jsonObject.getString(GAME_JSON_PROPATY.GAME_TITLE)
+        } catch (e: JSONException) {
+            ""
+        }
+        val text = try {
+            jsonObject.getString(GAME_JSON_PROPATY.GAME_TEXT)
+        } catch (e: JSONException) {
+            ""
+        }
     }
 
     fun getAppInfo(): List<AppInfo> {

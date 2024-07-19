@@ -13,6 +13,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PRO
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
+import org.json.JSONException
 
 @Suppress("unused")
 @Composable
