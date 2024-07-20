@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ChangeAppThemeDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
@@ -99,8 +99,8 @@ fun SettingList() {
             )
             Text(
                 text = when (selectedTheme.value) {
-                    SETTING_JSON_PROPATY.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
-                    SETTING_JSON_PROPATY.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
+                    SettingJsonPropaty.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
+                    SettingJsonPropaty.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
                     else -> stringResource(id = R.string.summary_theme_system)
                 },
                 fontWeight = FontWeight.Bold,

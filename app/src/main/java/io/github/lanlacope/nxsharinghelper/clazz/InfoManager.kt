@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
 import kotlinx.collections.immutable.toImmutableList
 import org.json.JSONException
@@ -44,7 +44,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     ) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
-        val type = fileReader.getShareType(packageName)?: APP_JSON_PROPATY.TYPE_NONE
+        val type = fileReader.getShareType(packageName)?: AppJsonPropaty.TYPE_NONE
         val types = fileReader.getTypeNames().toImmutableList()
     }
 
@@ -52,9 +52,9 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     data class CommonInfo(
         private val jsonObject: JSONObject
     ) {
-        val title = jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
+        val title = jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
         val text = try {
-            jsonObject.getString(GAME_JSON_PROPATY.COMMON_TEXT)
+            jsonObject.getString(GameJsonPropaty.COMMON_TEXT)
         } catch (e: JSONException) {
             ""
         }
@@ -64,14 +64,14 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     data class GameInfo(
         private val jsonObject: JSONObject
     ) {
-        val id = jsonObject.getString(GAME_JSON_PROPATY.GAME_ID)
+        val id = jsonObject.getString(GameJsonPropaty.GAME_ID)
         val title = try {
-            jsonObject.getString(GAME_JSON_PROPATY.GAME_TITLE)
+            jsonObject.getString(GameJsonPropaty.GAME_TITLE)
         } catch (e: JSONException) {
             ""
         }
         val text = try {
-            jsonObject.getString(GAME_JSON_PROPATY.GAME_TEXT)
+            jsonObject.getString(GameJsonPropaty.GAME_TEXT)
         } catch (e: JSONException) {
             ""
         }
@@ -82,19 +82,19 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
         val sendJpgIntent = contentSharer.createSendableIntent(
             DownloadData(
-                fileType = SWITCH_JSON_PROPATY.FILETYPE_PHOTO,
+                fileType = SwitchJsonPropaty.FILETYPE_PHOTO,
                 fileNames = listOf("a.jpg")
             )
         )
         val sendJpgsIntent = contentSharer.createSendableIntent(
             DownloadData(
-                fileType = SWITCH_JSON_PROPATY.FILETYPE_PHOTO,
+                fileType = SwitchJsonPropaty.FILETYPE_PHOTO,
                 fileNames = listOf("a.jpg", "b.jpg")
             )
         )
         val sendMp4Intent = contentSharer.createSendableIntent(
             DownloadData(
-                fileType = SWITCH_JSON_PROPATY.FILETYPE_MOVIE,
+                fileType = SwitchJsonPropaty.FILETYPE_MOVIE,
                 fileNames = listOf("a.mp4")
             )
         )
@@ -129,7 +129,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
     fun getGameInfo(file: File): List<GameInfo> {
         val jsonObject = JSONObject(file.readText())
-        val jsonArray = jsonObject.getJSONArray(GAME_JSON_PROPATY.GAME_DATA)
+        val jsonArray = jsonObject.getJSONArray(GameJsonPropaty.GAME_DATA)
         val info = jsonArray.mapIndexOnly { index ->
             val gameData = jsonArray.getJSONObject(index)
             GameInfo(gameData)

@@ -13,18 +13,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,14 +45,18 @@ import io.github.lanlacope.nxsharinghelper.activity.component.EditGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
-import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
+import io.github.lanlacope.nxsharinghelper.activity.component.recompositionKey
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
+import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
-import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.widgit.Column
+import io.github.lanlacope.nxsharinghelper.widgit.LazyHorizontalPager
+import io.github.lanlacope.nxsharinghelper.widgit.animatedItems
+import io.github.lanlacope.nxsharinghelper.widgit.animatedPagerItems
 import java.io.File
 
 class EditGameInfoActivity : ComponentActivity() {
@@ -86,6 +92,7 @@ private fun MySetList(
         val shown = remember {
             mutableStateOf(false)
         }
+
         Button(
             onClick = {
                 shown.value = true
@@ -104,16 +111,31 @@ private fun MySetList(
                 modifier = Modifier.wrapContentSize()
             )
         }
-        HorizontalPager(
-            state = rememberPagerState(
-                pageCount = { files.size }
-            ),
+        LazyHorizontalPager(
             modifier = Modifier.fillMaxSize()
-
-        ) { page ->
-            MySet(
-                file = files[page]
-            )
+        ) {
+            animatedPagerItems(
+                items = files,
+                key = { it.name }
+            ) { file ->
+                val infoManager = rememberInfoManager()
+                val common by remember {
+                    mutableStateOf(infoManager.getCommonInfo(file))
+                }
+                val removeFile: () -> Unit = {
+                    files.remove(file)
+                }
+                Column {
+                    MySetCommon(
+                        common = common,
+                        fileName = file.name,
+                        removeMySet = removeFile
+                    )
+                    MySet(
+                        file = file
+                    )
+                }
+            }
         }
 
         AddMySetDialog(
@@ -127,107 +149,73 @@ private fun MySetList(
 private fun MySet(
     file: File
 ) {
-    val isRemoved = remember {
-        mutableStateOf(!file.exists())
+    val shownAddDialog = remember {
+        mutableStateOf(false)
     }
 
-    if (!isRemoved.value) {
+    val infoManager = rememberInfoManager()
+    val games = remember {
+        infoManager.getGameInfo(file).toMutableStateList()
+    }
 
-        val shownAddDialog = remember {
-            mutableStateOf(false)
-        }
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
-        val infoManager = rememberInfoManager()
-        val common by remember {
-            mutableStateOf(infoManager.getCommonInfo(file))
-        }
-        val games = remember {
-            infoManager.getGameInfo(file).toMutableStateList()
-        }
-
-        Box(
-            modifier = Modifier.fillMaxSize()
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                item {
-                    MySetCommon(
-                        common = common,
-                        fileName = file.name,
-                        isParentRemoved = isRemoved
-                    )
-                }
-                animatedItems(
-                    items = games,
-                    key = { it.id }
-                ) { game ->
-                    MySetItem(
-                        gameInfo = game,
-                        fileName = file.name
-                    )
-                }
-            }
-
-            val FAB_PADDING = 30.dp
-
-            FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                onClick = {
-                    shownAddDialog.value = true
-                },
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(
-                        end = FAB_PADDING,
-                        bottom = FAB_PADDING
-                    )
-                    .align(Alignment.BottomEnd)
-
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_add_24),
-                    contentDescription = "Add",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(all = 8.dp)
-
+            animatedItems(
+                items = games,
+                key = { it.id }
+            ) { game ->
+                MySetItem(
+                    gameInfo = game,
+                    fileName = file.name
                 )
             }
         }
 
-        AddGameInfoDialog(
-            shown = shownAddDialog,
-            fileName = file.name,
-            games = games
-        )
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize()
+        val FAB_PADDING = 30.dp
+
+        FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            onClick = {
+                shownAddDialog.value = true
+            },
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(
+                    end = FAB_PADDING,
+                    bottom = FAB_PADDING
+                )
+                .align(Alignment.BottomEnd)
+
         ) {
-            Text(
-                text = stringResource(id = R.string.summary_myset_removed),
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                style = TextStyle(
-                    color = Gray
-                ),
+            Image(
+                painter = painterResource(id = R.drawable.baseline_add_24),
+                contentDescription = "Add",
                 modifier = Modifier
                     .wrapContentSize()
-                    .align(Alignment.Center)
+                    .padding(all = 8.dp)
 
             )
         }
     }
+
+    AddGameInfoDialog(
+        shown = shownAddDialog,
+        fileName = file.name,
+        games = games
+    )
 }
 
 @Composable
 private fun MySetCommon(
     common: CommonInfo,
     fileName: String,
-    isParentRemoved: MutableState<Boolean>
+    removeMySet: () -> Unit
 ) {
     val shownEditDialog = remember {
         mutableStateOf(false)
@@ -293,12 +281,9 @@ private fun MySetCommon(
     RemoveMySetDialog(
         shown = shownRemoveDialog,
         fileName = fileName,
-        isParentRemoved = isParentRemoved
+        removeMySet = removeMySet
     )
 }
-
-
-
 @Composable
 private fun MySetItem(
     gameInfo: GameInfo,

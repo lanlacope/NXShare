@@ -39,16 +39,16 @@ import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
-import io.github.lanlacope.nxsharinghelper.activity.component.animatedItems
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
+import io.github.lanlacope.nxsharinghelper.widgit.animatedItems
 import kotlinx.collections.immutable.toImmutableList
 
 
@@ -325,7 +325,7 @@ private fun TypeSelector(
         )
 
         Text(
-            text = if (type != APP_JSON_PROPATY.TYPE_NONE) type else stringResource(id = R.string.summart_type_nothing),
+            text = if (type != AppJsonPropaty.TYPE_NONE) type else stringResource(id = R.string.summart_type_nothing),
             maxLines = 1,
             minLines = 1,
             modifier = Modifier

@@ -27,7 +27,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -38,10 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.clazz.FileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
-import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
@@ -88,7 +85,7 @@ fun ChangeAppThemeDialog(
                 ) {
                     DialogTitle(text = stringResource(id = R.string.dialog_title_theme))
 
-                    SETTING_JSON_PROPATY.APP_THEME_LIST.forEach { theme ->
+                    SettingJsonPropaty.APP_THEME_LIST.forEach { theme ->
                         ThemeSelector(
                             theme = theme,
                             selectedTheme = selectedTheme
@@ -98,6 +95,7 @@ fun ChangeAppThemeDialog(
                     TextButton(
                         onClick = {
                             settingManager.changeAppTheme(selectedTheme.value)
+                            recomposition()
                             shown.value = false
                         },
                         modifier = Modifier
@@ -144,8 +142,8 @@ fun ThemeSelector(
 
         Text(
             text = when (theme) {
-                SETTING_JSON_PROPATY.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
-                SETTING_JSON_PROPATY.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
+                SettingJsonPropaty.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
+                SettingJsonPropaty.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
                 else -> stringResource(id = R.string.summary_theme_system)
             },
             maxLines = 1,
@@ -246,7 +244,7 @@ fun AddMySetDialog(
 fun RemoveMySetDialog(
     shown: MutableState<Boolean>,
     fileName: String,
-    isParentRemoved: MutableState<Boolean>
+    removeMySet: () -> Unit
 ) {
     val fileEditor = rememberFileEditor()
 
@@ -273,9 +271,9 @@ fun RemoveMySetDialog(
 
                     TextButton(
                         onClick = {
-                            shown.value = false
                             fileEditor.removeMySet(fileName)
-                            isParentRemoved.value = true
+                            removeMySet()
+                            shown.value = false
                         },
                         modifier = Modifier
                             .wrapContentSize()

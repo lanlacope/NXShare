@@ -82,18 +82,3 @@ fun SlideInAnimated(
         content = content
     )
 }
-
-inline fun <T> LazyListScope.animatedItems(
-    items: List<T>,
-    noinline key: ((item: T) -> Any)? = null,
-    noinline contentType: (item: T) -> Any? = { null },
-    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
-) = items(
-    count = items.size,
-    key = if (key != null) { index: Int -> key(items[index]) } else null,
-    contentType = { index: Int -> contentType(items[index]) }
-) { index ->
-    Box(modifier = Modifier.animateItem()) {
-        itemContent(items[index])
-    }
-}

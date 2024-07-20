@@ -3,17 +3,19 @@ package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
 object AppPropaty {
 
-    object MINETYPE {
+
+
+    object MineType {
         val JPG: String = "image/jpg"
         val MP4: String = "video/mp4"
     }
-    object SWITCH_LOCALHOST {
+    object SwitchLocalHost {
         val INDEX: String = "http://192.168.0.1/index.html"
         val DATA: String = "http://192.168.0.1/data.json"
         val IMAGE: String = "http://192.168.0.1/img/"
     }
 
-    object SWITCH_JSON_PROPATY {
+    object SwitchJsonPropaty {
         val FILETYPE: String = "FileType"
         val FILENAMES: String = "FileNames"
         val CONSOLENAME: String = "ConsoleName"
@@ -21,7 +23,7 @@ object AppPropaty {
         val FILETYPE_MOVIE: String = "movie"
     }
 
-    object SETTING_JSON_PROPATY {
+    object SettingJsonPropaty {
         val APP_THEME: String = "ThemeType"
         val THEME_SYSTEM: String = "SystemTheme"
         val THEME_LIGHT: String = "LightTheme"
@@ -34,14 +36,14 @@ object AppPropaty {
         val ALTERNATIVE_CONNECTION_ENABlED: String = "AlternativeConnectionEnabled"
     }
 
-    object APP_JSON_PROPATY {
+    object AppJsonPropaty {
         val PACKAGE_NAME: String = "PackageName"
         val PACKAGE_TYPE: String = "PackageType"
         val TYPE_NONE: String = "NONE"
         val PAKCAGE_ENABLED: String = "PackageEnabled"
     }
 
-    object GAME_JSON_PROPATY {
+    object GameJsonPropaty {
         val COMMON_TITLE: String = "CommonTitle"
         val COMMON_TEXT: String = "CommonText"
         val GAME_DATA: String = "GameData"

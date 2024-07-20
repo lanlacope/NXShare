@@ -14,8 +14,8 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MINETYPE
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.removeStringsForFile
 import kotlinx.coroutines.Dispatchers
@@ -98,10 +98,10 @@ class ContentSaver(_context: Context) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun createCollection(type: String): Uri {
         when(type) {
-            SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
+            SwitchJsonPropaty.FILETYPE_PHOTO -> {
                 return MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
-            SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
+            SwitchJsonPropaty.FILETYPE_MOVIE -> {
                 return MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
         }
@@ -112,17 +112,17 @@ class ContentSaver(_context: Context) {
     private fun createContentsValue(type: String, fileName: String, consoleName: String): ContentValues {
         return ContentValues().apply {
             when(type) {
-                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
+                SwitchJsonPropaty.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-                    put(MediaStore.Images.Media.MIME_TYPE, MINETYPE.JPG)
+                    put(MediaStore.Images.Media.MIME_TYPE, MineType.JPG)
                     put(MediaStore.Images.Media.IS_PENDING, true)
                     put(
                         MediaStore.Images.ImageColumns.RELATIVE_PATH,
                         "${Environment.DIRECTORY_PICTURES}/${FileSelector.FOLDER_THIS}/$consoleName/")
                 }
-                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
+                SwitchJsonPropaty.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.DISPLAY_NAME, fileName)
-                    put(MediaStore.Video.Media.MIME_TYPE, MINETYPE.MP4)
+                    put(MediaStore.Video.Media.MIME_TYPE, MineType.MP4)
                     put(MediaStore.Video.Media.IS_PENDING, true)
                     put(
                         MediaStore.Video.VideoColumns.RELATIVE_PATH,
@@ -136,10 +136,10 @@ class ContentSaver(_context: Context) {
     private fun updateContentsValue(type: String): ContentValues {
         return ContentValues().apply {
             when(type) {
-                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
+                SwitchJsonPropaty.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.IS_PENDING, false)
                 }
-                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
+                SwitchJsonPropaty.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.IS_PENDING, false)
                 }
             }
@@ -182,8 +182,8 @@ class ContentSaver(_context: Context) {
 
     private fun selectDirectory(type: String): String {
         when (type) {
-            SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
-            SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
+            SwitchJsonPropaty.FILETYPE_PHOTO -> return Environment.DIRECTORY_PICTURES
+            SwitchJsonPropaty.FILETYPE_MOVIE -> return Environment.DIRECTORY_MOVIES
             else -> throw IllegalAccessException()
         }
     }

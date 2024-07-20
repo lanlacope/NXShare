@@ -6,10 +6,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SETTING_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.activity.component.recompositionKey
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 
 @Suppress("unused")
 @Composable
@@ -23,18 +23,6 @@ fun rememberSettingManager(): SettingManager {
 @Stable
 class SettingManager(context: Context) : FileSelector(context) {
 
-    companion object {
-        lateinit var activeTheme: MutableState<String>
-    }
-
-    fun setActiveTheme(_observedTheme: MutableState<String>) {
-        activeTheme = _observedTheme
-    }
-
-    private fun updateTheme(theme: String) {
-        activeTheme.value = theme
-    }
-
     fun getAppTheme(): String {
         val file = getSettingFile()
         val jsonObject = try {
@@ -44,9 +32,9 @@ class SettingManager(context: Context) : FileSelector(context) {
         }
 
         try {
-            return jsonObject.getString(SETTING_JSON_PROPATY.APP_THEME)
+            return jsonObject.getString(SettingJsonPropaty.APP_THEME)
         } catch (e: JSONException) {
-            return SETTING_JSON_PROPATY.THEME_SYSTEM
+            return SettingJsonPropaty.THEME_SYSTEM
         }
     }
 
@@ -58,11 +46,9 @@ class SettingManager(context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        jsonObject.put(SETTING_JSON_PROPATY.APP_THEME, theme)
+        jsonObject.put(SettingJsonPropaty.APP_THEME, theme)
 
         file.writeText(jsonObject.toString())
-
-        updateTheme(theme)
     }
 
     fun getAlternativeConnectionEnabled(): Boolean {
@@ -74,7 +60,7 @@ class SettingManager(context: Context) : FileSelector(context) {
         }
 
         try {
-            return jsonObject.getBoolean(SETTING_JSON_PROPATY.ALTERNATIVE_CONNECTION_ENABlED)
+            return jsonObject.getBoolean(SettingJsonPropaty.ALTERNATIVE_CONNECTION_ENABlED)
         } catch (e: JSONException) {
             return false
         }
@@ -88,7 +74,7 @@ class SettingManager(context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        jsonObject.put(SETTING_JSON_PROPATY.ALTERNATIVE_CONNECTION_ENABlED, isEnabled)
+        jsonObject.put(SettingJsonPropaty.ALTERNATIVE_CONNECTION_ENABlED, isEnabled)
 
         file.writeText(jsonObject.toString())
     }

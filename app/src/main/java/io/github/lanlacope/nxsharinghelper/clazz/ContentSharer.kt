@@ -18,8 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MINETYPE
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.toArrayList
 import java.io.File
@@ -40,13 +40,13 @@ class ContentSharer(val context: Context) {
 
         val intent = ShareCompat.IntentBuilder(context).apply {
             when (data.fileType) {
-                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
-                    setType(MINETYPE.JPG)
+                SwitchJsonPropaty.FILETYPE_PHOTO -> {
+                    setType(MineType.JPG)
                     setChooserTitle(context.getString(R.string.permission_share_photo))
                 }
 
-                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
-                    setType(MINETYPE.MP4)
+                SwitchJsonPropaty.FILETYPE_MOVIE -> {
+                    setType(MineType.MP4)
                     setChooserTitle(context.getString(R.string.permission_share_movie))
                 }
             }
@@ -79,7 +79,7 @@ class ContentSharer(val context: Context) {
     fun createCustomChooserIntrnt(data: DownloadData) : Intent {
 
         val title = when (data.fileType) {
-            SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
+            SwitchJsonPropaty.FILETYPE_PHOTO -> {
                 context.getString(R.string.permission_share_photo)
             }
 
@@ -154,12 +154,12 @@ class ContentSharer(val context: Context) {
     fun createSendableIntent(data: DownloadData): Intent {
         return Intent().apply {
             when (data.fileType) {
-                SWITCH_JSON_PROPATY.FILETYPE_PHOTO -> {
-                    setType(MINETYPE.JPG)
+                SwitchJsonPropaty.FILETYPE_PHOTO -> {
+                    setType(MineType.JPG)
                 }
 
-                SWITCH_JSON_PROPATY.FILETYPE_MOVIE -> {
-                    setType(MINETYPE.MP4)
+                SwitchJsonPropaty.FILETYPE_MOVIE -> {
+                    setType(MineType.MP4)
                 }
             }
 

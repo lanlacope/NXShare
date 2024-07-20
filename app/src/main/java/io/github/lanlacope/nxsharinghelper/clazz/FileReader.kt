@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.APP_JSON_PROPATY
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GAME_JSON_PROPATY
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import org.json.JSONArray
@@ -31,9 +31,9 @@ class FileReader(context: Context) : FileSelector(context) {
             val jsonArray = JSONArray(file.readText())
             jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
-                if (jsonObject.getString(APP_JSON_PROPATY.PACKAGE_NAME) == packageName) {
+                if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
 
-                    return jsonObject.getBoolean(APP_JSON_PROPATY.PAKCAGE_ENABLED)
+                    return jsonObject.getBoolean(AppJsonPropaty.PAKCAGE_ENABLED)
                 }
             }
         } catch (e: JSONException) {
@@ -48,8 +48,8 @@ class FileReader(context: Context) : FileSelector(context) {
             val jsonArray = JSONArray(file.readText())
             jsonArray.forEachIndexOnly { index ->
                 val jsonObject = jsonArray.getJSONObject(index)
-                if (jsonObject.getString(APP_JSON_PROPATY.PACKAGE_NAME) == packageName) {
-                    return jsonObject.getString(APP_JSON_PROPATY.PACKAGE_TYPE)
+                if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
+                    return jsonObject.getString(AppJsonPropaty.PACKAGE_TYPE)
                 }
             }
         } catch (e: JSONException) {
@@ -60,12 +60,12 @@ class FileReader(context: Context) : FileSelector(context) {
 
     // ファイルの表示用名 + 非選択用名
     fun getTypeNames(): List<String> {
-        val defaultType = listOf(APP_JSON_PROPATY.TYPE_NONE)
+        val defaultType = listOf(AppJsonPropaty.TYPE_NONE)
         try {
             val files = getMySetFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
-                jsonObject.getString(GAME_JSON_PROPATY.COMMON_TITLE)
+                jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
             }
             return defaultType + types
         } catch (e: JSONException) {
@@ -83,18 +83,18 @@ class FileReader(context: Context) : FileSelector(context) {
 
             val resultText = StringBuilder().apply {
                 try {
-                    val text = rawJson.getString(GAME_JSON_PROPATY.COMMON_TEXT)
+                    val text = rawJson.getString(GameJsonPropaty.COMMON_TEXT)
                     append(text)
                 } catch (e: JSONException) {
                     // do nothing
                 }
                 try {
-                    val arrayData = rawJson.getJSONArray(GAME_JSON_PROPATY.GAME_DATA)
+                    val arrayData = rawJson.getJSONArray(GameJsonPropaty.GAME_DATA)
                     arrayData.forEachIndexOnly { index ->
                         try {
                             val jsonObject = arrayData.getJSONObject(index)
-                            if (jsonObject.getString(GAME_JSON_PROPATY.GAME_ID) in ids) {
-                                val text = jsonObject.getString(GAME_JSON_PROPATY.GAME_TEXT)
+                            if (jsonObject.getString(GameJsonPropaty.GAME_ID) in ids) {
+                                val text = jsonObject.getString(GameJsonPropaty.GAME_TEXT)
                                 append(text)
                             }
                         } catch (e: JSONException) {

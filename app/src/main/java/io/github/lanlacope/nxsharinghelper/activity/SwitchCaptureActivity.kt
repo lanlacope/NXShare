@@ -18,7 +18,7 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SWITCH_LOCALHOST
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchLocalHost
 import com.google.zxing.client.android.R as zR
 
 /*
@@ -160,7 +160,7 @@ class SwitchCaptureManager(
         var password: String? = null
 
         if (!text.startsWith("WIFI:")) {
-            if (text == SWITCH_LOCALHOST.INDEX) {
+            if (text == SwitchLocalHost.INDEX) {
                 return Pair(null, ResultState.FAILED_LOCALHOST)
             }
             return Pair(null, ResultState.FAILED_NOTSWITCH)
