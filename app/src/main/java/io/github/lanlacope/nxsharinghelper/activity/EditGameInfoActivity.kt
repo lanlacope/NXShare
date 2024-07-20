@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
+import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
@@ -48,6 +51,8 @@ import io.github.lanlacope.nxsharinghelper.widgit.Column
 import io.github.lanlacope.nxsharinghelper.widgit.LazyHorizontalPager
 import io.github.lanlacope.nxsharinghelper.widgit.animatedItems
 import io.github.lanlacope.nxsharinghelper.widgit.animatedPagerItems
+import io.github.lanlacope.nxsharinghelper.widgit.Button
+import kotlinx.coroutines.launch
 import java.io.File
 
 class EditGameInfoActivity : ComponentActivity() {
@@ -71,22 +76,30 @@ class EditGameInfoActivity : ComponentActivity() {
 @Composable
 private fun MySetList(
 ) {
+    val scope = rememberCoroutineScope()
     val fileSelector = rememberFileSelector()
     val files = remember {
         fileSelector.getMySetFiles().toMutableStateList()
     }
 
+    val listState = rememberLazyListState()
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         val BUTTON_PADDING = 20.dp
-        val shown = remember {
+        val shownAddMysetDialog = remember {
             mutableStateOf(false)
         }
-
+        val shownImportMysetDialog = remember {
+            mutableStateOf(false)
+        }
         Button(
             onClick = {
-                shown.value = true
+                shownAddMysetDialog.value = true
+            },
+            onLongClick = {
+                shownImportMysetDialog.value = true
             },
             modifier = Modifier
                 .width(200.dp)
@@ -102,7 +115,9 @@ private fun MySetList(
                 modifier = Modifier.wrapContentSize()
             )
         }
+
         LazyHorizontalPager(
+            state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
             animatedPagerItems(
@@ -110,17 +125,24 @@ private fun MySetList(
                 key = { it.name }
             ) { file ->
                 val infoManager = rememberInfoManager()
+                val fileEditor = rememberFileEditor()
                 val common by remember {
                     mutableStateOf(infoManager.getCommonInfo(file))
                 }
-                val removeFile: () -> Unit = {
+
+                // MySetCommonのコールバックを定義しておく
+                val editCommonInfo: (String, String) -> Unit = { title, text ->
+                    fileEditor.editCommonInfo(file.name, title, text)
+                }
+                val removeMySet: () -> Unit = {
+                    fileEditor.removeMySet(file.name)
                     files.remove(file)
                 }
                 Column {
                     MySetCommon(
                         common = common,
-                        fileName = file.name,
-                        removeMySet = removeFile
+                        editCommonInfo = editCommonInfo,
+                        removeMySet = removeMySet
                     )
                     MySet(
                         file = file
@@ -129,11 +151,92 @@ private fun MySetList(
             }
         }
 
+        val scrollLastItem: () -> Unit = {
+            scope.launch {
+                listState.animateScrollToItem(files.size)
+            }
+        }
         AddMySetDialog(
-            shown = shown,
-            files = files
+            shown = shownAddMysetDialog,
+            files = files,
+            onSucceseful = scrollLastItem
+        )
+
+        // TODO: ImportMySetDialog
+    }
+}
+
+@Composable
+private fun MySetCommon(
+    common: CommonInfo,
+    editCommonInfo: (String, String) -> Unit,
+    removeMySet: () -> Unit
+) {
+    val shownEditDialog = remember {
+        mutableStateOf(false)
+    }
+    val shownRemoveDialog = remember {
+        mutableStateOf(false)
+    }
+
+    val title = remember {
+        mutableStateOf(common.title)
+    }
+    val text = remember {
+        mutableStateOf(common.text)
+    }
+
+    Column(
+        onClick = {
+            shownEditDialog.value = true
+        },
+        onLongClick = {
+            shownRemoveDialog.value = true
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+
+    ) {
+        Text(
+            text = title.value,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(Alignment.Start)
+                .padding(
+                    start = ComponentValue.DISPLAY_PADDING_START,
+                    end = ComponentValue.DISPLAY_PADDING_END
+                )
+        )
+        Text(
+            text = text.value,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(Alignment.Start)
+                .padding(
+                    start = ComponentValue.DISPLAY_PADDING_START,
+                    end = ComponentValue.DISPLAY_PADDING_END,
+                    bottom = 20.dp
+                )
         )
     }
+
+    EditCommonInfoDialog(
+        shown = shownEditDialog,
+        title = title,
+        text = text,
+        editCommonInfo = editCommonInfo
+    )
+
+    RemoveMySetDialog(
+        shown = shownRemoveDialog,
+        removeMySet = removeMySet
+    )
 }
 
 @Composable
@@ -202,79 +305,6 @@ private fun MySet(
     )
 }
 
-@Composable
-private fun MySetCommon(
-    common: CommonInfo,
-    fileName: String,
-    removeMySet: () -> Unit
-) {
-    val shownEditDialog = remember {
-        mutableStateOf(false)
-    }
-    val shownRemoveDialog = remember {
-        mutableStateOf(false)
-    }
-
-    val title = remember {
-        mutableStateOf(common.title)
-    }
-    val text = remember {
-        mutableStateOf(common.text)
-    }
-
-    Column(
-        onClick = {
-            shownEditDialog.value = true
-        },
-        onLongClick = {
-            shownRemoveDialog.value = true
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-
-    ) {
-        Text(
-            text = title.value,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-                .padding(
-                    start = ComponentValue.DISPLAY_PADDING_START,
-                    end = ComponentValue.DISPLAY_PADDING_END
-                )
-        )
-        Text(
-            text = text.value,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-                .padding(
-                    start = ComponentValue.DISPLAY_PADDING_START,
-                    end = ComponentValue.DISPLAY_PADDING_END,
-                    bottom = 20.dp
-                )
-        )
-    }
-
-    EditCommonInfoDialog(
-        shown = shownEditDialog,
-        fileName = fileName,
-        title = title,
-        text = text
-    )
-
-    RemoveMySetDialog(
-        shown = shownRemoveDialog,
-        fileName = fileName,
-        removeMySet = removeMySet
-    )
-}
 @Composable
 private fun MySetItem(
     gameInfo: GameInfo,

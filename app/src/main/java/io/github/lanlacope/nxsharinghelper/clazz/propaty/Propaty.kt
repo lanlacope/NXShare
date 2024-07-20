@@ -36,10 +36,3 @@ fun getGameId(fileNames: List<String>): List<String> {
     return ids
 }
 
-@Composable
-fun makeToast(
-    text: String,
-    duration: Int = Toast.LENGTH_SHORT
-):Toast {
-    return Toast.makeText(LocalContext.current, text, duration)
-}

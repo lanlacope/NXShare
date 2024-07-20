@@ -13,6 +13,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropa
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
 import org.json.JSONException
 
 @Suppress("unused")
@@ -51,7 +52,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
         val createFileResult = createNewMySetFile(fileName)
 
-        if (createFileResult.isFailure){
+        if (createFileResult.isFailure) {
             return Result.failure(Exception())
         }
 
@@ -69,7 +70,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         file.delete()
     }
-    
+
     fun importMyset(jsonObject: JSONObject): Result<File> {
 
         if (!checkMySetJson(jsonObject)) {
@@ -80,7 +81,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         val createFileResult = createNewMySetFile(fileName)
 
-        if (createFileResult.isFailure){
+        if (createFileResult.isFailure) {
             return Result.failure(Exception())
         }
 
@@ -131,8 +132,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         }
 
         val gameData = JSONObject().apply {
-            put(GameJsonPropaty.GAME_TITLE, title)
             put(GameJsonPropaty.GAME_ID, id)
+            put(GameJsonPropaty.GAME_TITLE, title)
             put(GameJsonPropaty.GAME_TEXT, text)
         }
 
@@ -189,11 +190,86 @@ class FileEditor(private val context: Context) : FileSelector(context) {
     }
 
     fun importGameInfo(
-        targetFile: File,
-        jsonObject: JSONObject,
-        overwrite:Boolean  = false
-    ) {
-        // TODO:
+        targetFileName: String,
+        joinJsonObject: JSONObject,
+        overwrite: Boolean = false
+    ): Result<List<GameInfo>> {
+
+        if (!checkMySetJson(joinJsonObject)) {
+            return Result.failure(Exception())
+        }
+
+        val newGames = arrayListOf<GameInfo>()
+
+        val file = getMySetFile(targetFileName)
+        val targetJsonObject = JSONObject(file.readText())
+        val targetJSONArray = targetJsonObject.getJSONArray(GameJsonPropaty.GAME_DATA)
+        val targetIdList = targetJSONArray.mapIndexOnly { index ->
+            val gameData = targetJSONArray.getJSONObject(index)
+            gameData.getString(GameJsonPropaty.GAME_ID)
+        }
+
+        val joinJSONArray = joinJsonObject.getJSONArray(GameJsonPropaty.GAME_DATA)
+
+        joinJSONArray.forEachIndexOnly join@{ joinIndex ->
+            val joinGameData = joinJSONArray.getJSONObject(joinIndex)
+            if (joinGameData.getString(GameJsonPropaty.GAME_ID) in targetIdList) {
+                if (overwrite) {
+                    targetJSONArray.forEachIndexOnly target@{ targetIndex ->
+                        val targetGameData = targetJSONArray.getJSONObject(targetIndex)
+                        if (joinGameData.getString(GameJsonPropaty.GAME_ID)
+                            == targetGameData.getString(GameJsonPropaty.GAME_ID)
+                        ) {
+                            targetGameData.apply {
+                                try {
+                                    put(
+                                        GameJsonPropaty.GAME_TITLE,
+                                        joinGameData.getString(GameJsonPropaty.GAME_TITLE)
+                                    )
+                                } catch (e: JSONException) {
+                                    put(GameJsonPropaty.GAME_TITLE, "")
+                                }
+                                try {
+                                    put(
+                                        GameJsonPropaty.GAME_TEXT,
+                                        joinGameData.getString(GameJsonPropaty.GAME_TITLE)
+                                    )
+                                } catch (e: JSONException) {
+                                    put(GameJsonPropaty.GAME_TEXT, "")
+                                }
+                            }
+                            targetJSONArray.put(targetIndex, targetGameData)
+                            return@target
+                        }
+                    }
+                }
+            } else {
+                val gameData = JSONObject().apply {
+                        put(GameJsonPropaty.GAME_ID, joinGameData.getString(GameJsonPropaty.GAME_ID))
+                    try {
+                        put(
+                            GameJsonPropaty.GAME_TITLE,
+                            joinGameData.getString(GameJsonPropaty.GAME_TITLE)
+                        )
+                    } catch (e: JSONException) {
+                        put(GameJsonPropaty.GAME_TITLE,"")
+                    }
+                    try {
+                        put(
+                            GameJsonPropaty.GAME_TEXT,
+                            joinGameData.getString(GameJsonPropaty.GAME_TEXT)
+                        )
+                    } catch (e: JSONException) {
+                        put(GameJsonPropaty.GAME_TITLE,"")
+                    }
+                }
+                targetJSONArray.put(gameData)
+                newGames.add(GameInfo(gameData))
+            }
+        }
+        targetJsonObject.put(GameJsonPropaty.GAME_DATA, targetJSONArray)
+        file.writeText(targetJsonObject.toString())
+        return Result.success(newGames)
     }
 
     fun changeShareEnabled(packageName: String, isEnable: Boolean) {

@@ -3,6 +3,7 @@ package io.github.lanlacope.nxsharinghelper.activity.component
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -45,6 +46,7 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
+import kotlinx.coroutines.Job
 import java.io.File
 
 @Composable
@@ -159,7 +161,8 @@ fun ThemeSelector(
 @Composable
 fun AddMySetDialog(
     shown: MutableState<Boolean>,
-    files: SnapshotStateList<File>
+    files: SnapshotStateList<File>,
+    onSucceseful: () -> Unit
 ) {
     var shownWarning by remember {
         mutableStateOf(false)
@@ -219,6 +222,7 @@ fun AddMySetDialog(
                                 val result = fileEditor.addMySet(title.value)
                                 if (result.isSuccess) {
                                     files.add(result.getOrNull()!!)
+                                    onSucceseful()
                                     shown.value = false
                                 } else {
                                     shownWarning = true
@@ -243,11 +247,8 @@ fun AddMySetDialog(
 @Composable
 fun RemoveMySetDialog(
     shown: MutableState<Boolean>,
-    fileName: String,
     removeMySet: () -> Unit
 ) {
-    val fileEditor = rememberFileEditor()
-
     if (shown.value) {
         Dialog(
             onDismissRequest = {
@@ -271,7 +272,6 @@ fun RemoveMySetDialog(
 
                     TextButton(
                         onClick = {
-                            fileEditor.removeMySet(fileName)
                             removeMySet()
                             shown.value = false
                         },
@@ -292,14 +292,73 @@ fun RemoveMySetDialog(
 }
 
 @Composable
-fun EditCommonInfoDialog(
+fun ImportMySetDialog(
     shown: MutableState<Boolean>,
-    fileName: String,
-    title: MutableState<String>,
-    text: MutableState<String>
+    files: SnapshotStateList<File>,
+    onSucceseful: () -> Unit
 ) {
     val fileEditor = rememberFileEditor()
 
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) { // TODO: リソース
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
+
+                    DialogMessage(text = "")
+
+                    val failedToast = makeToast(text = "sippai")
+
+                    val jsonImportResult = rememberImportJsonResult { jsonText ->
+                        val result = fileEditor.importMyset(jsonText)
+                        if (result.isSuccess) {
+                            files.add(result.getOrNull()!!)
+                            onSucceseful()
+                            shown.value = false
+                        } else {
+                            failedToast.show()
+                        }
+                    }
+
+                    TextButton(
+                        onClick = {
+                            jsonImportResult.launch()
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.dialog_poitive_add),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EditCommonInfoDialog(
+    shown: MutableState<Boolean>,
+    title: MutableState<String>,
+    text: MutableState<String>,
+    editCommonInfo: (String, String) -> Unit
+) {
     var _title by remember {
         mutableStateOf(title.value)
     }
@@ -349,8 +408,8 @@ fun EditCommonInfoDialog(
 
                     TextButton(
                         onClick = {
+                            editCommonInfo(title.value, text.value)
                             shown.value = false
-                            fileEditor.editCommonInfo(fileName, title.value, text.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()
@@ -631,6 +690,68 @@ fun RemoveGameInfoDialog(
 }
 
 @Composable
+fun ImportGameInfoDialog(
+    shown: MutableState<Boolean>,
+    fileName: String,
+    games: SnapshotStateList<GameInfo>,
+    onSucceseful: () -> Unit
+) {
+    val fileEditor = rememberFileEditor()
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) { // TODO: リソース
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
+
+                    DialogMessage(text = "")
+
+                    val failedToast = makeToast(text = "sippai")
+
+                    val jsonImportResult = rememberImportJsonResult { jsonObject ->
+                        val result = fileEditor.importGameInfo(fileName, jsonObject, false)
+                        if (result.isSuccess) {
+                            games.addAll(result.getOrNull()!!)
+                            onSucceseful()
+                            shown.value = false
+                        } else {
+                            failedToast.show()
+                        }
+                    }
+
+                    TextButton(
+                        onClick = {
+                            jsonImportResult.launch()
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.dialog_poitive_add),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun DialogTitle(text: String) {
     Text(
         text = text,
@@ -752,30 +873,6 @@ private fun LicensePreViewLight2() {
                 fileName = "name",
                 id = "XXXXXXXXXXXXXXXXXXXXXX",
                 isParentRemoved = shown
-            )
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun LicensePreViewLight3() {
-    AppTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val shown = remember {
-                mutableStateOf(true)
-            }
-
-            val list = remember {
-                mutableStateListOf(File(""), File(""))
-            }
-
-            AddMySetDialog(
-                shown = shown,
-                files = list
             )
         }
     }
