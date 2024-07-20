@@ -26,7 +26,7 @@ fun rememberFileEditor(): FileEditor {
 }
 
 @Immutable
-class FileEditor(private val context: Context) : FileSelector(context) {
+class FileEditor(context: Context) : FileSelector(context) {
 
     fun checkMySetJson(jsonObject: JSONObject): Boolean {
         try {
