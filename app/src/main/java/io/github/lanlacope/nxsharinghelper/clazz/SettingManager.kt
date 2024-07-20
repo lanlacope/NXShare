@@ -2,11 +2,9 @@ package io.github.lanlacope.nxsharinghelper.clazz
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.activity.component.recompositionKey
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 import org.json.JSONException
 import org.json.JSONObject
