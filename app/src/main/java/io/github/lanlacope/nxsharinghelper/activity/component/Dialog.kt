@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -102,7 +103,7 @@ fun ChangeAppThemeDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.dialog_poitive_apply),
+                            text = stringResource(id = R.string.dialog_positive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -229,7 +230,7 @@ fun AddMySetDialog(
                                 .wrapContentSize()
                         ) {
                             Text(
-                                text = stringResource(id = R.string.dialog_poitive_add),
+                                text = stringResource(id = R.string.dialog_positive_add),
                                 modifier = Modifier
                                     .wrapContentSize()
                             )
@@ -277,68 +278,7 @@ fun RemoveMySetDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.dialog_poitive_apply),
-                            modifier = Modifier
-                                .wrapContentSize()
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ImportMySetDialog(
-    shown: MutableState<Boolean>,
-    files: SnapshotStateList<File>,
-    onSucceseful: () -> Unit
-) {
-    val fileEditor = rememberFileEditor()
-
-    if (shown.value) {
-        Dialog(
-            onDismissRequest = {
-                shown.value = false
-            },
-        ) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier
-                    .wrapContentSize()
-
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) { // TODO: リソース
-                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
-
-                    DialogMessage(text = "")
-
-                    val failedToast = makeToast(text = "sippai")
-
-                    val jsonImportResult = rememberImportJsonResult { jsonText ->
-                        val result = fileEditor.importMyset(jsonText)
-                        if (result.isSuccess) {
-                            files.add(result.getOrNull()!!)
-                            onSucceseful()
-                            shown.value = false
-                        } else {
-                            failedToast.show()
-                        }
-                    }
-
-                    TextButton(
-                        onClick = {
-                            jsonImportResult.launch()
-                        },
-                        modifier = Modifier
-                            .wrapContentSize()
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.dialog_poitive_add),
+                            text = stringResource(id = R.string.dialog_positive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -413,7 +353,7 @@ fun EditCommonInfoDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.dialog_poitive_apply),
+                            text = stringResource(id = R.string.dialog_positive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -522,7 +462,7 @@ fun AddGameInfoDialog(
 
                         ) {
                             Text(
-                                text = stringResource(id = R.string.dialog_poitive_add),
+                                text = stringResource(id = R.string.dialog_positive_add),
                                 modifier = Modifier
                                     .wrapContentSize()
 
@@ -623,7 +563,7 @@ fun EditGameInfoDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.dialog_poitive_apply),
+                            text = stringResource(id = R.string.dialog_positive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -675,7 +615,7 @@ fun RemoveGameInfoDialog(
                             .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.dialog_poitive_apply),
+                            text = stringResource(id = R.string.dialog_positive_apply),
                             modifier = Modifier
                                 .wrapContentSize()
                         )
@@ -691,7 +631,6 @@ fun ImportGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
     games: SnapshotStateList<GameInfo>,
-    onSucceseful: () -> Unit
 ) {
     val fileEditor = rememberFileEditor()
 
@@ -711,18 +650,37 @@ fun ImportGameInfoDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                ) { // TODO: リソース
-                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_add))
+                ) {
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_game_import))
 
-                    DialogMessage(text = "")
+                    var overwrite by remember {
+                        mutableStateOf(false)
+                    }
+                    
+                    Row(
+                        onClick = {
+                            overwrite = !overwrite
+                        }
+                    ) {
+                        Checkbox(
+                            checked = overwrite,
+                            onCheckedChange ={
+                                overwrite = !overwrite
+                            },
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.dialog_checkbox_overwrite),
+                            modifier = Modifier.align(Alignment.CenterVertically)
+                        )
+                    }
 
-                    val failedToast = makeToast(text = "sippai")
+                    val failedToast = makeToast(text = stringResource(id = R.string.failed_import))
 
                     val jsonImportResult = rememberImportJsonResult { jsonObject ->
-                        val result = fileEditor.importGameInfo(fileName, jsonObject, false)
+                        val result = fileEditor.importGameInfo(fileName, jsonObject, overwrite)
                         if (result.isSuccess) {
                             games.addAll(result.getOrNull()!!)
-                            onSucceseful()
                             shown.value = false
                         } else {
                             failedToast.show()
@@ -735,9 +693,10 @@ fun ImportGameInfoDialog(
                         },
                         modifier = Modifier
                             .wrapContentSize()
+                            .align(Alignment.End)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.dialog_poitive_add),
+                            text = stringResource(id = R.string.dialog_positive_import),
                             modifier = Modifier
                                 .wrapContentSize()
                         )

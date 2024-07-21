@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,6 +39,10 @@ import io.github.lanlacope.nxsharinghelper.activity.component.EditGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
+import io.github.lanlacope.nxsharinghelper.activity.component.ImportGameInfoDialog
+import io.github.lanlacope.nxsharinghelper.activity.component.makeToast
+import io.github.lanlacope.nxsharinghelper.activity.component.rememberImportJsonResult
+import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
@@ -83,6 +86,12 @@ private fun MySetList(
 
     val listState = rememberLazyListState()
 
+    val scrollLastItem: () -> Unit = {
+        scope.launch {
+            listState.animateScrollToItem(files.size)
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -90,15 +99,23 @@ private fun MySetList(
         val shownAddMysetDialog = remember {
             mutableStateOf(false)
         }
-        val shownImportMysetDialog = remember {
-            mutableStateOf(false)
+        val fileEditor = rememberFileEditor()
+        val failedToast = makeToast(text = stringResource(id = R.string.failed_import))
+        val jsonImportResult = rememberImportJsonResult { jsonText ->
+            val result = fileEditor.importMyset(jsonText)
+            if (result.isSuccess) {
+                files.add(result.getOrNull()!!)
+                scrollLastItem()
+            } else {
+                failedToast.show()
+            }
         }
         Button(
             onClick = {
                 shownAddMysetDialog.value = true
             },
             onLongClick = {
-                shownImportMysetDialog.value = true
+                jsonImportResult.launch()
             },
             modifier = Modifier
                 .width(200.dp)
@@ -110,7 +127,7 @@ private fun MySetList(
                 )
         ) {
             Text(
-                text = stringResource(id = R.string.dialog_poitive_add),
+                text = stringResource(id = R.string.dialog_positive_add),
                 modifier = Modifier.wrapContentSize()
             )
         }
@@ -124,7 +141,6 @@ private fun MySetList(
                 key = { it.name }
             ) { file ->
                 val infoManager = rememberInfoManager()
-                val fileEditor = rememberFileEditor()
                 val common by remember {
                     mutableStateOf(infoManager.getCommonInfo(file))
                 }
@@ -150,18 +166,11 @@ private fun MySetList(
             }
         }
 
-        val scrollLastItem: () -> Unit = {
-            scope.launch {
-                listState.animateScrollToItem(files.size)
-            }
-        }
         AddMySetDialog(
             shown = shownAddMysetDialog,
             files = files,
             onSucceseful = scrollLastItem
         )
-
-        // TODO: ImportMySetDialog
     }
 }
 
@@ -245,6 +254,9 @@ private fun MySet(
     val shownAddDialog = remember {
         mutableStateOf(false)
     }
+    val shownImportDialog = remember {
+        mutableStateOf(false)
+    }
 
     val infoManager = rememberInfoManager()
     val games = remember {
@@ -254,7 +266,6 @@ private fun MySet(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -276,6 +287,9 @@ private fun MySet(
             containerColor = MaterialTheme.colorScheme.secondary,
             onClick = {
                 shownAddDialog.value = true
+            },
+            onLongClick = {
+                shownImportDialog.value = true
             },
             modifier = Modifier
                 .wrapContentSize()
@@ -299,6 +313,12 @@ private fun MySet(
 
     AddGameInfoDialog(
         shown = shownAddDialog,
+        fileName = file.name,
+        games = games
+    )
+
+    ImportGameInfoDialog(
+        shown = shownImportDialog,
         fileName = file.name,
         games = games
     )

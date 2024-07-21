@@ -16,19 +16,21 @@
     <string name="succesful_download">ダウンロードに成功しました！</string>
     <string name="failed_download">ダウンロードに失敗しました……</string>
 
-    <!-- Navigation Message -->
+    <!-- Toast Message -->
     <string name="failed_decode_islocalhost">一つ目のQRコードを読み取ってください</string>
     <string name="failed_decode_notswitch">Switch内に表示されているQRコードを読み取ってください</string>
     <string name="saved_notification">%1$d件のファイルを保存しました</string>
     <string name="copy_clipboard">クリップボードにコピーしました</string>
+    <string name="failed_import">ファイルを読み取れませんでした……</string>
 
     <!-- Chooser Message -->
     <string name="permission_share_photo">画像の共有</string>
     <string name="permission_share_movie">動画の共有</string>
 
     <!-- Dialog Message -->
-    <string name="dialog_poitive_apply">適用</string>
-    <string name="dialog_poitive_add">追加</string>
+    <string name="dialog_positive_apply">適用</string>
+    <string name="dialog_positive_add">追加</string>
+    <string name="dialog_positive_import">インポート</string>
 
     <string name="dialog_title_comfirm">確認</string>
 
@@ -38,11 +40,14 @@
     <string name="dialog_title_myset_edit">マイセット編集</string>
     <string name="dialog_title_game_add">新規ゲーム追加</string>
     <string name="dialog_title_game_edit">ゲーム情報編集</string>
+    <string name="dialog_title_game_import">インポート設定</string>
 
     <string name="confirm_text_myset_remove">このマイセットを削除しますか？</string>
     <string name="confirm_text_game_remove">このゲームIDを削除しますか？</string>
 
     <string name="dialog_warning_exists">既に存在しています！</string>
+
+    <string name="dialog_checkbox_overwrite">重複するゲームを上書き</string>
 
     <!-- TextField Message -->
     <string name="hint_myset_title">マイセット名</string>

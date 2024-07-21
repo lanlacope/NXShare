@@ -20,14 +20,16 @@
     <string name="failed_decode_notswitch">Please scan QR in Switch</string>
     <string name="saved_notification">%1$d Files are saved</string>
     <string name="copy_clipboard">Copy for Clipboard</string>
+    <string name="failed_import">Failed resding file…</string>
 
     <!-- Chooser Message -->
     <string name="permission_share_photo">Share photos
     </string><string name="permission_share_movie">Share movie</string>
 
     <!-- Dialog Message -->
-    <string name="dialog_poitive_apply">Apply</string>
-    <string name="dialog_poitive_add">Add</string>
+    <string name="dialog_positive_apply">Apply</string>
+    <string name="dialog_positive_add">Add</string>
+    <string name="dialog_positive_import">Import</string>
 
     <string name="dialog_title_comfirm">Confirm</string>
 
@@ -37,11 +39,14 @@
     <string name="dialog_title_myset_edit">Edit MySet</string>
     <string name="dialog_title_game_add">Add New GameData</string>
     <string name="dialog_title_game_edit">Edit GameData</string>
+    <string name="dialog_title_game_import">Import GameData</string>
 
     <string name="confirm_text_myset_remove">Delete this MySet?</string>
     <string name="confirm_text_game_remove">Delete this GameID?</string>
 
-    <string name="dialog_warning_exists">Already Exists!</string>
+    <string name="dialog_warning_exists">Already Existing!</string>
+
+    <string name="dialog_checkbox_overwrite">Overwrite Existing</string>
 
     <!-- TextField Message -->
     <string name="hint_myset_title">MySet Title</string>
