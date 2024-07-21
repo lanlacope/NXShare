@@ -24,7 +24,7 @@ open class FileSelector(private val context: Context) {
     companion object {
         val FOLDER_THIS: String = "NXShare"
         val FOLDER_SETTING: String = "setting"
-        val FILE_SETTING: String = "setting"
+        val FILE_SETTING: String = "setting.json"
         val FOLDER_DATA = "data"
         val FILE_APP = "app.json"
         val FOLDER_MYSET = "myset"
