@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonP
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 
 class EditActivity: ComponentActivity() {
@@ -66,10 +68,10 @@ fun SettingList() {
     ) {
         val TEXT_VERTICAL_PADDING = 15.dp
 
-        val shown = remember {
+        val shown = rememberSaveable {
             mutableStateOf(false)
         }
-        val selectedTheme = remember {
+        var selectedTheme by remember {
             mutableStateOf(settingManager.getAppTheme())
         }
         val onClick = {
@@ -98,7 +100,7 @@ fun SettingList() {
 
             )
             Text(
-                text = when (selectedTheme.value) {
+                text = when (selectedTheme) {
                     SettingJsonPropaty.THEME_LIGHT -> stringResource(id = R.string.summary_theme_light)
                     SettingJsonPropaty.THEME_DARK -> stringResource(id = R.string.summary_theme_dark)
                     else -> stringResource(id = R.string.summary_theme_system)
@@ -117,9 +119,14 @@ fun SettingList() {
             )
 
         }
+        val reflectionThemeChange: (String) -> Unit = { newTheme ->
+            selectedTheme = newTheme
+            updateTheme()
+        }
         ChangeAppThemeDialog(
             shown = shown,
-            selectedTheme = selectedTheme
+            selectedTheme = selectedTheme,
+            reflection = reflectionThemeChange
         )
 
         var alternativeConnectionEnabled by remember {

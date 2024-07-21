@@ -6,12 +6,12 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.activity.component.recompositionKey
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 
@@ -33,6 +33,12 @@ private val DarkColorScheme = darkColorScheme(
     onError = RedLight
 )
 
+private val updateThemeKey: MutableState<Int> = mutableStateOf(0)
+
+fun updateTheme() {
+    updateThemeKey.value++
+}
+
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -44,7 +50,7 @@ fun AppTheme(
     }
 
 
-    LaunchedEffect(recompositionKey.value) {
+    LaunchedEffect(updateThemeKey.value) {
         theme = settingManager.getAppTheme()
     }
 

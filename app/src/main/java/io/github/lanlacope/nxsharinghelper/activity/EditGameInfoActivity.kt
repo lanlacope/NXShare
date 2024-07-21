@@ -18,10 +18,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,30 +89,28 @@ private fun MySetList(
 
     val listState = rememberLazyListState()
 
-    val scrollLastItem: () -> Unit = {
-        scope.launch {
-            listState.animateScrollToItem(files.size)
-        }
-    }
-
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         val BUTTON_PADDING = 20.dp
-        val shownAddMysetDialog = remember {
+        val shownAddMysetDialog = rememberSaveable {
             mutableStateOf(false)
         }
+
         val fileEditor = rememberFileEditor()
         val failedToast = makeToast(text = stringResource(id = R.string.failed_import))
         val jsonImportResult = rememberImportJsonResult { jsonText ->
             val result = fileEditor.importMyset(jsonText)
             if (result.isSuccess) {
                 files.add(result.getOrNull()!!)
-                scrollLastItem()
+                scope.launch {
+                    listState.animateScrollToItem(files.size)
+                }
             } else {
                 failedToast.show()
             }
         }
+
         Button(
             onClick = {
                 shownAddMysetDialog.value = true
@@ -146,8 +147,8 @@ private fun MySetList(
                 }
 
                 // MySetCommonのコールバックを定義しておく
-                val editCommonInfo: (String, String) -> Unit = { title, text ->
-                    fileEditor.editCommonInfo(file.name, title, text)
+                val editCommonInfo: (String, String) -> Unit = { newTitle, newText ->
+                    fileEditor.editCommonInfo(file.name, newTitle, newText)
                 }
                 val removeMySet: () -> Unit = {
                     fileEditor.removeMySet(file.name)
@@ -166,10 +167,15 @@ private fun MySetList(
             }
         }
 
+        val reflectionAdd: (File) -> Unit = { newFile ->
+            files.add(newFile)
+            scope.launch {
+                listState.animateScrollToItem(files.size)
+            }
+        }
         AddMySetDialog(
             shown = shownAddMysetDialog,
-            files = files,
-            onSucceseful = scrollLastItem
+            reflection = reflectionAdd
         )
     }
 }
@@ -180,17 +186,17 @@ private fun MySetCommon(
     editCommonInfo: (String, String) -> Unit,
     removeMySet: () -> Unit
 ) {
-    val shownEditDialog = remember {
+    val shownEditDialog = rememberSaveable {
         mutableStateOf(false)
     }
-    val shownRemoveDialog = remember {
+    val shownRemoveDialog = rememberSaveable {
         mutableStateOf(false)
     }
 
-    val title = remember {
+    var title by remember {
         mutableStateOf(common.title)
     }
-    val text = remember {
+    var text by remember {
         mutableStateOf(common.text)
     }
 
@@ -207,7 +213,7 @@ private fun MySetCommon(
 
     ) {
         Text(
-            text = title.value,
+            text = title,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -220,7 +226,7 @@ private fun MySetCommon(
                 )
         )
         Text(
-            text = text.value,
+            text = text,
             fontSize = 12.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -234,11 +240,17 @@ private fun MySetCommon(
         )
     }
 
+    val refrectionEdit: (String, String) -> Unit = { newTitle, newText ->
+        title = newTitle
+        text = newText
+    }
+
     EditCommonInfoDialog(
         shown = shownEditDialog,
         title = title,
         text = text,
-        editCommonInfo = editCommonInfo
+        editCommonInfo = editCommonInfo,
+        reflection = refrectionEdit
     )
 
     RemoveMySetDialog(
@@ -251,10 +263,11 @@ private fun MySetCommon(
 private fun MySet(
     file: File
 ) {
-    val shownAddDialog = remember {
+    val scope = rememberCoroutineScope()
+    val shownAddDialog = rememberSaveable {
         mutableStateOf(false)
     }
-    val shownImportDialog = remember {
+    val shownImportDialog = rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -263,10 +276,21 @@ private fun MySet(
         infoManager.getGameInfo(file).toMutableStateList()
     }
 
+    var inportEffectKey by remember {
+        mutableStateOf(0)
+    }
+    LaunchedEffect(inportEffectKey) {
+        games.clear()
+        games.addAll(infoManager.getGameInfo(file))
+    }
+
+    val listState = rememberLazyListState()
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
         ) {
@@ -311,16 +335,33 @@ private fun MySet(
         }
     }
 
+    val reflectionAdd: (GameInfo) -> Unit = { newGame ->
+        games.add(newGame)
+        scope.launch {
+            listState.animateScrollToItem(games.size)
+        }
+    }
+
     AddGameInfoDialog(
         shown = shownAddDialog,
         fileName = file.name,
-        games = games
+        reflection = reflectionAdd
     )
 
+    val reflectionImport: (List<GameInfo>, Boolean) -> Unit = { newGames, overwrite ->
+        if (overwrite) {
+            inportEffectKey++
+        } else {
+            games.addAll(newGames)
+        }
+        scope.launch {
+            listState.animateScrollToItem(games.size)
+        }
+    }
     ImportGameInfoDialog(
         shown = shownImportDialog,
         fileName = file.name,
-        games = games
+        reflection = reflectionImport
     )
 }
 
@@ -329,25 +370,25 @@ private fun MySetItem(
     gameInfo: GameInfo,
     fileName: String
 ) {
-    val isRemoved = remember {
+    var isRemoved by remember {
         mutableStateOf(false)
     }
-    val shownEditDialog = remember {
+    val shownEditDialog = rememberSaveable {
         mutableStateOf(false)
     }
-    val shownRemoveDialog = remember {
+    val shownRemoveDialog = rememberSaveable {
         mutableStateOf(false)
     }
 
-    val title = remember {
+    var title by remember {
         mutableStateOf(gameInfo.title)
     }
     val id = gameInfo.id
-    val text = remember {
+    var text by remember {
         mutableStateOf(gameInfo.text)
     }
 
-    DrawDownAnimated(visible = !isRemoved.value) {
+    DrawDownAnimated(visible = !isRemoved) {
         Column(
             onClick = {
                 shownEditDialog.value = true
@@ -361,7 +402,7 @@ private fun MySetItem(
 
         ) {
             Text(
-                text = title.value,
+                text = title,
                 fontSize = 24.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -373,7 +414,7 @@ private fun MySetItem(
                     )
             )
             Text(
-                text = text.value,
+                text = text,
                 fontSize = 12.sp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -388,18 +429,28 @@ private fun MySetItem(
         }
     }
 
+    val refrectionEdit: (String, String) -> Unit = { newTitle, newText ->
+        title = newTitle
+        text = newText
+    }
+
     EditGameInfoDialog(
         shown = shownEditDialog,
         fileName = fileName,
         title = title,
         id = id,
-        text = text
+        text = text,
+        reflection = refrectionEdit
     )
+
+    val reflectionRemove = {
+        isRemoved = true
+    }
 
     RemoveGameInfoDialog(
         shown = shownRemoveDialog,
         fileName = fileName,
         id = id,
-        isParentRemoved = isRemoved
+        reflection = reflectionRemove
     )
 }

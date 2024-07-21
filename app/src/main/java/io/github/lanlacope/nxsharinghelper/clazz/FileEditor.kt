@@ -77,6 +77,12 @@ class FileEditor(context: Context) : FileSelector(context) {
             return Result.failure(Exception())
         }
 
+        val title = jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
+        val isExists = (getMySetFileByTitle(title).isSuccess || title == AppJsonPropaty.TYPE_NONE)
+        if (isExists) {
+            return Result.failure(Exception())
+        }
+
         val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
 
         val createFileResult = createNewMySetFile(fileName)

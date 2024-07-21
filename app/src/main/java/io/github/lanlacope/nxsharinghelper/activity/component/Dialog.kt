@@ -1,10 +1,8 @@
 package io.github.lanlacope.nxsharinghelper.activity.component
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -22,8 +20,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -32,7 +30,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -42,7 +39,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonP
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.Gray
-import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Box
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 import java.io.File
@@ -50,18 +46,19 @@ import java.io.File
 @Composable
 fun ChangeAppThemeDialog(
     shown: MutableState<Boolean>,
-    selectedTheme: MutableState<String>
+    selectedTheme: String,
+    reflection: (String) -> Unit
 ) {
 
     val settingManager = rememberSettingManager()
 
-    var _selectedTheme by remember {
-        mutableStateOf(selectedTheme.value)
+    val dSelectedTheme = rememberSaveable {
+        mutableStateOf(selectedTheme)
     }
 
     LaunchedEffect(shown.value) {
         if (shown.value) {
-            _selectedTheme = selectedTheme.value
+            dSelectedTheme.value = selectedTheme
         }
     }
 
@@ -69,7 +66,6 @@ fun ChangeAppThemeDialog(
         Dialog(
             onDismissRequest = {
                 shown.value = false
-                selectedTheme.value = _selectedTheme
             },
         ) {
             Surface(
@@ -88,14 +84,14 @@ fun ChangeAppThemeDialog(
                     SettingJsonPropaty.APP_THEME_LIST.forEach { theme ->
                         ThemeSelector(
                             theme = theme,
-                            selectedTheme = selectedTheme
+                            selectedTheme = dSelectedTheme
                         )
                     }
 
                     TextButton(
                         onClick = {
-                            settingManager.changeAppTheme(selectedTheme.value)
-                            recomposition()
+                            settingManager.changeAppTheme(dSelectedTheme.value)
+                            reflection(dSelectedTheme.value)
                             shown.value = false
                         },
                         modifier = Modifier
@@ -159,15 +155,14 @@ fun ThemeSelector(
 @Composable
 fun AddMySetDialog(
     shown: MutableState<Boolean>,
-    files: SnapshotStateList<File>,
-    onSucceseful: () -> Unit
+    reflection: (File) -> Unit
 ) {
-    var shownWarning by remember {
+    var shownWarning by rememberSaveable {
         mutableStateOf(false)
     }
     val fileEditor = rememberFileEditor()
 
-    val title = remember {
+    val title = rememberSaveable {
         mutableStateOf("")
     }
 
@@ -219,8 +214,7 @@ fun AddMySetDialog(
                             onClick = {
                                 val result = fileEditor.addMySet(title.value)
                                 if (result.isSuccess) {
-                                    files.add(result.getOrNull()!!)
-                                    onSucceseful()
+                                    reflection(result.getOrNull()!!)
                                     shown.value = false
                                 } else {
                                     shownWarning = true
@@ -292,22 +286,23 @@ fun RemoveMySetDialog(
 @Composable
 fun EditCommonInfoDialog(
     shown: MutableState<Boolean>,
-    title: MutableState<String>,
-    text: MutableState<String>,
-    editCommonInfo: (String, String) -> Unit
+    title: String,
+    text: String,
+    editCommonInfo: (String, String) -> Unit,
+    reflection: (String, String) -> Unit,
 ) {
-    var _title by remember {
-        mutableStateOf(title.value)
+    val dTitle = rememberSaveable {
+        mutableStateOf(title)
     }
 
-    var _text by remember {
-        mutableStateOf(text.value)
+    val dText = rememberSaveable {
+        mutableStateOf(text)
     }
 
     LaunchedEffect(shown.value) {
         if (shown.value) {
-            _title = title.value
-            _text = text.value
+            dTitle.value = title
+            dText.value = text
         }
     }
 
@@ -315,8 +310,6 @@ fun EditCommonInfoDialog(
         Dialog(
             onDismissRequest = {
                 shown.value = false
-                title.value = _title
-                text.value = _text
             },
         ) {
             Surface(
@@ -333,19 +326,20 @@ fun EditCommonInfoDialog(
                     DialogTitle(text = stringResource(id = R.string.dialog_title_myset_edit))
 
                     DialogTextField(
-                        text = title,
+                        text = dTitle,
                         hint = stringResource(id = R.string.hint_myset_title)
                     )
 
                     DialogTextField(
-                        text = text,
+                        text = dText,
                         hint = stringResource(id = R.string.hint_myset_text),
                         singleLine = false
                     )
 
                     TextButton(
                         onClick = {
-                            editCommonInfo(title.value, text.value)
+                            editCommonInfo(dTitle.value, dText.value)
+                            reflection(dTitle.value, dText.value)
                             shown.value = false
                         },
                         modifier = Modifier
@@ -368,21 +362,21 @@ fun EditCommonInfoDialog(
 fun AddGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
-    games: SnapshotStateList<GameInfo>
+    reflection: (GameInfo) -> Unit
 ) {
-    var shownWarning by remember {
+    var shownWarning by rememberSaveable {
         mutableStateOf(true)
     }
 
     val fileEditor = rememberFileEditor()
 
-    val title = remember {
+    val title = rememberSaveable {
         mutableStateOf("")
     }
-    val id = remember {
+    val id = rememberSaveable {
         mutableStateOf("")
     }
-    val text = remember {
+    val text = rememberSaveable {
         mutableStateOf("")
     }
 
@@ -451,7 +445,7 @@ fun AddGameInfoDialog(
                                         text.value
                                     )
                                 if (result.isSuccess) {
-                                    games.add(result.getOrNull()!!)
+                                    reflection(result.getOrNull()!!)
                                     shown.value = false
                                 } else {
                                     shownWarning = true
@@ -479,24 +473,25 @@ fun AddGameInfoDialog(
 fun EditGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
-    title: MutableState<String>,
+    title: String,
     id: String,
-    text: MutableState<String>
+    text: String,
+    reflection: (String, String) -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
     val fileEditor = rememberFileEditor()
 
-    var _title by remember {
-        mutableStateOf(title.value)
+    val dTitle = rememberSaveable {
+        mutableStateOf(title)
     }
-    var _text by remember {
-        mutableStateOf(text.value)
+    val dText = rememberSaveable {
+        mutableStateOf(text)
     }
 
     LaunchedEffect(shown.value) {
         if (shown.value) {
-            _title = title.value
-            _text = text.value
+            dTitle.value = title
+            dText.value = text
         }
     }
 
@@ -504,8 +499,6 @@ fun EditGameInfoDialog(
         Dialog(
             onDismissRequest = {
                 shown.value = false
-                title.value = _title
-                text.value = _text
             },
         ) {
             Surface(
@@ -543,20 +536,21 @@ fun EditGameInfoDialog(
                     }
 
                     DialogTextField(
-                        text = title,
+                        text = dTitle,
                         hint = stringResource(id = R.string.hint_game_title)
                     )
 
                     DialogTextField(
-                        text = text,
+                        text = dText,
                         hint = stringResource(id = R.string.hint_game_text),
                         singleLine = false
                     )
 
                     TextButton(
                         onClick = {
+                            fileEditor.editGameInfo(fileName, dTitle.value, id, dText.value)
+                            reflection(dTitle.value, dText.value)
                             shown.value = false
-                            fileEditor.editGameInfo(fileName, title.value, id, text.value)
                         },
                         modifier = Modifier
                             .wrapContentSize()
@@ -579,7 +573,7 @@ fun RemoveGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
     id: String,
-    isParentRemoved: MutableState<Boolean>
+    reflection: () -> Unit
 ) {
     val fileEditor = rememberFileEditor()
 
@@ -608,7 +602,7 @@ fun RemoveGameInfoDialog(
                         onClick = {
                             shown.value = false
                             fileEditor.removeGameInfo(fileName, id)
-                            isParentRemoved.value = true
+                            reflection()
                         },
                         modifier = Modifier
                             .wrapContentSize()
@@ -630,7 +624,7 @@ fun RemoveGameInfoDialog(
 fun ImportGameInfoDialog(
     shown: MutableState<Boolean>,
     fileName: String,
-    games: SnapshotStateList<GameInfo>,
+    reflection: (List<GameInfo>, Boolean) -> Unit,
 ) {
     val fileEditor = rememberFileEditor()
 
@@ -680,7 +674,7 @@ fun ImportGameInfoDialog(
                     val jsonImportResult = rememberImportJsonResult { jsonObject ->
                         val result = fileEditor.importGameInfo(fileName, jsonObject, overwrite)
                         if (result.isSuccess) {
-                            games.addAll(result.getOrNull()!!)
+                            reflection(result.getOrNull()!!, overwrite)
                             shown.value = false
                         } else {
                             failedToast.show()
@@ -780,57 +774,5 @@ private fun DialogTextField(
             .padding(all = 8.dp)
 
     )
-}
-
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun LicensePreViewLight() {
-    AppTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val shown = remember {
-                mutableStateOf(true)
-            }
-            val title = remember {
-                mutableStateOf("")
-            }
-            val text = remember {
-                mutableStateOf("")
-            }
-
-            EditGameInfoDialog(
-                shown = shown,
-                fileName = "name",
-                title = title,
-                id = "XXXXXXXXXXXXXXXXXXXXXX",
-                text = text
-            )
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun LicensePreViewLight2() {
-    AppTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val shown = remember {
-                mutableStateOf(true)
-            }
-
-            RemoveGameInfoDialog(
-                shown = shown,
-                fileName = "name",
-                id = "XXXXXXXXXXXXXXXXXXXXXX",
-                isParentRemoved = shown
-            )
-        }
-    }
 }
 
