@@ -1,0 +1,16 @@
+{
+  "CommonTitle": "MySet", // Required
+  "CommonText": "If sharing any with this myset, copy here text.",
+  "GameData": [ // Required
+    {
+      "GameTitle": "THE GAME",
+      "GameID": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // Required
+      "GameText": "If sharing <THE GAME> with this myset, copy here text."
+    },
+    {
+      "GameTitle": "The GAME2",
+      "GameID": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", // Required
+      "GameText": "#TheGame2 "
+    }
+  ]
+}
