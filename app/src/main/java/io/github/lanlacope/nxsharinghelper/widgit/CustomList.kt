@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 
+@Suppress("unused")
 @Composable
 fun LazyHorizontalPager(
     modifier: Modifier = Modifier,
@@ -76,7 +77,7 @@ fun rememberLazyPagerFlingBehavior(
     }
 }
 
-
+@Suppress("unused")
 inline fun <T> LazyListScope.animatedItems(
     items: List<T>,
     noinline key: ((item: T) -> Any)? = null,
@@ -92,6 +93,7 @@ inline fun <T> LazyListScope.animatedItems(
     }
 }
 
+@Suppress("unused")
 inline fun <T> LazyListScope.animatedPagerItems(
     items: List<T>,
     noinline key: ((item: T) -> Any)? = null,

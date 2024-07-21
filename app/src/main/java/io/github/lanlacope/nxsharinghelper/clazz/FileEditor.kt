@@ -12,8 +12,8 @@ import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
+import io.github.lanlacope.nxsharinghelper.widgit.forEachIndexOnly
+import io.github.lanlacope.nxsharinghelper.widgit.mapIndexOnly
 import org.json.JSONException
 
 @Suppress("unused")

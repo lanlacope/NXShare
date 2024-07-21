@@ -8,25 +8,20 @@ import android.text.style.CharacterStyle
 import android.text.style.URLSpan
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
@@ -54,7 +49,6 @@ private fun Licence() {
     val context = LocalContext.current
 
     val rawText = stringResource(id = R.string.license)
-    val textColor = MaterialTheme.colorScheme.onBackground
     val linkColor = MaterialTheme.colorScheme.primary
     val text = remember(rawText) {
         val parsedText = HtmlCompat.fromHtml(

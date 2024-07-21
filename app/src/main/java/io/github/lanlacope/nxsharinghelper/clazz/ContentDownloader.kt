@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.bundleOf
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchLocalHost
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
+import io.github.lanlacope.nxsharinghelper.widgit.mapIndexOnly
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject

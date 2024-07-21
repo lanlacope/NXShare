@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.mapIndexOnly
+import io.github.lanlacope.nxsharinghelper.widgit.mapIndexOnly
 import kotlinx.collections.immutable.toImmutableList
 import org.json.JSONException
 import org.json.JSONObject

@@ -21,7 +21,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.toArrayList
+import io.github.lanlacope.nxsharinghelper.widgit.toArrayList
 import java.io.File
 
 @Suppress("unused")

@@ -7,8 +7,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.forEachIndexOnly
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
+import io.github.lanlacope.nxsharinghelper.widgit.forEachIndexOnly
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
