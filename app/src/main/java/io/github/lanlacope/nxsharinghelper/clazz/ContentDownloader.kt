@@ -85,7 +85,7 @@ class ContentDownloader(val context: Context) {
         downloadData = DownloadData()
 
         parseJson(getData())
-        getContents()
+        getContent()
     }
 
     private suspend fun getData(): JSONObject = withContext(Dispatchers.IO) {
@@ -108,7 +108,9 @@ class ContentDownloader(val context: Context) {
         )
     }
 
-    private suspend fun getContents() = withContext(Dispatchers.IO) {
+    private suspend fun getContent() = withContext(Dispatchers.IO) {
+
+        ContentSaver(context).clearCache()
 
         downloadData.fileNames.forEach { fileName ->
             val connection: HttpURLConnection =

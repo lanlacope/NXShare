@@ -62,11 +62,6 @@ class ResultActivity : ComponentActivity() {
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        ContentSaver(this).clearCache()
-    }
 }
 
 
