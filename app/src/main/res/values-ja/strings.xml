@@ -38,6 +38,7 @@
 
     <string name="dialog_title_myset_add">新規マイセット追加</string>
     <string name="dialog_title_myset_edit">マイセット編集</string>
+    <string name="dialog_title_myset_import">インポート設定</string>
     <string name="dialog_title_game_add">新規ゲーム追加</string>
     <string name="dialog_title_game_edit">ゲーム情報編集</string>
     <string name="dialog_title_game_import">インポート設定</string>

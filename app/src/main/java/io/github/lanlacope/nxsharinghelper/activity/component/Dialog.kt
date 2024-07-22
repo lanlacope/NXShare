@@ -317,7 +317,7 @@ fun ImportMySetDialog(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    DialogTitle(text = stringResource(id = R.string.dialog_title_game_import))
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_myset_import))
 
                     DialogTextField(
                         text = title,
@@ -332,7 +332,6 @@ fun ImportMySetDialog(
                             failedToast.show()
                         }
                     }
-
 
                     TextButton(
                         onClick = {

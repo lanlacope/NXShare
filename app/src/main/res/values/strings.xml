@@ -37,6 +37,7 @@
 
     <string name="dialog_title_myset_add">Add New MySet</string>
     <string name="dialog_title_myset_edit">Edit MySet</string>
+    <string name="dialog_title_myset_import">Import MySet</string>
     <string name="dialog_title_game_add">Add New GameData</string>
     <string name="dialog_title_game_edit">Edit GameData</string>
     <string name="dialog_title_game_import">Import GameData</string>
