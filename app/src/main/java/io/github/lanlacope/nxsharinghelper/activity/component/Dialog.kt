@@ -284,6 +284,79 @@ fun RemoveMySetDialog(
 }
 
 @Composable
+fun ImportMySetDialog(
+    shown: MutableState<Boolean>,
+    reflection: (File) -> Unit
+) {
+    val fileEditor = rememberFileEditor()
+
+    val title = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(shown.value) {
+        if (shown.value) {
+            title.value = ""
+        }
+    }
+
+    if (shown.value) {
+        Dialog(
+            onDismissRequest = {
+                shown.value = false
+            },
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier
+                    .wrapContentSize()
+
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    DialogTitle(text = stringResource(id = R.string.dialog_title_game_import))
+
+                    DialogTextField(
+                        text = title,
+                        hint = stringResource(id = R.string.hint_myset_title)
+                    )
+                    val failedToast = makeToast(text = stringResource(id = R.string.failed_import))
+                    val jsonImportResult = rememberImportJsonResult { jsonObject ->
+                        val result = fileEditor.importMyset(title.value, jsonObject)
+                        if (result.isSuccess) {
+                            reflection(result.getOrNull()!!)
+                        } else {
+                            failedToast.show()
+                        }
+                    }
+
+
+                    TextButton(
+                        onClick = {
+                            jsonImportResult.launch()
+                            shown.value = false
+                        },
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.End)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.dialog_positive_import),
+                            modifier = Modifier
+                                .wrapContentSize()
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun EditCommonInfoDialog(
     shown: MutableState<Boolean>,
     title: String,

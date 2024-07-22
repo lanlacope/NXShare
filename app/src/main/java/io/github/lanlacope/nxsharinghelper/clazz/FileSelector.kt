@@ -85,18 +85,14 @@ open class FileSelector(private val context: Context) {
         return Result.failure(Exception())
     }
 
-    fun createNewMySetFile(fileName: String): Result<File> {
-        try {
-            val file = File(getMySetFolder(), fileName)
-            val isSucces = file.createNewFile()
+    fun createNewMySetFile(fileName: String): File {
+        val file = File(getMySetFolder(), fileName)
+        val isSucces = file.createNewFile()
 
-            if (isSucces) {
-                return Result.success(file)
-            } else {
-                return createNewMySetFile("${fileName}_")
-            }
-        } catch (e: Exception) {
-            return Result.failure(e)
+        if (isSucces) {
+            return file
+        } else {
+            return createNewMySetFile("${fileName}_")
         }
     }
 

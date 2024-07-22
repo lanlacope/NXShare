@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.AddGameInfoDialog
+import io.github.lanlacope.nxsharinghelper.activity.component.ImportMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.AddMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.EditCommonInfoDialog
@@ -43,8 +44,6 @@ import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDial
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
 import io.github.lanlacope.nxsharinghelper.activity.component.ImportGameInfoDialog
-import io.github.lanlacope.nxsharinghelper.activity.component.makeToast
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberImportJsonResult
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.CommonInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
@@ -96,19 +95,8 @@ private fun MySetList(
         val shownAddMysetDialog = rememberSaveable {
             mutableStateOf(false)
         }
-
-        val fileEditor = rememberFileEditor()
-        val failedToast = makeToast(text = stringResource(id = R.string.failed_import))
-        val jsonImportResult = rememberImportJsonResult { jsonText ->
-            val result = fileEditor.importMyset(jsonText)
-            if (result.isSuccess) {
-                files.add(result.getOrNull()!!)
-                scope.launch {
-                    listState.animateScrollToItem(files.size)
-                }
-            } else {
-                failedToast.show()
-            }
+        val shownImportMysetDialog = rememberSaveable {
+            mutableStateOf(false)
         }
 
         Button(
@@ -116,7 +104,7 @@ private fun MySetList(
                 shownAddMysetDialog.value = true
             },
             onLongClick = {
-                jsonImportResult.launch()
+                shownImportMysetDialog.value = true
             },
             modifier = Modifier
                 .width(200.dp)
@@ -141,6 +129,7 @@ private fun MySetList(
                 items = files,
                 key = { it.name }
             ) { file ->
+                val fileEditor = rememberFileEditor()
                 val infoManager = rememberInfoManager()
                 val common by remember {
                     mutableStateOf(infoManager.getCommonInfo(file))
@@ -176,6 +165,17 @@ private fun MySetList(
         AddMySetDialog(
             shown = shownAddMysetDialog,
             reflection = reflectionAdd
+        )
+
+        val reflectionImport: (File) -> Unit = { newFile ->
+            files.add(newFile)
+            scope.launch {
+                listState.animateScrollToItem(files.size)
+            }
+        }
+        ImportMySetDialog(
+            shown = shownImportMysetDialog,
+            reflection = reflectionImport
         )
     }
 }

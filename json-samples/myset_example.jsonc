@@ -1,5 +1,5 @@
 {
-  "CommonTitle": "MySet", // Required
+  "CommonTitle": "MySet",
   "CommonText": "If sharing any with this myset, copy here text.",
   "GameData": [ // Required
     {

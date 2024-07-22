@@ -28,9 +28,8 @@ fun rememberFileEditor(): FileEditor {
 @Immutable
 class FileEditor(context: Context) : FileSelector(context) {
 
-    fun checkMySetJson(jsonObject: JSONObject): Boolean {
+    private fun checkMySetJson(jsonObject: JSONObject): Boolean {
         try {
-            jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
             val jsonArray = jsonObject.getJSONArray(GameJsonPropaty.GAME_DATA)
             jsonArray.forEachIndexOnly { index ->
                 val gemeData = jsonArray.getJSONObject(index)
@@ -42,27 +41,37 @@ class FileEditor(context: Context) : FileSelector(context) {
         }
     }
 
-    fun addMySet(name: String): Result<File> {
+    fun createNewMySetName(count: Int = 1): String {
+        val title = "NewMySet$count"
+        if (getMySetFileByTitle(title).isSuccess) {
+            return createNewMySetName(count + 1)
+        } else {
+            return title
+        }
+    }
 
-        val isExists = (getMySetFileByTitle(name).isSuccess || name == AppJsonPropaty.TYPE_NONE)
+    fun addMySet(title: String): Result<File> {
+
+        val isExists = (getMySetFileByTitle(title).isSuccess || title == AppJsonPropaty.TYPE_NONE)
         if (isExists) {
             return Result.failure(Exception())
         }
 
-        val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
-        val createFileResult = createNewMySetFile(fileName)
-
-        if (createFileResult.isFailure) {
-            return Result.failure(Exception())
+        val mTitle = if (title.isBlank()) {
+            createNewMySetName()
+        } else {
+            title
         }
 
-        val file = createFileResult.getOrNull()
+        val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
+        val file = createNewMySetFile(fileName)
+
         val jsonObject = JSONObject().apply {
-            put(GameJsonPropaty.COMMON_TITLE, name)
+            put(GameJsonPropaty.COMMON_TITLE, mTitle)
             put(GameJsonPropaty.COMMON_TEXT, "")
             put(GameJsonPropaty.GAME_DATA, JSONArray())
         }
-        file!!.writeText(jsonObject.toString())
+        file.writeText(jsonObject.toString())
         return Result.success(file)
     }
 
@@ -71,29 +80,34 @@ class FileEditor(context: Context) : FileSelector(context) {
         file.delete()
     }
 
-    fun importMyset(jsonObject: JSONObject): Result<File> {
+    fun importMyset(title: String, jsonObject: JSONObject): Result<File> {
 
         if (!checkMySetJson(jsonObject)) {
             return Result.failure(Exception())
         }
 
-        val title = jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
-        val isExists = (getMySetFileByTitle(title).isSuccess || title == AppJsonPropaty.TYPE_NONE)
+        val mTitle = if (title.isBlank()) {
+            try {
+                jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
+            } catch (e: JSONException) {
+                createNewMySetName()
+            }
+        } else {
+            title
+        }
+
+        jsonObject.put(GameJsonPropaty.COMMON_TITLE, mTitle)
+
+        val isExists = (getMySetFileByTitle(mTitle).isSuccess || mTitle == AppJsonPropaty.TYPE_NONE)
         if (isExists) {
             return Result.failure(Exception())
         }
 
         val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
 
-        val createFileResult = createNewMySetFile(fileName)
+        val file = createNewMySetFile(fileName)
 
-        if (createFileResult.isFailure) {
-            return Result.failure(Exception())
-        }
-
-        val file = createFileResult.getOrNull()
-
-        file!!.writeText(jsonObject.toString())
+        file.writeText(jsonObject.toString())
         return Result.success(file)
     }
 

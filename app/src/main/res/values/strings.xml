@@ -20,7 +20,7 @@
     <string name="failed_decode_notswitch">Please scan QR in Switch</string>
     <string name="saved_notification">%1$d Files are saved</string>
     <string name="copy_clipboard">Copy for Clipboard</string>
-    <string name="failed_import">Failed resding file…</string>
+    <string name="failed_import">Failed reading file…</string>
 
     <!-- Chooser Message -->
     <string name="permission_share_photo">Share photos

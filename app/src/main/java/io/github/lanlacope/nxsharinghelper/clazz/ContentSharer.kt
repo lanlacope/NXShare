@@ -227,7 +227,7 @@ class ContentSharer(val context: Context) {
 
             val text = fileReader.createCopyText(fileNames, packageName)
 
-            if (!text.isNullOrEmpty()) {
+            if (!text.isNullOrBlank()) {
                 val clipboardManager =
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("", text))
