@@ -57,6 +57,9 @@
     <string name="hint_game_id">ゲームID</string>
     <string name="hint_game_text">個別テキスト</string>
 
+    <string name="default_myset_title">新しいマイセット%1$d</string>
+    <string name="default_game_title">タイトル未設定</string>
+
     <!-- Setting Name -->
     <string name="setting_app">アプリ</string>
     <string name="setting_myset">マイセット</string>

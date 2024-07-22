@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import io.github.lanlacope.nxsharinghelper.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -26,29 +27,7 @@ fun rememberFileEditor(): FileEditor {
 }
 
 @Immutable
-class FileEditor(context: Context) : FileSelector(context) {
-
-    private fun checkMySetJson(jsonObject: JSONObject): Boolean {
-        try {
-            val jsonArray = jsonObject.getJSONArray(GameJsonPropaty.GAME_DATA)
-            jsonArray.forEachIndexOnly { index ->
-                val gemeData = jsonArray.getJSONObject(index)
-                gemeData.getString(GameJsonPropaty.GAME_ID)
-            }
-            return true
-        } catch (e: JSONException) {
-            return false
-        }
-    }
-
-    fun createNewMySetName(count: Int = 1): String {
-        val title = "NewMySet$count"
-        if (getMySetFileByTitle(title).isSuccess) {
-            return createNewMySetName(count + 1)
-        } else {
-            return title
-        }
-    }
+class FileEditor(private val context: Context) : FileSelector(context) {
 
     fun addMySet(title: String): Result<File> {
 
@@ -58,7 +37,7 @@ class FileEditor(context: Context) : FileSelector(context) {
         }
 
         val mTitle = if (title.isBlank()) {
-            createNewMySetName()
+            createNewMySetTitle()
         } else {
             title
         }
@@ -90,7 +69,7 @@ class FileEditor(context: Context) : FileSelector(context) {
             try {
                 jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
             } catch (e: JSONException) {
-                createNewMySetName()
+                createNewMySetTitle()
             }
         } else {
             title
@@ -151,9 +130,15 @@ class FileEditor(context: Context) : FileSelector(context) {
             }
         }
 
+        val mTitle = if (title.isBlank()) {
+            createNewGameTitle()
+        } else {
+            title
+        }
+
         val gameData = JSONObject().apply {
             put(GameJsonPropaty.GAME_ID, id)
-            put(GameJsonPropaty.GAME_TITLE, title)
+            put(GameJsonPropaty.GAME_TITLE, mTitle)
             put(GameJsonPropaty.GAME_TEXT, text)
         }
 
@@ -247,7 +232,7 @@ class FileEditor(context: Context) : FileSelector(context) {
                                         joinGameData.getString(GameJsonPropaty.GAME_TITLE)
                                     )
                                 } catch (e: JSONException) {
-                                    put(GameJsonPropaty.GAME_TITLE, "")
+                                    put(GameJsonPropaty.GAME_TITLE, createNewGameTitle())
                                 }
                                 try {
                                     put(
@@ -272,7 +257,7 @@ class FileEditor(context: Context) : FileSelector(context) {
                             joinGameData.getString(GameJsonPropaty.GAME_TITLE)
                         )
                     } catch (e: JSONException) {
-                        put(GameJsonPropaty.GAME_TITLE,"")
+                        put(GameJsonPropaty.GAME_TITLE,createNewGameTitle())
                     }
                     try {
                         put(
@@ -371,5 +356,31 @@ class FileEditor(context: Context) : FileSelector(context) {
         }
 
         file.writeText(jsonArray.toString())
+    }
+
+    fun checkMySetJson(jsonObject: JSONObject): Boolean {
+        try {
+            val jsonArray = jsonObject.getJSONArray(GameJsonPropaty.GAME_DATA)
+            jsonArray.forEachIndexOnly { index ->
+                val gemeData = jsonArray.getJSONObject(index)
+                gemeData.getString(GameJsonPropaty.GAME_ID)
+            }
+            return true
+        } catch (e: JSONException) {
+            return false
+        }
+    }
+
+    fun createNewMySetTitle(count: Int = 1): String {
+        val title = context.getString(R.string.default_myset_title, count)
+        if (getMySetFileByTitle(title).isSuccess) {
+            return createNewMySetTitle(count + 1)
+        } else {
+            return title
+        }
+    }
+
+    fun createNewGameTitle(): String {
+        return context.getString(R.string.default_game_title)
     }
 }
