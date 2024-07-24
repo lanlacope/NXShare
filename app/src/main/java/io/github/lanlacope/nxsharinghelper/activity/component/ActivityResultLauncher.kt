@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
 import org.json.JSONObject
 
@@ -61,7 +62,7 @@ class ImportJsonContract(private val context: Context) : ActivityResultContract<
     override fun createIntent(context: Context, input: Unit): Intent {
         return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            setType("application/json")
+            setType(MineType.JSON)
         }
     }
 
