@@ -52,7 +52,8 @@
 
     <!-- TextField Message -->
     <string name="hint_myset_title">マイセット名</string>
-    <string name="hint_myset_text">共通テキスト</string>
+    <string name="hint_myset_head">先頭のテキスト</string>
+    <string name="hint_myset_tail">末尾のテキスト</string>
     <string name="hint_game_title">ゲーム名</string>
     <string name="hint_game_id">ゲームID</string>
     <string name="hint_game_text">個別テキスト</string>

@@ -51,7 +51,8 @@
 
     <!-- TextField Message -->
     <string name="hint_myset_title">MySet Title</string>
-    <string name="hint_myset_text">Text For All</string>
+    <string name="hint_myset_head">Text For Head</string>
+    <string name="hint_myset_tail">Text For Tail</string>
     <string name="hint_game_title">Game Title</string>
     <string name="hint_game_id">Game ID</string>
     <string name="hint_game_text">Text For This</string>

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.widgit.forEachIndexOnly
 import org.json.JSONArray
@@ -65,7 +65,7 @@ class FileReader(context: Context) : FileSelector(context) {
             val files = getMySetFiles()
             val types = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
-                jsonObject.getString(GameJsonPropaty.COMMON_TITLE)
+                jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
             }
             return defaultType + types
         } catch (e: JSONException) {
@@ -83,18 +83,18 @@ class FileReader(context: Context) : FileSelector(context) {
 
             val resultText = StringBuilder().apply {
                 try {
-                    val text = rawJson.getString(GameJsonPropaty.COMMON_TEXT)
+                    val text = rawJson.getString(MySetJsonPropaty.HEAD_TEXT)
                     append(text)
                 } catch (e: JSONException) {
                     // do nothing
                 }
                 try {
-                    val arrayData = rawJson.getJSONArray(GameJsonPropaty.GAME_DATA)
+                    val arrayData = rawJson.getJSONArray(MySetJsonPropaty.GAME_DATA)
                     arrayData.forEachIndexOnly { index ->
                         try {
                             val jsonObject = arrayData.getJSONObject(index)
-                            if (jsonObject.getString(GameJsonPropaty.GAME_ID) in ids) {
-                                val text = jsonObject.getString(GameJsonPropaty.GAME_TEXT)
+                            if (jsonObject.getString(MySetJsonPropaty.GAME_ID) in ids) {
+                                val text = jsonObject.getString(MySetJsonPropaty.GAME_TEXT)
                                 append(text)
                             }
                         } catch (e: JSONException) {
@@ -102,6 +102,12 @@ class FileReader(context: Context) : FileSelector(context) {
                         }
                     }
                 } catch (e: Exception) {
+                    // do nothing
+                }
+                try {
+                    val text = rawJson.getString(MySetJsonPropaty.TAIL_TEXT)
+                    append(text)
+                } catch (e: JSONException) {
                     // do nothing
                 }
             }

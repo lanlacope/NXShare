@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.GameJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
 import org.json.JSONObject
 import java.io.File
 
@@ -78,7 +78,7 @@ open class FileSelector(private val context: Context) {
         val files = getMySetFiles()
         files.forEach { file ->
             val jsonObject = JSONObject(file.readText())
-            if (jsonObject.getString(GameJsonPropaty.COMMON_TITLE) == typeName) {
+            if (jsonObject.getString(MySetJsonPropaty.MYSET_TITLE) == typeName) {
                 return Result.success(file)
             }
         }

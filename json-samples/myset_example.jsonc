@@ -1,6 +1,7 @@
 {
-  "CommonTitle": "MySet",
-  "CommonText": "If sharing any with this myset, copy here text.",
+  "MySetTitle": "MySetTitle",
+  "HeadText": "If sharing any with this myset, copy here text.",
+  "TailText": "If sharing any with this myset, copy here text.",
   "GameData": [ // Required
     {
       "GameTitle": "THE GAME",

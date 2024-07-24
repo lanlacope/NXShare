@@ -359,22 +359,26 @@ fun ImportMySetDialog(
 fun EditCommonInfoDialog(
     shown: MutableState<Boolean>,
     title: String,
-    text: String,
-    editCommonInfo: (String, String) -> Unit,
-    reflection: (String, String) -> Unit,
+    headText: String,
+    tailText: String,
+    editCommonInfo: (String, String, String) -> Unit,
+    reflection: (String, String, String) -> Unit,
 ) {
     val dTitle = rememberSaveable {
         mutableStateOf(title)
     }
-
-    val dText = rememberSaveable {
-        mutableStateOf(text)
+    val dHeadText = rememberSaveable {
+        mutableStateOf(headText)
+    }
+    val dTailText = rememberSaveable() {
+        mutableStateOf(tailText)
     }
 
     LaunchedEffect(shown.value) {
         if (shown.value) {
             dTitle.value = title
-            dText.value = text
+            dHeadText.value = headText
+            dTailText.value = tailText
         }
     }
 
@@ -403,15 +407,21 @@ fun EditCommonInfoDialog(
                     )
 
                     DialogTextField(
-                        text = dText,
-                        hint = stringResource(id = R.string.hint_myset_text),
+                        text = dHeadText,
+                        hint = stringResource(id = R.string.hint_myset_head),
+                        singleLine = false
+                    )
+
+                    DialogTextField(
+                        text = dTailText,
+                        hint = stringResource(id = R.string.hint_myset_tail),
                         singleLine = false
                     )
 
                     TextButton(
                         onClick = {
-                            editCommonInfo(dTitle.value, dText.value)
-                            reflection(dTitle.value, dText.value)
+                            editCommonInfo(dTitle.value, dHeadText.value, dTailText.value)
+                            reflection(dTitle.value, dHeadText.value, dTailText.value)
                             shown.value = false
                         },
                         modifier = Modifier

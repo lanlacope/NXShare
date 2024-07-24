@@ -136,8 +136,8 @@ private fun MySetList(
                 }
 
                 // MySetCommonのコールバックを定義しておく
-                val editCommonInfo: (String, String) -> Unit = { newTitle, newText ->
-                    fileEditor.editCommonInfo(file.name, newTitle, newText)
+                val editCommonInfo: (String, String, String) -> Unit = { newTitle, newHeadText, newTailText ->
+                    fileEditor.editCommonInfo(file.name, newTitle, newHeadText, newTailText)
                 }
                 val removeMySet: () -> Unit = {
                     fileEditor.removeMySet(file.name)
@@ -183,7 +183,7 @@ private fun MySetList(
 @Composable
 private fun MySetCommon(
     common: CommonInfo,
-    editCommonInfo: (String, String) -> Unit,
+    editCommonInfo: (String, String, String) -> Unit,
     removeMySet: () -> Unit
 ) {
     val shownEditDialog = rememberSaveable {
@@ -196,8 +196,11 @@ private fun MySetCommon(
     var title by remember {
         mutableStateOf(common.title)
     }
-    var text by remember {
-        mutableStateOf(common.text)
+    var headText by remember {
+        mutableStateOf(common.haedText)
+    }
+    var tailText by remember {
+        mutableStateOf(common.tailText)
     }
 
     Column(
@@ -226,7 +229,20 @@ private fun MySetCommon(
                 )
         )
         Text(
-            text = text,
+            text = headText,
+            fontSize = 12.sp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .align(Alignment.Start)
+                .padding(
+                    start = ComponentValue.DISPLAY_PADDING_START,
+                    end = ComponentValue.DISPLAY_PADDING_END,
+                    bottom = 20.dp
+                )
+        )
+        Text(
+            text = tailText,
             fontSize = 12.sp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -240,15 +256,17 @@ private fun MySetCommon(
         )
     }
 
-    val refrectionEdit: (String, String) -> Unit = { newTitle, newText ->
+    val refrectionEdit: (String, String, String) -> Unit = { newTitle, newHeadText, newTailText ->
         title = newTitle
-        text = newText
+        headText = newHeadText
+        tailText = newTailText
     }
 
     EditCommonInfoDialog(
         shown = shownEditDialog,
         title = title,
-        text = text,
+        headText = headText,
+        tailText = tailText,
         editCommonInfo = editCommonInfo,
         reflection = refrectionEdit
     )

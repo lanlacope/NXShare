@@ -3,8 +3,6 @@ package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
 object AppPropaty {
 
-
-
     object MineType {
         val JPG: String = "image/jpg"
         val MP4: String = "video/mp4"
@@ -43,9 +41,10 @@ object AppPropaty {
         val PAKCAGE_ENABLED: String = "PackageEnabled"
     }
 
-    object GameJsonPropaty {
-        val COMMON_TITLE: String = "CommonTitle"
-        val COMMON_TEXT: String = "CommonText"
+    object MySetJsonPropaty {
+        val MYSET_TITLE: String = "MySetTitle"
+        val HEAD_TEXT: String = "HeadText"
+        val TAIL_TEXT: String = "TailText"
         val GAME_DATA: String = "GameData"
         val GAME_TITLE: String = "GameTitle"
         val GAME_ID: String = "GameID"
