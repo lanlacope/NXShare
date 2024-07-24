@@ -237,8 +237,7 @@ private fun MySetCommon(
                 .align(Alignment.Start)
                 .padding(
                     start = ComponentValue.DISPLAY_PADDING_START,
-                    end = ComponentValue.DISPLAY_PADDING_END,
-                    bottom = 20.dp
+                    end = ComponentValue.DISPLAY_PADDING_END
                 )
         )
         Text(
