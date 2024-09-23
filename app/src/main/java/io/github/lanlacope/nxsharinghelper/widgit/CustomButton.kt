@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ColorScheme
@@ -24,6 +23,7 @@ import androidx.compose.material3.LocalTonalElevationEnabled
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.ripple
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -154,7 +154,7 @@ private fun Surface(
     tonalElevation: Dp = 0.0.dp,
     shadowElevation: Dp = 0.0.dp,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    indication: Indication? = rememberRipple(),
+    indication: Indication? = ripple(),
     border: BorderStroke? = null,
     content: @Composable () -> Unit
 ) {
