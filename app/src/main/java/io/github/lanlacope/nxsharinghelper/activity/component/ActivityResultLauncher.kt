@@ -168,7 +168,7 @@ data class WifiEnableResultLauncher(
     @RequiresApi(Build.VERSION_CODES.Q)
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
     fun launch() {
-        if (!isEnabled() && settingManager.getAlternativeConnectionEnabled()) {
+        if (!isEnabled() || settingManager.getAlternativeConnectionEnabled()) {
             if (DevicePropaty.isAfterAndroidX()) {
                 launcher.launch(intent)
             }
