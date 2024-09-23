@@ -23,8 +23,10 @@ import androidx.core.content.ContextCompat
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
+import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import org.json.JSONObject
 
 @Stable
@@ -159,13 +161,14 @@ fun rememberParmissionGrantResult(
 
 data class WifiEnableResultLauncher(
     private val wifiManager: WifiManager,
+    private val settingManager: SettingManager,
     private val launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     private val onAlreadyEnabled: () -> Unit
 ) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
     fun launch() {
-        if (!isEnabled()) {
+        if (!isEnabled() && !settingManager.getAlternativeConnectionEnabled()) {
             if (DevicePropaty.isAfterAndroidX()) {
                 launcher.launch(intent)
             }
@@ -188,6 +191,7 @@ fun rememberWifiEnableResult(
 ): WifiEnableResultLauncher {
     val wifiManager =
         LocalContext.current.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+    val settingManager = rememberSettingManager()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -198,6 +202,7 @@ fun rememberWifiEnableResult(
     return remember {
         WifiEnableResultLauncher(
             wifiManager = wifiManager,
+            settingManager = settingManager,
             launcher = launcher,
             onAlreadyEnabled = onEnable
         )

@@ -74,7 +74,7 @@
     <string name="summary_theme_system">Follow the System\'s Theme</string>
     <string name="summary_theme_light">Light Theme</string>
     <string name="summary_theme_dark">Dark Theme</string>
-    <string name="summary_alternative_connection_enabled">Use Alternative Connection</string>
+    <string name="summary_alternative_connection_enabled">Setting For Legacy Devices</string>
     <string name="summary_app_enabled">Use This App</string>
     <string name="summary_app_type">MySet</string>
     <string name="summart_type_nothing">Use Nothing</string>

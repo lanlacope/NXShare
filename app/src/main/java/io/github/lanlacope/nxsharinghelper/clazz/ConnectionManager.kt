@@ -130,6 +130,7 @@ class ConnectionManager(_context: Context) {
                 override fun onLost(network: Network) {
                     super.onLost(network)
                     connectivityManager.unregisterNetworkCallback(this)
+                    connectivityManager.bindProcessToNetwork(null)
                 }
             }
         )
@@ -163,101 +164,4 @@ class ConnectionManager(_context: Context) {
             onConnect.onFailed(this@ConnectionManager)
         }
     }
-
-    /*
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun connectSwitchSubstitute(
-        ssid: String,
-        password: String,
-        onConnect: OnConnection
-    ) {
-        println("nowConnectionS")
-
-        val networkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .build()
-
-        val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
-            .setSsid(ssid)
-            .setWpa2Passphrase(password)
-            .setIsAppInteractionRequired(true)
-            .build()
-
-
-        val suggestionsList = listOf(wifiNetworkSuggestion)
-        val status = wifiManager.addNetworkSuggestions(suggestionsList)
-
-        if (status != WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            onConnect.onFailed(this@ConnectionManager)
-            return
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            connectivityManager.registerNetworkCallback(
-                networkRequest,
-                @RequiresApi(Build.VERSION_CODES.S)
-                object : NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
-                    override fun onAvailable(network: Network) {
-                        super.onAvailable(network)
-                        println("RRRRRRRRRRRRRRRRR")
-                        val panelIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
-                        context.startActivity(panelIntent)
-                    }
-                    override fun onCapabilitiesChanged(
-                        network: Network,
-                        networkCapabilities: NetworkCapabilities
-                    ) {
-                        super.onCapabilitiesChanged(network, networkCapabilities)
-                        val wifi = networkCapabilities.transportInfo as WifiInfo
-                        println(wifi.ssid)
-                        println(ssid)
-                        if (wifi.ssid == ssid) {
-                            if (connectivityManager.bindProcessToNetwork(network)) {
-                                onConnect.onSuccesful(this@ConnectionManager)
-                            } else {
-                                onConnect.onFailed(this@ConnectionManager)
-                            }
-                        }
-                    }
-
-                    override fun onLost(network: Network) {
-                        super.onLost(network)
-                        connectivityManager.unregisterNetworkCallback(this)
-                    }
-                }
-            )
-        } else {
-            connectivityManager.registerNetworkCallback(
-                networkRequest,
-                object : NetworkCallback() {
-                    override fun onAvailable(network: Network) {
-                        super.onAvailable(network)
-                        val panelIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
-                        context.startActivity(panelIntent)
-                    }
-                    override fun onCapabilitiesChanged(
-                        network: Network,
-                        networkCapabilities: NetworkCapabilities
-                    ) {
-                        super.onCapabilitiesChanged(network, networkCapabilities)
-                        val wifi = networkCapabilities.transportInfo as WifiInfo
-                        if (wifi.ssid == ssid) {
-                            if (connectivityManager.bindProcessToNetwork(network)) {
-                                onConnect.onSuccesful(this@ConnectionManager)
-                            } else {
-                                onConnect.onFailed(this@ConnectionManager)
-                            }
-                        }
-                    }
-
-                    override fun onLost(network: Network) {
-                        super.onLost(network)
-                        connectivityManager.unregisterNetworkCallback(this)
-                    }
-                }
-            )
-        }
-    }
-
-     */
 }

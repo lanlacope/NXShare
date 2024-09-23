@@ -42,6 +42,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentData
+import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
@@ -259,7 +260,6 @@ private fun Navigation() {
         val onConnection = ConnectionManager.OnConnection(
             onSuccesful = { connectionManager ->
                 scope.launch {
-                    println("onSucces")
                     // ビューの更新
                     navigationMessage = context.getString(R.string.waiting_download)
 
@@ -277,7 +277,6 @@ private fun Navigation() {
                 }
             },
             onFailed = { connectionManager ->
-                println("onFailed")
                 navigationMessage = context.getString(R.string.failed_connect)
                 connectionManager.disconnection()
             }
@@ -295,6 +294,7 @@ private fun Navigation() {
             navigationMessage = context.getString(R.string.waiting_connection)
         }
 
+        val settingManager = rememberSettingManager()
 
         val wifiResult = rememberWifiEnableResult {
             captureResult.launch()
