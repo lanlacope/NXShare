@@ -42,7 +42,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentData
-import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
