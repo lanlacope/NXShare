@@ -46,6 +46,9 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 
+/*
+ * 読み取りの開始、共有、保存など主要操作を提供する
+ */
 class ResultActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

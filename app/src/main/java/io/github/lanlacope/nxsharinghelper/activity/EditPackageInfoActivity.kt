@@ -51,7 +51,9 @@ import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import io.github.lanlacope.nxsharinghelper.widgit.animatedItems
 import kotlinx.collections.immutable.toImmutableList
 
-
+/*
+ * 共有可能なアプリの一覧を表示、それぞれの個別設定を提供する
+ */
 class EditPackageInfoActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

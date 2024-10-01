@@ -33,8 +33,11 @@ fun rememberContentSharer(): ContentSharer {
     }
 }
 
+/*
+ * 一時ファイルから他アプリへの共有に使うインテントの作成を行う
+ */
 @Immutable
-class ContentSharer(val context: Context) {
+class ContentSharer(private val context: Context) {
 
     fun createChooserIntent(data: DownloadData): Intent {
 

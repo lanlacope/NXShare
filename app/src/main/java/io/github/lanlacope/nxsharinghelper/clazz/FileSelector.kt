@@ -18,6 +18,10 @@ fun rememberFileSelector(): FileSelector {
     }
 }
 
+/*
+ * ファイル、フォルダーを取得する
+ * 存在しない場合は動的に生成する
+ */
 @Immutable
 open class FileSelector(private val context: Context) {
 

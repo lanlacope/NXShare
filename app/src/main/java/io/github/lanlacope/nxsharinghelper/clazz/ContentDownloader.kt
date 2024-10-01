@@ -75,6 +75,10 @@ private val DownloadDataSaver = Saver<DownloadData, Bundle>(
     }
 )
 
+/*
+ * ファイル情報の取得、一時ファイルへの保存を行う
+ * ファイル名などは`DownloadData`に格納する
+ */
 class ContentDownloader(val context: Context) {
 
     var downloadData = DownloadData()

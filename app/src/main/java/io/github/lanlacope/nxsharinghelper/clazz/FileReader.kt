@@ -22,6 +22,9 @@ fun rememberFileReader(): FileReader {
     }
 }
 
+/*
+ * ファイルの内容を読み取る
+ */
 @Immutable
 class FileReader(context: Context) : FileSelector(context) {
 

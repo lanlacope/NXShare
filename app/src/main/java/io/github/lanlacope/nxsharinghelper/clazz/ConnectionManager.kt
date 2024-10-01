@@ -27,6 +27,9 @@ fun rememberConnectionManager(): ConnectionManager {
     }
 }
 
+/*
+ * NintendoSwitchへの接続を行う
+ */
 @Stable
 class ConnectionManager(_context: Context) {
 

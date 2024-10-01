@@ -25,6 +25,9 @@ fun rememberInfoManager(): InfoManager {
     }
 }
 
+/*
+ *　アプリ内で使用するデータの管理、取得を行う
+ */
 @Immutable
 class InfoManager(private val context: Context) : FileSelector(context) {
 

@@ -26,6 +26,9 @@ fun rememberFileEditor(): FileEditor {
     }
 }
 
+/*
+ * ファイルの追加、編集、削除を行う
+ */
 @Immutable
 class FileEditor(private val context: Context) : FileSelector(context) {
 

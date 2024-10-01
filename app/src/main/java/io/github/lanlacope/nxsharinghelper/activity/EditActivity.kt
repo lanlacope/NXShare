@@ -38,6 +38,9 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
 import io.github.lanlacope.nxsharinghelper.widgit.Row
 
+/*
+ * 設定の一覧を表示、基本設定を提供する
+ */
 class EditActivity: ComponentActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {

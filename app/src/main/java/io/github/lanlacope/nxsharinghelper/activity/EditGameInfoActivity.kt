@@ -59,6 +59,9 @@ import io.github.lanlacope.nxsharinghelper.widgit.Button
 import kotlinx.coroutines.launch
 import java.io.File
 
+/*
+ * マイセットごと、ゲームごとの設定画面を提供する
+ */
 class EditGameInfoActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

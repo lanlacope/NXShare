@@ -18,6 +18,9 @@ fun rememberSettingManager(): SettingManager {
     }
 }
 
+/*
+ * アプリ設定の管理を行う
+ */
 @Stable
 class SettingManager(context: Context) : FileSelector(context) {
 

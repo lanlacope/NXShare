@@ -40,6 +40,9 @@ import com.google.zxing.client.android.R as zR
  * - Modified by pecolan.
  */
 
+/*
+ * QRコードを読み取り、NintendoSwitchの形式の場合のみ`activityResult`として返す
+ */
 @Stable
 class SwitchCaptureActivity : Activity() {
     private lateinit var capture: SwitchCaptureManager

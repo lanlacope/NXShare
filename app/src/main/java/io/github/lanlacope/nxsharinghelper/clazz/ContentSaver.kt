@@ -33,6 +33,9 @@ fun rememberContentSaver(): ContentSaver {
     }
 }
 
+/*
+ * 一時ファイルから外部ストレージへの保存を行う
+ */
 @Stable
 class ContentSaver(_context: Context) {
 
@@ -92,7 +95,6 @@ class ContentSaver(_context: Context) {
         } catch (e: Exception) {
             throw e
         }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
