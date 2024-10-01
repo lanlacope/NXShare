@@ -294,8 +294,6 @@ private fun Navigation() {
             navigationMessage = context.getString(R.string.waiting_connection)
         }
 
-        val settingManager = rememberSettingManager()
-
         val wifiResult = rememberWifiEnableResult {
             captureResult.launch()
         }
