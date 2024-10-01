@@ -169,7 +169,7 @@ private fun Navigation() {
 
             val onShareButtonClick = {
                 val contentSharer = ContentSharer(context)
-                val intent = contentSharer.createCustomChooserIntrnt(contentsData.getData().copy())
+                val intent = contentSharer.createCustomChooserIntent(contentsData.getData().copy())
                 context.startActivity(intent)
             }
 

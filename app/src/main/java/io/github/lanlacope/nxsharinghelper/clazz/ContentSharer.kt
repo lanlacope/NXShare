@@ -76,7 +76,7 @@ class ContentSharer(val context: Context) {
         return intent.createChooserIntent()
     }
 
-    fun createCustomChooserIntrnt(data: DownloadData) : Intent {
+    fun createCustomChooserIntent(data: DownloadData) : Intent {
 
         val title = when (data.fileType) {
             SwitchJsonPropaty.FILETYPE_PHOTO -> {
