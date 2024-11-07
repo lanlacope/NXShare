@@ -36,7 +36,7 @@ fun FadeInAnimated(
 
 @Suppress("unused")
 @Composable
-fun DrawDownAnimated(
+fun DrawUpAnimated(
     visible: Boolean,
     modifier: Modifier = Modifier,
     label: String = "AnimatedVisibility",

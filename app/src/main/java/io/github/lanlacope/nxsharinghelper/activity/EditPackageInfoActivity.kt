@@ -38,7 +38,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.ComponentValue
-import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
+import io.github.lanlacope.nxsharinghelper.activity.component.DrawUpAnimated
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
 import io.github.lanlacope.nxsharinghelper.ui.theme.Clear
@@ -101,7 +101,7 @@ private fun PackageList() {
                         app = app
                     )
                 }
-                DrawDownAnimated(visible = isExpanded) {
+                DrawUpAnimated(visible = isExpanded) {
                     PackageSetting(
                         packageName = app.packageName
                     )
@@ -276,7 +276,7 @@ private fun PackageSetting(
             )
         }
 
-        DrawDownAnimated(visible = isExpanded) {
+        DrawUpAnimated(visible = isExpanded) {
             val selectedType = remember {
                 mutableStateOf(shareInfo.type)
             }

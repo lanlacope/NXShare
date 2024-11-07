@@ -37,7 +37,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.AddGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.ImportMySetDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.AddMySetDialog
-import io.github.lanlacope.nxsharinghelper.activity.component.DrawDownAnimated
+import io.github.lanlacope.nxsharinghelper.activity.component.DrawUpAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.EditCommonInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.EditGameInfoDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.RemoveGameInfoDialog
@@ -408,7 +408,7 @@ private fun MySetItem(
         mutableStateOf(gameInfo.text)
     }
 
-    DrawDownAnimated(visible = !isRemoved) {
+    DrawUpAnimated(visible = !isRemoved) {
         Column(
             onClick = {
                 shownEditDialog.value = true
