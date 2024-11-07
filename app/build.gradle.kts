@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "io.github.lanlacope.nxsharinghelper"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 135
         versionName = "1.3-alpha-6"
 

@@ -45,7 +45,7 @@
         android:theme="@style/Theme.NXSharingHelper"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
-        tools:targetApi="34">
+        tools:targetApi="35">
         <activity
             android:name=".activity.ResultActivity"
             android:exported="true"
