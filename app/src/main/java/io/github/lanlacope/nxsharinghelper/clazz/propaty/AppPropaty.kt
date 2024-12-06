@@ -1,5 +1,8 @@
 package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
+
 
 object AppPropaty {
 
@@ -27,7 +30,7 @@ object AppPropaty {
         val THEME_SYSTEM: String = "SystemTheme"
         val THEME_LIGHT: String = "LightTheme"
         val THEME_DARK: String = "DarkTheme"
-        val APP_THEME_LIST: List<String> = listOf(
+        val APP_THEME_LIST: PersistentList<String> = persistentListOf(
             THEME_SYSTEM,
             THEME_LIGHT,
             THEME_DARK

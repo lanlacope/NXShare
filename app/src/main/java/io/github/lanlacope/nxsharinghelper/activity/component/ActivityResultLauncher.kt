@@ -4,7 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.app.Activity.WIFI_SERVICE
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
@@ -19,7 +18,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
@@ -115,47 +113,6 @@ fun rememberImportJsonResult(
     }
     return remember {
         ImportJsonResultLauncher(launcher = launcher)
-    }
-}
-
-data class PermissionGrantResultLauncher(
-    private val context: Context,
-    private val permission: String,
-    private val launcher: ManagedActivityResultLauncher<String, Boolean>,
-    private val onAlreadyGranted: () -> Unit
-) {
-    fun launch() {
-        if (!isGranted()) {
-            launcher.launch(permission)
-        } else {
-            onAlreadyGranted()
-        }
-    }
-    private fun isGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-    }
-}
-
-@Composable
-fun rememberParmissionGrantResult(
-    permission: String,
-    onGrant: () -> Unit
-): PermissionGrantResultLauncher {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGrant ->
-        if (isGrant) {
-            onGrant()
-        }
-    }
-    return remember {
-        PermissionGrantResultLauncher(
-            context = context,
-            permission = permission,
-            launcher = launcher,
-            onAlreadyGranted = onGrant
-        )
     }
 }
 
