@@ -94,7 +94,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         return Result.success(file)
     }
 
-    fun editCommonInfo(
+    fun editMysetInfo(
         fileName: String,
         title: String,
         headText: String,
@@ -119,8 +119,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
     fun addGameInfo(
         fileName: String,
-        title: String,
         id: String,
+        title: String,
         text: String
     ): Result<GameInfo> {
 
@@ -156,8 +156,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
     fun editGameInfo(
         fileName: String,
-        title: String,
         id: String,
+        title: String,
         text: String
     ) {
         val file = getMySetFile(fileName)

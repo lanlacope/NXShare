@@ -52,7 +52,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     }
 
 
-    data class CommonInfo(
+    data class MysetInfo(
         private val jsonObject: JSONObject
     ) {
         val title = jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
@@ -130,9 +130,9 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         return appInfo
     }
 
-    fun getCommonInfo(file: File): CommonInfo {
+    fun getMysetInfo(file: File): MysetInfo {
         val jsonObject = JSONObject(file.readText())
-        return CommonInfo(jsonObject)
+        return MysetInfo(jsonObject)
     }
 
     fun getGameInfo(file: File): List<GameInfo> {

@@ -6,12 +6,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,10 +34,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import io.github.lanlacope.compose.effect.rememberPermissionGrantResult
+import io.github.lanlacope.compose.ui.animation.SlideInAnimated
+import io.github.lanlacope.compose.ui.button.FloatingActionButton
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.SlideInAnimated
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
-import io.github.lanlacope.nxsharinghelper.activity.component.rememberParmissionGrantResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiEnableResult
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager
 import io.github.lanlacope.nxsharinghelper.clazz.ContentSaver
@@ -44,7 +47,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentData
 import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
 import kotlinx.coroutines.launch
-import io.github.lanlacope.nxsharinghelper.widgit.FloatingActionButton
 
 /*
  * 読み取りの開始、共有、保存など主要操作を提供する
@@ -78,12 +80,8 @@ private fun Navigation() {
         val clipboardManager = LocalClipboardManager.current
         val scope = rememberCoroutineScope()
 
-        var isScanned by rememberSaveable {
-            mutableStateOf(false)
-        }
-        var navigationMessage by rememberSaveable() {
-            mutableStateOf(context.getString(R.string.app_name))
-        }
+        var isScanned by rememberSaveable { mutableStateOf(false) }
+        var navigationMessage by rememberSaveable() { mutableStateOf(context.getString(R.string.app_name)) }
         val contentsData = rememberContentData()
 
         val SOMEBUTTON_SIZE = 80.dp
@@ -92,12 +90,12 @@ private fun Navigation() {
         val IMAGE_PADDING = 8.dp
 
         val (
-            license,
-            setting,
-            navigation,
-            scanButton,
-            shareButton,
-            saveButton
+            licenseRef,
+            settingRef,
+            navigationRef,
+            scanButtonRef,
+            shareButtonRef,
+            saveButtonRef
         ) = createRefs()
 
         TextButton(
@@ -106,7 +104,7 @@ private fun Navigation() {
                 context.startActivity(intent)
             },
             modifier = Modifier
-                .constrainAs(license) {
+                .constrainAs(licenseRef) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                     width = Dimension.wrapContent
@@ -125,7 +123,7 @@ private fun Navigation() {
                 context.startActivity(intent)
             },
             modifier = Modifier
-                .constrainAs(setting) {
+                .constrainAs(settingRef) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
                     width = Dimension.wrapContent
@@ -144,7 +142,7 @@ private fun Navigation() {
             targetState = navigationMessage,
             modifier = Modifier
                 .wrapContentSize()
-                .constrainAs(navigation) {
+                .constrainAs(navigationRef) {
                     start.linkTo(parent.start)
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
@@ -163,12 +161,11 @@ private fun Navigation() {
             visible = isScanned,
             modifier = Modifier
                 .wrapContentSize()
-                .constrainAs(shareButton) {
+                .constrainAs(shareButtonRef) {
                     end.linkTo(parent.end)
-                    bottom.linkTo(saveButton.top)
+                    bottom.linkTo(saveButtonRef.top)
                 }
         ) {
-
             val onShareButtonClick = {
                 val contentSharer = ContentSharer(context)
                 val intent = contentSharer.createCustomChooserIntent(contentsData.getData().copy())
@@ -193,8 +190,8 @@ private fun Navigation() {
                     )
 
             ) {
-                Image(
-                    painter = painterResource(R.drawable.baseline_share_24),
+                Icon(
+                    imageVector = Icons.Default.Share,
                     contentDescription = "Share",
                     modifier = Modifier
                         .fillMaxSize()
@@ -207,25 +204,20 @@ private fun Navigation() {
             visible = isScanned,
             modifier = Modifier
                 .wrapContentSize()
-                .constrainAs(saveButton) {
+                .constrainAs(saveButtonRef) {
                     end.linkTo(parent.end)
-                    bottom.linkTo(scanButton.top)
+                    bottom.linkTo(scanButtonRef.top)
                 }
         ) {
 
             val storagePermissionResult =
-                rememberParmissionGrantResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-                    scope.launch {
-                        ContentSaver(context).save(contentsData.getData().copy())
-                    }
+                rememberPermissionGrantResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+                    scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }
                 }
 
             val onSaveButtonClick: () -> Unit = {
                 storagePermissionResult.launch()
-                scope.launch {
-                    ContentSaver(context).save(contentsData.getData().copy())
-                }
-
+                scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }
             }
 
             val onSaveButtonLongClick = {
@@ -246,9 +238,8 @@ private fun Navigation() {
                         bottom = BUTTON_PADDING
                     )
 
-
             ) {
-                Image(
+                Icon(
                     painter = painterResource(R.drawable.baseline_download_24),
                     contentDescription = "Save",
                     modifier = Modifier
@@ -285,7 +276,6 @@ private fun Navigation() {
         )
 
         val captureResult = rememberCaptureResult { wifiConfig ->
-            println("onCapture")
             // ビューの更新
             isScanned = false
             navigationMessage = context.getString(R.string.app_name)
@@ -300,9 +290,8 @@ private fun Navigation() {
             captureResult.launch()
         }
 
-
         val cameraParmissionResult =
-            rememberParmissionGrantResult(permission = Manifest.permission.CAMERA) {
+            rememberPermissionGrantResult(permission = Manifest.permission.CAMERA) {
                 wifiResult.launch()
             }
 
@@ -318,7 +307,7 @@ private fun Navigation() {
                     end = BUTTON_PADDING,
                     bottom = BUTTON_PADDING
                 )
-                .constrainAs(scanButton) {
+                .constrainAs(scanButtonRef) {
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
                     width = Dimension.value(MAIN_BUTTON_SIZE)
@@ -326,7 +315,7 @@ private fun Navigation() {
                 }
 
         ) {
-            Image(
+            Icon(
                 painter = painterResource(R.drawable.baseline_qr_code_scanner_24),
                 contentDescription = "Scan",
                 modifier = Modifier

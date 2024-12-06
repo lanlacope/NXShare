@@ -65,14 +65,6 @@
             android:name=".activity.EditActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper" />
-        <activity
-            android:name=".activity.EditPackageInfoActivity"
-            android:exported="false"
-            android:theme="@style/Theme.NXSharingHelper" />
-        <activity
-            android:name=".activity.EditGameInfoActivity"
-            android:exported="false"
-            android:theme="@style/Theme.NXSharingHelper" />
 
         <receiver
             android:name=".clazz.ContentSharer$ShareReceiver"
