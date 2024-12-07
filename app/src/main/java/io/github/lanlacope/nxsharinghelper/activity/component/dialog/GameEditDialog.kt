@@ -81,7 +81,7 @@ fun GameEditDialog(
                 useLabel = true,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(weight = 1f, fill = false)
                     .padding(all = 8.dp)
             )
         }

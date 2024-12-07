@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
-import androidx.navigation.NavHostController
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.action.setting.SettingSwitchToggle
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated

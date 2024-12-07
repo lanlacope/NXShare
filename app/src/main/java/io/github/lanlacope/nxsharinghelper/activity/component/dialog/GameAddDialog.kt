@@ -69,7 +69,7 @@ fun GameAddDialog(
                 isError = isError,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(weight = 1f, fill = false)
                     .padding(all = 8.dp)
             )
         }
