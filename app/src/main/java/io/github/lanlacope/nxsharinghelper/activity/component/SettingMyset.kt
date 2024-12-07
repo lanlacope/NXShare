@@ -58,7 +58,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 @Composable
-fun SettingMyset(navController: NavHostController) {
+fun SettingMyset() {
 
     Column(modifier = Modifier.fillMaxSize()) {
 

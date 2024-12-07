@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,7 +54,7 @@ import kotlinx.collections.immutable.toImmutableList
  */
 
 @Composable
-fun SettingPackage(navController: NavHostController) {
+fun SettingPackage() {
 
     val infoManager = rememberInfoManager()
     val apps = infoManager.getAppInfo().toImmutableList()
@@ -182,7 +183,7 @@ private fun PackageSetting(packageName: String) {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .padding(10.dp)
 
         ) {
             Text(
@@ -220,7 +221,11 @@ private fun PackageSetting(packageName: String) {
                 }
             }
 
-            BusyOption(Modifier.fillMaxWidth()) {
+            BusyOption(
+                userScrollEnabled = false,
+                contentPadding = PaddingValues(start = ComponentValue.DISPLAY_PADDING_START),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 radioButton(
                     options = types,
                     selected = { selectedType == it },
@@ -228,8 +233,7 @@ private fun PackageSetting(packageName: String) {
                         selectedType = it
                         fileEditor.changeShareType(packageName, it)
                     },
-
-                    )
+                )
             }
         }
     }

@@ -40,7 +40,7 @@ fun makeToast(
 }
 
 fun <K, V> Map<K, V>.toMutableStateMap(): SnapshotStateMap<K, V> {
-    return mutableStateMapOf<K, V>().apply { putAll(this) }
+    return mutableStateMapOf<K, V>().apply { putAll(this@toMutableStateMap) }
 }
 
 @Composable

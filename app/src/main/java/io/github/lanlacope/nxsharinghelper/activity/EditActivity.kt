@@ -40,14 +40,13 @@ class EditActivity : ComponentActivity() {
 
 @Composable
 fun SettingView() {
-
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = "root"
     ) {
         composable("root") { SettingRoot(navController) }
-        composable("package") { SettingPackage(navController) }
-        composable("myset") { SettingMyset(navController) }
+        composable("package") { SettingPackage() }
+        composable("myset") { SettingMyset() }
     }
 }
