@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "io.github.lanlacope.nxsharinghelper"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "io.github.lanlacope.nxsharinghelper"
