@@ -11,7 +11,7 @@ fun ThemeSelectDialog(
     selectedTheme: String,
     themes: Map<String, String>,
     onConfirm: (theme: String) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     RadioButtonDialog(
         title = stringResource(id = R.string.dialog_title_theme),

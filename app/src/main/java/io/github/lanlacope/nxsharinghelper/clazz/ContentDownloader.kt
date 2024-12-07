@@ -10,9 +10,9 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.bundleOf
+import io.github.lanlacope.collection.json.map
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchLocalHost
-import io.github.lanlacope.nxsharinghelper.widgit.mapIndexOnly
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -26,12 +26,12 @@ import java.net.URL
 data class DownloadData(
     val fileType: String = "",
     val consoleName: String = "",
-    val fileNames: List<String> = emptyList()
+    val fileNames: List<String> = emptyList(),
 )
 
 data class DownloadDataState(
     private val context: Context,
-    private val data: MutableState<DownloadData>
+    private val data: MutableState<DownloadData>,
 ) {
     fun getData(): DownloadData {
         return data.value
@@ -61,16 +61,16 @@ fun rememberContentData(): DownloadDataState {
 private val DownloadDataSaver = Saver<DownloadData, Bundle>(
     save = { data ->
         bundleOf(
-            SwitchJsonPropaty.FILETYPE.to(data.fileType),
-            SwitchJsonPropaty.CONSOLENAME.to(data.consoleName),
-            SwitchJsonPropaty.FILENAMES.to(data.fileNames.toTypedArray())
+            SwitchJsonPropaty.FILETYPE to (data.fileType),
+            SwitchJsonPropaty.CONSOLENAME to (data.consoleName),
+            SwitchJsonPropaty.FILENAMES to (data.fileNames.toTypedArray())
         )
     },
     restore = { bundle ->
         DownloadData(
             fileType = bundle.getString(SwitchJsonPropaty.FILETYPE, ""),
             consoleName = bundle.getString(SwitchJsonPropaty.CONSOLENAME, ""),
-            fileNames = bundle.getStringArray(SwitchJsonPropaty.FILENAMES)?.toList()?: emptyList()
+            fileNames = bundle.getStringArray(SwitchJsonPropaty.FILENAMES)?.toList() ?: emptyList()
         )
     }
 )
@@ -101,9 +101,7 @@ class ContentDownloader(val context: Context) {
         val fileType = rawJson.getString(SwitchJsonPropaty.FILETYPE)
         val consoleName = rawJson.getString(SwitchJsonPropaty.CONSOLENAME)
         val jsonArray = rawJson.getJSONArray(SwitchJsonPropaty.FILENAMES)
-        val fileNames = jsonArray.mapIndexOnly { index ->
-            jsonArray.getString(index)
-        }
+        val fileNames = jsonArray.map { fileName: String -> fileName }
 
         downloadData = DownloadData(
             fileType = fileType,

@@ -5,6 +5,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import io.github.lanlacope.collection.json.forEach
+import io.github.lanlacope.collection.json.forEachIndexed
+import io.github.lanlacope.collection.json.map
 import io.github.lanlacope.nxsharinghelper.R
 import org.json.JSONArray
 import org.json.JSONObject
@@ -13,8 +16,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
-import io.github.lanlacope.nxsharinghelper.widgit.forEachIndexOnly
-import io.github.lanlacope.nxsharinghelper.widgit.mapIndexOnly
 import org.json.JSONException
 
 @Suppress("unused")
@@ -39,10 +40,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             return Result.failure(Exception())
         }
 
-        val mTitle = if (title.isBlank()) {
+        val mTitle = title.ifBlank {
             createNewMySetTitle()
-        } else {
-            title
         }
 
         val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
@@ -69,14 +68,12 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             return Result.failure(Exception())
         }
 
-        val mTitle = if (title.isBlank()) {
+        val mTitle = title.ifBlank {
             try {
                 jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
             } catch (e: JSONException) {
                 createNewMySetTitle()
             }
-        } else {
-            title
         }
 
         jsonObject.put(MySetJsonPropaty.MYSET_TITLE, mTitle)
@@ -98,7 +95,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         fileName: String,
         title: String,
         headText: String,
-        tailText: String
+        tailText: String,
     ) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
@@ -121,7 +118,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         fileName: String,
         id: String,
         title: String,
-        text: String
+        text: String,
     ): Result<GameInfo> {
 
         val file = getMySetFile(fileName)
@@ -129,17 +126,14 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         val jsonArray = jsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
 
-        jsonArray.forEachIndexOnly { index ->
-            val parsedData = jsonArray.getJSONObject(index)
-            if (parsedData.getString(MySetJsonPropaty.GAME_ID) == id) {
+        jsonArray.forEach { gameObject: JSONObject ->
+            if (gameObject.getString(MySetJsonPropaty.GAME_ID) == id) {
                 return Result.failure(Exception())
             }
         }
 
-        val mTitle = if (title.isBlank()) {
+        val mTitle = title.ifBlank {
             createNewGameTitle()
-        } else {
-            title
         }
 
         val gameData = JSONObject().apply {
@@ -158,15 +152,14 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         fileName: String,
         id: String,
         title: String,
-        text: String
+        text: String,
     ) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
         val jsonArray = jsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
 
-        jsonArray.forEachIndexOnly { index ->
-            val gameData = jsonArray.getJSONObject(index)
+        jsonArray.forEachIndexed { index, gameData: JSONObject ->
             if (gameData.getString(MySetJsonPropaty.GAME_ID) == id) {
                 gameData.apply {
                     put(MySetJsonPropaty.GAME_TITLE, title)
@@ -182,15 +175,14 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
     fun removeGameInfo(
         fileName: String,
-        id: String
+        id: String,
     ) {
         val file = getMySetFile(fileName)
         val jsonObject = JSONObject(file.readText())
 
         val jsonArray = jsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
 
-        jsonArray.forEachIndexOnly { index ->
-            val gameData = jsonArray.getJSONObject(index)
+        jsonArray.forEachIndexed { index, gameData: JSONObject ->
             if (gameData.getString(MySetJsonPropaty.GAME_ID) == id) {
                 jsonArray.remove(index)
                 jsonObject.put(MySetJsonPropaty.GAME_DATA, jsonArray)
@@ -203,7 +195,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
     fun importGameInfo(
         targetFileName: String,
         joinJsonObject: JSONObject,
-        overwrite: Boolean = false
+        overwrite: Boolean = false,
     ): Result<List<GameInfo>> {
 
         if (!checkMySetJson(joinJsonObject)) {
@@ -215,19 +207,16 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         val file = getMySetFile(targetFileName)
         val targetJsonObject = JSONObject(file.readText())
         val targetJSONArray = targetJsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
-        val targetIdList = targetJSONArray.mapIndexOnly { index ->
-            val gameData = targetJSONArray.getJSONObject(index)
+        val targetIdList = targetJSONArray.map { gameData: JSONObject ->
             gameData.getString(MySetJsonPropaty.GAME_ID)
         }
 
         val joinJSONArray = joinJsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
 
-        joinJSONArray.forEachIndexOnly join@{ joinIndex ->
-            val joinGameData = joinJSONArray.getJSONObject(joinIndex)
+        joinJSONArray.forEach join@{ joinGameData: JSONObject ->
             if (joinGameData.getString(MySetJsonPropaty.GAME_ID) in targetIdList) {
                 if (overwrite) {
-                    targetJSONArray.forEachIndexOnly target@{ targetIndex ->
-                        val targetGameData = targetJSONArray.getJSONObject(targetIndex)
+                    targetJSONArray.forEachIndexed target@{ targetIndex, targetGameData: JSONObject ->
                         if (joinGameData.getString(MySetJsonPropaty.GAME_ID)
                             == targetGameData.getString(MySetJsonPropaty.GAME_ID)
                         ) {
@@ -256,14 +245,14 @@ class FileEditor(private val context: Context) : FileSelector(context) {
                 }
             } else {
                 val gameData = JSONObject().apply {
-                        put(MySetJsonPropaty.GAME_ID, joinGameData.getString(MySetJsonPropaty.GAME_ID))
+                    put(MySetJsonPropaty.GAME_ID, joinGameData.getString(MySetJsonPropaty.GAME_ID))
                     try {
                         put(
                             MySetJsonPropaty.GAME_TITLE,
                             joinGameData.getString(MySetJsonPropaty.GAME_TITLE)
                         )
                     } catch (e: JSONException) {
-                        put(MySetJsonPropaty.GAME_TITLE,createNewGameTitle())
+                        put(MySetJsonPropaty.GAME_TITLE, createNewGameTitle())
                     }
                     try {
                         put(
@@ -271,7 +260,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
                             joinGameData.getString(MySetJsonPropaty.GAME_TEXT)
                         )
                     } catch (e: JSONException) {
-                        put(MySetJsonPropaty.GAME_TITLE,"")
+                        put(MySetJsonPropaty.GAME_TITLE, "")
                     }
                 }
                 targetJSONArray.put(gameData)
@@ -293,8 +282,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         var isFound = false
 
-        jsonArray.forEachIndexOnly { index ->
-            val jsonObject = jsonArray.getJSONObject(index)
+        jsonArray.forEachIndexed { index, jsonObject: JSONObject ->
             if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
                 jsonObject.put(AppJsonPropaty.PAKCAGE_ENABLED, isEnable)
                 jsonArray.put(index, jsonObject)
@@ -313,7 +301,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         file.writeText(jsonArray.toString())
     }
 
-    fun changeShareType (packageName: String, name: String) {
+    fun changeShareType(packageName: String, name: String) {
         val file = getAppDataFile()
         val jsonArray = try {
             JSONArray(file.readText())
@@ -323,13 +311,12 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         var isFound = false
 
-        jsonArray.forEachIndexOnly { index ->
-            val jsonObject = jsonArray.getJSONObject(index)
+        jsonArray.forEachIndexed { index, jsonObject: JSONObject ->
             if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
                 jsonObject.put(AppJsonPropaty.PACKAGE_TYPE, name)
                 jsonArray.put(index, jsonObject)
                 isFound = true
-                return@forEachIndexOnly
+                return@forEachIndexed
             }
         }
 
@@ -353,8 +340,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             return
         }
 
-        jsonArray.forEachIndexOnly { index ->
-            val jsonObject = jsonArray.getJSONObject(index)
+        jsonArray.forEachIndexed { index, jsonObject: JSONObject ->
             if (jsonObject.getString(MySetJsonPropaty.MYSET_TITLE) == lastType) {
                 jsonObject.put(MySetJsonPropaty.MYSET_TITLE, newType)
                 jsonArray.put(index, jsonObject)
@@ -367,8 +353,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
     fun checkMySetJson(jsonObject: JSONObject): Boolean {
         try {
             val jsonArray = jsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
-            jsonArray.forEachIndexOnly { index ->
-                val gemeData = jsonArray.getJSONObject(index)
+            jsonArray.forEach { gemeData: JSONObject ->
                 gemeData.getString(MySetJsonPropaty.GAME_ID)
             }
             return true

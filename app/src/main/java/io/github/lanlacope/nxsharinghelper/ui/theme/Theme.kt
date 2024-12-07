@@ -42,7 +42,7 @@ fun updateTheme() {
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val settingManager = SettingManager(LocalContext.current)
     var theme by remember {

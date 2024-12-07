@@ -5,10 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import io.github.lanlacope.collection.json.forEach
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
-import io.github.lanlacope.nxsharinghelper.widgit.forEachIndexOnly
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -32,10 +32,8 @@ class FileReader(context: Context) : FileSelector(context) {
         try {
             val file = getAppDataFile()
             val jsonArray = JSONArray(file.readText())
-            jsonArray.forEachIndexOnly { index ->
-                val jsonObject = jsonArray.getJSONObject(index)
+            jsonArray.forEach { jsonObject: JSONObject ->
                 if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
-
                     return jsonObject.getBoolean(AppJsonPropaty.PAKCAGE_ENABLED)
                 }
             }
@@ -49,8 +47,7 @@ class FileReader(context: Context) : FileSelector(context) {
         try {
             val file = getAppDataFile()
             val jsonArray = JSONArray(file.readText())
-            jsonArray.forEachIndexOnly { index ->
-                val jsonObject = jsonArray.getJSONObject(index)
+            jsonArray.forEach { jsonObject: JSONObject ->
                 if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
                     return jsonObject.getString(AppJsonPropaty.PACKAGE_TYPE)
                 }
@@ -93,9 +90,8 @@ class FileReader(context: Context) : FileSelector(context) {
                 }
                 try {
                     val arrayData = rawJson.getJSONArray(MySetJsonPropaty.GAME_DATA)
-                    arrayData.forEachIndexOnly { index ->
+                    arrayData.forEach { jsonObject: JSONObject ->
                         try {
-                            val jsonObject = arrayData.getJSONObject(index)
                             if (jsonObject.getString(MySetJsonPropaty.GAME_ID) in ids) {
                                 val text = jsonObject.getString(MySetJsonPropaty.GAME_TEXT)
                                 append(text)

@@ -72,7 +72,7 @@ class ResultActivity : ComponentActivity() {
 
 @Composable
 private fun Navigation() {
-    ConstraintLayout (
+    ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -81,7 +81,7 @@ private fun Navigation() {
         val scope = rememberCoroutineScope()
 
         var isScanned by rememberSaveable { mutableStateOf(false) }
-        var navigationMessage by rememberSaveable() { mutableStateOf(context.getString(R.string.app_name)) }
+        var navigationMessage by rememberSaveable { mutableStateOf(context.getString(R.string.app_name)) }
         val contentsData = rememberContentData()
 
         val SOMEBUTTON_SIZE = 80.dp
@@ -95,7 +95,7 @@ private fun Navigation() {
             navigationRef,
             scanButtonRef,
             shareButtonRef,
-            saveButtonRef
+            saveButtonRef,
         ) = createRefs()
 
         TextButton(
@@ -166,21 +166,18 @@ private fun Navigation() {
                     bottom.linkTo(saveButtonRef.top)
                 }
         ) {
-            val onShareButtonClick = {
-                val contentSharer = ContentSharer(context)
-                val intent = contentSharer.createCustomChooserIntent(contentsData.getData().copy())
-                context.startActivity(intent)
-            }
-
-            val onShareButtonLongClick = {
-                val contentSharer = ContentSharer(context)
-                val intent = contentSharer.createChooserIntent(contentsData.getData().copy())
-                context.startActivity(intent)
-            }
-
             FloatingActionButton(
-                onClick = onShareButtonClick,
-                onLongClick = onShareButtonLongClick,
+                onClick = {
+                    val contentSharer = ContentSharer(context)
+                    val intent =
+                        contentSharer.createCustomChooserIntent(contentsData.getData().copy())
+                    context.startActivity(intent)
+                },
+                onLongClick = {
+                    val contentSharer = ContentSharer(context)
+                    val intent = contentSharer.createChooserIntent(contentsData.getData().copy())
+                    context.startActivity(intent)
+                },
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .size(SOMEBUTTON_SIZE)
@@ -209,27 +206,23 @@ private fun Navigation() {
                     bottom.linkTo(scanButtonRef.top)
                 }
         ) {
-
-            val storagePermissionResult =
-                rememberPermissionGrantResult(permission = Manifest.permission.WRITE_EXTERNAL_STORAGE) {
-                    scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }
-                }
-
-            val onSaveButtonClick: () -> Unit = {
-                storagePermissionResult.launch()
+            val storagePermissionResult = rememberPermissionGrantResult(
+                permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) {
                 scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }
             }
 
-            val onSaveButtonLongClick = {
-                val ids = getGameId(contentsData.getData().fileNames)
-                ids.forEach { id ->
-                    clipboardManager.setText(AnnotatedString(id))
-                }
-            }
-
             FloatingActionButton(
-                onClick = onSaveButtonClick,
-                onLongClick = onSaveButtonLongClick,
+                onClick = {
+                    storagePermissionResult.launch()
+                    scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }
+                },
+                onLongClick = {
+                    val ids = getGameId(contentsData.getData().fileNames)
+                    ids.forEach { id ->
+                        clipboardManager.setText(AnnotatedString(id))
+                    }
+                },
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .size(SOMEBUTTON_SIZE)
@@ -290,17 +283,14 @@ private fun Navigation() {
             captureResult.launch()
         }
 
-        val cameraParmissionResult =
-            rememberPermissionGrantResult(permission = Manifest.permission.CAMERA) {
-                wifiResult.launch()
-            }
-
-        val onScanButtonClick: () -> Unit = {
-            cameraParmissionResult.launch()
+        val cameraParmissionResult = rememberPermissionGrantResult(
+            permission = Manifest.permission.CAMERA
+        ) {
+            wifiResult.launch()
         }
 
         FloatingActionButton(
-            onClick = onScanButtonClick,
+            onClick = { cameraParmissionResult.launch() },
             containerColor = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .padding(

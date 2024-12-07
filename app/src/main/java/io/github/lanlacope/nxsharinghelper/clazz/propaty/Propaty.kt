@@ -8,7 +8,7 @@ fun getGameId(fileNames: List<String>): List<String> {
     val regex = Regex(""".*-(.*?)\..*?$""")
     val ids = fileNames.map { rawId ->
         val matchResult = regex.find(rawId)
-        matchResult?.groupValues?.get(1)?: ""
+        matchResult?.groupValues?.get(1) ?: ""
     }.distinct()
     return ids
 }

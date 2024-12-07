@@ -20,7 +20,7 @@ fun GameAddDialog(
     expanded: Boolean,
     onConfirm: (id: String, title: String, text: String) -> Unit,
     onCancel: () -> Unit,
-    isError: Boolean
+    isError: Boolean,
 ) {
     var title by rememberSaveable(expanded) { mutableStateOf("") }
     var id by rememberSaveable(expanded) { mutableStateOf("") }

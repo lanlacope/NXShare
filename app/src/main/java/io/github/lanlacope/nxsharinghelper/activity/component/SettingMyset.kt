@@ -156,7 +156,7 @@ fun SettingMyset(navController: NavHostController) {
 @Composable
 private fun MysetListItem(
     file: File,
-    removeSelf: () -> Unit
+    removeSelf: () -> Unit,
 ) {
     Column {
         val fileEditor = rememberFileEditor()
@@ -219,7 +219,7 @@ private fun MysetListItem(
 private fun GameListHeader(
     title: String,
     headText: String,
-    tailText: String
+    tailText: String,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -271,7 +271,7 @@ private fun GameListHeader(
 
 @Composable
 private fun GameList(
-    file: File
+    file: File,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -385,7 +385,7 @@ private fun GameList(
 @Composable
 private fun GameListItem(
     gameInfo: GameInfo,
-    fileName: String
+    fileName: String,
 ) {
     var isRemoved by remember { mutableStateOf(false) }
 
@@ -440,7 +440,7 @@ private fun GameListItem(
             text = text,
             onConfirm = { newTitle, newText ->
                 fileEditor.editGameInfo(
-                    fileName =fileName,
+                    fileName = fileName,
                     id = id,
                     title = newTitle,
                     text = text

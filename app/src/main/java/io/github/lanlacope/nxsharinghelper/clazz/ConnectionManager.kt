@@ -35,12 +35,12 @@ class ConnectionManager(_context: Context) {
 
     data class WifiConfig(
         val ssid: String,
-        val password: String
+        val password: String,
     )
 
     data class OnConnection(
         val onSuccesful: (ConnectionManager) -> Unit,
-        val onFailed: (ConnectionManager) -> Unit
+        val onFailed: (ConnectionManager) -> Unit,
     )
 
     private val context = _context.applicationContext
@@ -85,7 +85,7 @@ class ConnectionManager(_context: Context) {
     private fun connectSwitch(
         ssid: String,
         password: String,
-        onConnect: OnConnection
+        onConnect: OnConnection,
     ) {
 
         if (SettingManager(context).getAlternativeConnectionEnabled()) {
@@ -143,7 +143,7 @@ class ConnectionManager(_context: Context) {
     private fun connectSwitchLegacy(
         ssid: String,
         password: String,
-        onConnect: OnConnection
+        onConnect: OnConnection,
     ) {
 
         println("nowConnectionL")

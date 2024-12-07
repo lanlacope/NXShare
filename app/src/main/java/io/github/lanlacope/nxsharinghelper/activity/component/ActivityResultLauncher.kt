@@ -29,7 +29,7 @@ import org.json.JSONObject
 
 @Stable
 data class CaptureResultLauncher(
-    private val launcher: ManagedActivityResultLauncher<ScanOptions, Result<WifiConfig>>
+    private val launcher: ManagedActivityResultLauncher<ScanOptions, Result<WifiConfig>>,
 ) {
     private val scanOption = ScanOptions()
         .setOrientationLocked(false)
@@ -42,9 +42,9 @@ data class CaptureResultLauncher(
 
 @Composable
 fun rememberCaptureResult(
-    onCapture: (WifiConfig) -> Unit
+    onCapture: (WifiConfig) -> Unit,
 ): CaptureResultLauncher {
-    val launcher =  rememberLauncherForActivityResult(
+    val launcher = rememberLauncherForActivityResult(
         contract = SwitchCaptureActivity.Contract()
     ) { result ->
         if (result.isSuccess) {
@@ -57,7 +57,8 @@ fun rememberCaptureResult(
 }
 
 @Immutable
-class ImportJsonContract(private val context: Context) : ActivityResultContract<Unit, Result<JSONObject>>() {
+class ImportJsonContract(private val context: Context) :
+    ActivityResultContract<Unit, Result<JSONObject>>() {
 
     override fun createIntent(context: Context, input: Unit): Intent {
         return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
@@ -83,7 +84,7 @@ class ImportJsonContract(private val context: Context) : ActivityResultContract<
                 } catch (e: Exception) {
                     Result.failure(Exception())
                 }
-            }?: Result.failure(Exception())
+            } ?: Result.failure(Exception())
         } else {
             return Result.failure(Exception())
         }
@@ -92,7 +93,7 @@ class ImportJsonContract(private val context: Context) : ActivityResultContract<
 
 @Stable
 data class ImportJsonResultLauncher(
-    private val launcher: ManagedActivityResultLauncher<Unit, Result<JSONObject>>
+    private val launcher: ManagedActivityResultLauncher<Unit, Result<JSONObject>>,
 ) {
     fun launch() {
         launcher.launch(Unit)
@@ -101,10 +102,10 @@ data class ImportJsonResultLauncher(
 
 @Composable
 fun rememberImportJsonResult(
-    onSelect: (JSONObject) -> Unit
+    onSelect: (JSONObject) -> Unit,
 ): ImportJsonResultLauncher {
     val context = LocalContext.current
-    val launcher =  rememberLauncherForActivityResult(
+    val launcher = rememberLauncherForActivityResult(
         contract = ImportJsonContract(context)
     ) { result ->
         if (result.isSuccess) {
@@ -120,7 +121,7 @@ data class WifiEnableResultLauncher(
     private val wifiManager: WifiManager,
     private val settingManager: SettingManager,
     private val launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-    private val onAlreadyEnabled: () -> Unit
+    private val onAlreadyEnabled: () -> Unit,
 ) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
@@ -128,8 +129,7 @@ data class WifiEnableResultLauncher(
         if (!isEnabled() || settingManager.getAlternativeConnectionEnabled()) {
             if (DevicePropaty.isAfterAndroidX()) {
                 launcher.launch(intent)
-            }
-            else {
+            } else {
                 @Suppress("DEPRECATION")
                 wifiManager.isWifiEnabled = true
             }
@@ -137,6 +137,7 @@ data class WifiEnableResultLauncher(
             onAlreadyEnabled()
         }
     }
+
     private fun isEnabled(): Boolean {
         return wifiManager.isWifiEnabled()
     }
@@ -144,7 +145,7 @@ data class WifiEnableResultLauncher(
 
 @Composable
 fun rememberWifiEnableResult(
-    onEnable: () -> Unit
+    onEnable: () -> Unit,
 ): WifiEnableResultLauncher {
     val wifiManager =
         LocalContext.current.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager

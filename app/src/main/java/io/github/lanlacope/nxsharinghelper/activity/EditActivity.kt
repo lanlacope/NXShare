@@ -20,11 +20,11 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
  * 設定を変更するアクティビティ
  */
 
-class EditActivity: ComponentActivity() {
-    
+class EditActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         setContent {
             AppTheme {
                 Surface(

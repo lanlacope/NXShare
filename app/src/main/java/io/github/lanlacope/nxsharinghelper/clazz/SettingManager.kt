@@ -32,10 +32,10 @@ class SettingManager(context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        try {
-            return jsonObject.getString(SettingJsonPropaty.APP_THEME)
+        return try {
+            jsonObject.getString(SettingJsonPropaty.APP_THEME)
         } catch (e: JSONException) {
-            return SettingJsonPropaty.THEME_SYSTEM
+            SettingJsonPropaty.THEME_SYSTEM
         }
     }
 
@@ -60,10 +60,10 @@ class SettingManager(context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        try {
-            return jsonObject.getBoolean(SettingJsonPropaty.ALTERNATIVE_CONNECTION_ENABlED)
+        return try {
+            jsonObject.getBoolean(SettingJsonPropaty.ALTERNATIVE_CONNECTION_ENABlED)
         } catch (e: JSONException) {
-            return false
+            false
         }
     }
 

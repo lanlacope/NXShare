@@ -23,7 +23,7 @@ fun MySetEditDialog(
     headText: String,
     tailText: String,
     onConfirm: (title: String, headText: String, tailText: String) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     var dTitle by rememberSaveable(expanded) { mutableStateOf(title) }
     var dHeadText by rememberSaveable(expanded) { mutableStateOf(headText) }

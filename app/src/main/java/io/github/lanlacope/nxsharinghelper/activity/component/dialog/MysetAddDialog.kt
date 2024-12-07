@@ -21,7 +21,7 @@ fun MysetAddDialog(
     expanded: Boolean,
     onConfirm: (title: String) -> Unit,
     onCancel: () -> Unit,
-    isError: Boolean
+    isError: Boolean,
 ) {
     var title by remember(expanded) { mutableStateOf("") }
 

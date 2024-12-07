@@ -11,6 +11,7 @@ object AppPropaty {
         val MP4: String = "video/mp4"
         val JSON: String = "application/json"
     }
+
     object SwitchLocalHost {
         val INDEX: String = "http://192.168.0.1/index.html"
         val DATA: String = "http://192.168.0.1/data.json"

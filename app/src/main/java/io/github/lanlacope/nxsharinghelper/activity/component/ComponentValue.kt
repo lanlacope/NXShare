@@ -34,7 +34,7 @@ object ComponentValue {
 @Composable
 fun makeToast(
     text: String,
-    duration: Int = Toast.LENGTH_SHORT
+    duration: Int = Toast.LENGTH_SHORT,
 ): Toast {
     return Toast.makeText(LocalContext.current, text, duration)
 }

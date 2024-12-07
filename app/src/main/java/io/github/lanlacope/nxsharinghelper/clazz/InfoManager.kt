@@ -3,14 +3,15 @@ package io.github.lanlacope.nxsharinghelper.clazz
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import io.github.lanlacope.collection.json.map
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
-import io.github.lanlacope.nxsharinghelper.widgit.mapIndexOnly
 import kotlinx.collections.immutable.toImmutableList
 import org.json.JSONException
 import org.json.JSONObject
@@ -20,9 +21,7 @@ import java.io.File
 @Composable
 fun rememberInfoManager(): InfoManager {
     val context = LocalContext.current
-    return remember {
-        InfoManager(context)
-    }
+    return remember { InfoManager(context) }
 }
 
 /*
@@ -36,32 +35,32 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         private val packageManager: PackageManager,
     ) {
         val name = applicationInfo.loadLabel(packageManager).toString()
-        val icon = applicationInfo.loadIcon(packageManager)
-        val packageName = applicationInfo.packageName
+        val icon: Drawable = applicationInfo.loadIcon(packageManager)
+        val packageName: String = applicationInfo.packageName
     }
 
 
     data class ShareInfo(
         private val packageName: String,
-        private val context: Context
+        private val context: Context,
     ) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
-        val type = fileReader.getShareType(packageName)?: AppJsonPropaty.TYPE_NONE
+        val type = fileReader.getShareType(packageName) ?: AppJsonPropaty.TYPE_NONE
         val types = fileReader.getTypeNames().toImmutableList()
     }
 
 
     data class MysetInfo(
-        private val jsonObject: JSONObject
+        private val jsonObject: JSONObject,
     ) {
-        val title = jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
-        val haedText = try {
+        val title: String = jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
+        val haedText: String = try {
             jsonObject.getString(MySetJsonPropaty.HEAD_TEXT)
         } catch (e: JSONException) {
             ""
         }
-        val tailText = try {
+        val tailText: String = try {
             jsonObject.getString(MySetJsonPropaty.TAIL_TEXT)
         } catch (e: JSONException) {
             ""
@@ -70,15 +69,15 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
 
     data class GameInfo(
-        private val jsonObject: JSONObject
+        private val jsonObject: JSONObject,
     ) {
-        val id = jsonObject.getString(MySetJsonPropaty.GAME_ID)
-        val title = try {
+        val id: String = jsonObject.getString(MySetJsonPropaty.GAME_ID)
+        val title: String = try {
             jsonObject.getString(MySetJsonPropaty.GAME_TITLE)
         } catch (e: JSONException) {
             ""
         }
-        val text = try {
+        val text: String = try {
             jsonObject.getString(MySetJsonPropaty.GAME_TEXT)
         } catch (e: JSONException) {
             ""
@@ -138,8 +137,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     fun getGameInfo(file: File): List<GameInfo> {
         val jsonObject = JSONObject(file.readText())
         val jsonArray = jsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
-        val info = jsonArray.mapIndexOnly { index ->
-            val gameData = jsonArray.getJSONObject(index)
+        val info = jsonArray.map { gameData: JSONObject ->
             GameInfo(gameData)
         }
         return info

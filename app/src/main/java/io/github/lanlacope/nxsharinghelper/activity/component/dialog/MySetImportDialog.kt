@@ -22,7 +22,7 @@ import org.json.JSONObject
 fun MySetImportDialog(
     expanded: Boolean,
     onConfirm: (title: String, jsonObject: JSONObject) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     var title by remember(expanded) { mutableStateOf("") }
 

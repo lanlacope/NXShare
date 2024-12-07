@@ -101,15 +101,15 @@ class SwitchCaptureActivity : Activity() {
     class Contract : ActivityResultContract<ScanOptions, Result<WifiConfig>>() {
 
         override fun createIntent(context: Context, input: ScanOptions): Intent {
-                val intentScan = Intent(context, SwitchCaptureActivity::class.java)
-                intentScan.setAction(Intents.Scan.ACTION)
-                intentScan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                return intentScan
+            val intentScan = Intent(context, SwitchCaptureActivity::class.java)
+            intentScan.setAction(Intents.Scan.ACTION)
+            intentScan.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            return intentScan
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Result<WifiConfig> {
             if (resultCode == RESULT_OK) {
-                val rawResult = intent?.action?: ";"
+                val rawResult = intent?.action ?: ";"
                 val splitResult = rawResult.split(";").toTypedArray()
                 return Result.success(WifiConfig(splitResult[0], splitResult[1]))
             } else {
@@ -138,18 +138,28 @@ class SwitchCaptureManager(
 
         val parcedResult = parceQr(_rawResult)
 
-        when (parcedResult.second ) {
+        when (parcedResult.second) {
             ResultState.SUCCESSFUL_CARER -> {
                 activity.setResult(Activity.RESULT_OK, Intent(parcedResult.first))
                 closeAndFinish()
             }
+
             ResultState.FAILED_NOTSWITCH -> {
-                Toast.makeText(activity, activity.getString(R.string.failed_decode_notswitch), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    activity,
+                    activity.getString(R.string.failed_decode_notswitch),
+                    Toast.LENGTH_SHORT
+                ).show()
                 barcodeView.resume()
                 decode()
             }
+
             ResultState.FAILED_LOCALHOST -> {
-                Toast.makeText(activity, activity.getString(R.string.failed_decode_islocalhost), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    activity,
+                    activity.getString(R.string.failed_decode_islocalhost),
+                    Toast.LENGTH_SHORT
+                ).show()
                 barcodeView.resume()
                 decode()
             }

@@ -26,12 +26,12 @@ fun rememberFileSelector(): FileSelector {
 open class FileSelector(private val context: Context) {
 
     companion object {
-        val FOLDER_THIS: String = "NXShare"
-        val FOLDER_SETTING: String = "setting"
-        val FILE_SETTING: String = "setting.json"
-        val FOLDER_DATA = "data"
-        val FILE_APP = "app.json"
-        val FOLDER_MYSET = "myset"
+        const val FOLDER_THIS: String = "NXShare"
+        const val FOLDER_SETTING: String = "setting"
+        const val FILE_SETTING: String = "setting.json"
+        const val FOLDER_DATA = "data"
+        const val FILE_APP = "app.json"
+        const val FOLDER_MYSET = "myset"
     }
 
     fun getSettingFolder(): File {
@@ -57,7 +57,7 @@ open class FileSelector(private val context: Context) {
     }
 
     fun getMySetFolder(): File {
-        val file =  File(getDataFolder(), FOLDER_MYSET)
+        val file = File(getDataFolder(), FOLDER_MYSET)
         if (!file.exists()) {
             file.mkdir()
         }
@@ -93,15 +93,11 @@ open class FileSelector(private val context: Context) {
         val file = File(getMySetFolder(), fileName)
         val isSucces = file.createNewFile()
 
-        if (isSucces) {
-            return file
-        } else {
-            return createNewMySetFile("${fileName}_")
-        }
+        return if (isSucces) file else createNewMySetFile("${fileName}_")
     }
 
     // マイセットファイルを全て取得
     fun getMySetFiles(): List<File> {
-        return getMySetFolder().listFiles()?.toList()?: emptyList()
+        return getMySetFolder().listFiles()?.toList() ?: emptyList()
     }
 }

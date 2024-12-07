@@ -229,7 +229,7 @@ private fun PackageSetting(packageName: String) {
                         fileEditor.changeShareType(packageName, it)
                     },
 
-                )
+                    )
             }
         }
     }

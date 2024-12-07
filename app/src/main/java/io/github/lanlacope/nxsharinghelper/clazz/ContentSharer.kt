@@ -17,11 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
+import io.github.lanlacope.collection.collection.toArrayList
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
-import io.github.lanlacope.nxsharinghelper.widgit.toArrayList
 import java.io.File
 
 @Suppress("unused")
@@ -79,7 +79,7 @@ class ContentSharer(private val context: Context) {
         return intent.createChooserIntent()
     }
 
-    fun createCustomChooserIntent(data: DownloadData) : Intent {
+    fun createCustomChooserIntent(data: DownloadData): Intent {
 
         val title = when (data.fileType) {
             SwitchJsonPropaty.FILETYPE_PHOTO -> {
@@ -106,7 +106,8 @@ class ContentSharer(private val context: Context) {
 
         if (DevicePropaty.isAfterAndroidX()) {
 
-            val chooserIntent = Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
+            val chooserIntent =
+                Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
 
             val filteredPackages = sendablePackages.filterNot { sendablePackage ->
                 val packageName = sendablePackage.activityInfo.packageName
@@ -170,7 +171,8 @@ class ContentSharer(private val context: Context) {
                 setAction(Intent.ACTION_SEND)
 
                 val file = File(context.cacheDir, data.fileNames[0])
-                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
+                val uri =
+                    FileProvider.getUriForFile(context, "${context.packageName}.fileProvider", file)
                 putExtra(Intent.EXTRA_STREAM, uri)
 
             } else {
@@ -217,7 +219,8 @@ class ContentSharer(private val context: Context) {
 
             val fileReader = FileReader(context)
 
-            val fileNames = intent.getStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE)?.toList()?: emptyList()
+            val fileNames =
+                intent.getStringArrayListExtra(Intent.ACTION_SEND_MULTIPLE)?.toList() ?: emptyList()
 
             val componentName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT, ComponentName::class.java)
@@ -226,7 +229,7 @@ class ContentSharer(private val context: Context) {
                 intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT)
             }
 
-            val packageName = componentName?.packageName?: ""
+            val packageName = componentName?.packageName ?: ""
 
             val text = fileReader.createCopyText(fileNames, packageName)
 
@@ -235,8 +238,11 @@ class ContentSharer(private val context: Context) {
                     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("", text))
 
-                Toast.makeText(context, context.getString(R.string.copy_clipboard), Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.copy_clipboard),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

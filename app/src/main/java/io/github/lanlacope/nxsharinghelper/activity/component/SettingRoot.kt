@@ -18,6 +18,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.ThemeSelectDialog
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
+import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
 
 /*
  * 設定の一覧を
@@ -46,7 +47,7 @@ fun SettingRoot(navController: NavHostController) {
         }
 
         SettingTextArea(
-            text =  stringResource(id = R.string.summary_theme),
+            text = stringResource(id = R.string.summary_theme),
             value = themes[selectedTheme]!!,
             onClick = { themeSelectDialogShown = true },
             modifier = Modifier.fillMaxWidth()
@@ -56,8 +57,10 @@ fun SettingRoot(navController: NavHostController) {
             expanded = themeSelectDialogShown,
             selectedTheme = selectedTheme,
             themes = themes,
-            onConfirm = {
-                selectedTheme = it
+            onConfirm = { newTheme ->
+                selectedTheme = newTheme
+                settingManager.changeAppTheme(newTheme)
+                updateTheme()
                 themeSelectDialogShown = false
             },
             onCancel = { themeSelectDialogShown = false }

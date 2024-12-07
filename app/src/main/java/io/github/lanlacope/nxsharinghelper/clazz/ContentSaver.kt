@@ -74,7 +74,11 @@ class ContentSaver(_context: Context) {
                 val inputUri = Uri.fromFile(inputFile)
                 val collection: Uri = createCollection(data.fileType)
                 val values: ContentValues =
-                    createContentsValue(data.fileType, fileName, removeStringsForFile(data.consoleName))
+                    createContentsValue(
+                        data.fileType,
+                        fileName,
+                        removeStringsForFile(data.consoleName)
+                    )
                 val redsober: ContentResolver = context.contentResolver
                 val outputUri = redsober.insert(collection, values)
 
@@ -99,10 +103,11 @@ class ContentSaver(_context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun createCollection(type: String): Uri {
-        when(type) {
+        when (type) {
             SwitchJsonPropaty.FILETYPE_PHOTO -> {
                 return MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
+
             SwitchJsonPropaty.FILETYPE_MOVIE -> {
                 return MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
             }
@@ -111,24 +116,31 @@ class ContentSaver(_context: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun createContentsValue(type: String, fileName: String, consoleName: String): ContentValues {
+    private fun createContentsValue(
+        type: String,
+        fileName: String,
+        consoleName: String,
+    ): ContentValues {
         return ContentValues().apply {
-            when(type) {
+            when (type) {
                 SwitchJsonPropaty.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, MineType.JPG)
                     put(MediaStore.Images.Media.IS_PENDING, true)
                     put(
                         MediaStore.Images.ImageColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_PICTURES}/${FileSelector.FOLDER_THIS}/$consoleName/")
+                        "${Environment.DIRECTORY_PICTURES}/${FileSelector.FOLDER_THIS}/$consoleName/"
+                    )
                 }
+
                 SwitchJsonPropaty.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Video.Media.MIME_TYPE, MineType.MP4)
                     put(MediaStore.Video.Media.IS_PENDING, true)
                     put(
                         MediaStore.Video.VideoColumns.RELATIVE_PATH,
-                        "${Environment.DIRECTORY_MOVIES}/${FileSelector.FOLDER_THIS}/$consoleName/")
+                        "${Environment.DIRECTORY_MOVIES}/${FileSelector.FOLDER_THIS}/$consoleName/"
+                    )
                 }
             }
         }
@@ -137,10 +149,11 @@ class ContentSaver(_context: Context) {
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun updateContentsValue(type: String): ContentValues {
         return ContentValues().apply {
-            when(type) {
+            when (type) {
                 SwitchJsonPropaty.FILETYPE_PHOTO -> {
                     put(MediaStore.Images.Media.IS_PENDING, false)
                 }
+
                 SwitchJsonPropaty.FILETYPE_MOVIE -> {
                     put(MediaStore.Video.Media.IS_PENDING, false)
                 }
@@ -151,7 +164,8 @@ class ContentSaver(_context: Context) {
     private suspend fun saveFileToStorageLegasy(data: DownloadData) = withContext(Dispatchers.IO) {
 
         try {
-            val appFolder = File(Environment.getExternalStorageDirectory(), FileSelector.FOLDER_THIS)
+            val appFolder =
+                File(Environment.getExternalStorageDirectory(), FileSelector.FOLDER_THIS)
 
             val consoleFolder = File(appFolder, removeStringsForFile(data.consoleName))
 
