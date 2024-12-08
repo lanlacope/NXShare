@@ -47,9 +47,9 @@ class FileReader(context: Context) : FileSelector(context) {
 
             val packageData = packageObject.getJSONObject(packageName)
 
-            return packageData.optString(AppJsonPropaty.PACKAGE_TYPE, "")
+            return packageData.optString(AppJsonPropaty.PACKAGE_TYPE, AppJsonPropaty.MYSET_NONE)
         } catch (e: JSONException) {
-            return ""
+            return AppJsonPropaty.MYSET_NONE
         }
     }
 

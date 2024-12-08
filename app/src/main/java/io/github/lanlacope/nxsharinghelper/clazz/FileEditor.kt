@@ -137,7 +137,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         gameObject.put(id, gameData)
         jsonObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
         file.writeText(jsonObject.toString())
-        return Result.success(GameInfo(gameData))
+        return Result.success(GameInfo(id, gameData))
     }
 
     fun editGameInfo(
@@ -241,7 +241,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
                     }
                 }
                 targetGameObject.put(joinId, gameData)
-                newGames.add(GameInfo(gameData))
+                newGames.add(GameInfo(joinId, gameData))
             }
         }
 
