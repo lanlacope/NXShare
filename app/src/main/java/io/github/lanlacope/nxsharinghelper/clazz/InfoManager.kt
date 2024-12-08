@@ -46,8 +46,8 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     ) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
-        val type = fileReader.getShareType(packageName) ?: AppJsonPropaty.TYPE_NONE
-        val types = fileReader.getTypeNames().toImmutableList()
+        val type = fileReader.getShareMyset(packageName) ?: AppJsonPropaty.MYSET_NONE
+        val types = fileReader.getMysetNames().toImmutableList()
     }
 
 
@@ -56,12 +56,12 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     ) {
         val title: String = jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
         val haedText: String = try {
-            jsonObject.getString(MySetJsonPropaty.HEAD_TEXT)
+            jsonObject.getString(MySetJsonPropaty.PREFIX_TEXT)
         } catch (e: JSONException) {
             ""
         }
         val tailText: String = try {
-            jsonObject.getString(MySetJsonPropaty.TAIL_TEXT)
+            jsonObject.getString(MySetJsonPropaty.SUFFIX_TEXT)
         } catch (e: JSONException) {
             ""
         }
@@ -69,16 +69,16 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
 
     data class GameInfo(
-        private val jsonObject: JSONObject,
+        val id: String,
+        private val gameData: JSONObject,
     ) {
-        val id: String = jsonObject.getString(MySetJsonPropaty.GAME_ID)
         val title: String = try {
-            jsonObject.getString(MySetJsonPropaty.GAME_TITLE)
+            gameData.getString(MySetJsonPropaty.GAME_TITLE)
         } catch (e: JSONException) {
             ""
         }
         val text: String = try {
-            jsonObject.getString(MySetJsonPropaty.GAME_TEXT)
+            gameData.getString(MySetJsonPropaty.GAME_TEXT)
         } catch (e: JSONException) {
             ""
         }
@@ -135,10 +135,10 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     }
 
     fun getGameInfo(file: File): List<GameInfo> {
-        val jsonObject = JSONObject(file.readText())
-        val jsonArray = jsonObject.getJSONArray(MySetJsonPropaty.GAME_DATA)
-        val info = jsonArray.map { gameData: JSONObject ->
-            GameInfo(gameData)
+        val mysetObject = JSONObject(file.readText())
+        val gameObject = mysetObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+        val info = gameObject.map { id, gameData: JSONObject ->
+            GameInfo(id, gameData)
         }
         return info
     }

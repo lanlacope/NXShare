@@ -200,7 +200,7 @@ private fun PackageSetting(packageName: String) {
             )
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "DrawDown",
+                contentDescription = Icons.Default.KeyboardArrowDown.name,
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
@@ -215,7 +215,7 @@ private fun PackageSetting(packageName: String) {
             val types = remember {
                 shareInfo.types.associateWith { type ->
                     println(type)
-                    if (type == AppJsonPropaty.TYPE_NONE) context.getString(R.string.summart_type_nothing)
+                    if (type == AppJsonPropaty.MYSET_NONE) context.getString(R.string.summart_type_nothing)
                     else type
                 }
             }

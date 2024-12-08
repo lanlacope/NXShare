@@ -9,7 +9,6 @@ import io.github.lanlacope.collection.json.forEach
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -31,43 +30,39 @@ class FileReader(context: Context) : FileSelector(context) {
     fun getShareEnabled(packageName: String): Boolean {
         try {
             val file = getAppDataFile()
-            val jsonArray = JSONArray(file.readText())
-            jsonArray.forEach { jsonObject: JSONObject ->
-                if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
-                    return jsonObject.getBoolean(AppJsonPropaty.PAKCAGE_ENABLED)
-                }
-            }
+            val packageObject = JSONObject(file.readText())
+
+            val packageData = packageObject.getJSONObject(packageName)
+
+            return packageData.optBoolean(AppJsonPropaty.PAKCAGE_ENABLED)
         } catch (e: JSONException) {
             return false
         }
-        return false
     }
 
-    fun getShareType(packageName: String): String? {
+    fun getShareMyset(packageName: String): String {
         try {
             val file = getAppDataFile()
-            val jsonArray = JSONArray(file.readText())
-            jsonArray.forEach { jsonObject: JSONObject ->
-                if (jsonObject.getString(AppJsonPropaty.PACKAGE_NAME) == packageName) {
-                    return jsonObject.getString(AppJsonPropaty.PACKAGE_TYPE)
-                }
-            }
+            val packageObject = JSONObject(file.readText())
+
+            val packageData = packageObject.getJSONObject(packageName)
+
+            return packageData.optString(AppJsonPropaty.PACKAGE_TYPE, "")
         } catch (e: JSONException) {
-            return null
+            return ""
         }
-        return null
     }
 
     // ファイルの表示用名 + 非選択用名
-    fun getTypeNames(): List<String> {
-        val defaultType = listOf(AppJsonPropaty.TYPE_NONE)
+    fun getMysetNames(): List<String> {
+        val defaultType = listOf(AppJsonPropaty.MYSET_NONE)
         try {
             val files = getMySetFiles()
-            val types = files.map { file ->
+            val mysets = files.map { file ->
                 val jsonObject = JSONObject(file.readText())
                 jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
             }
-            return defaultType + types
+            return defaultType + mysets
         } catch (e: JSONException) {
             return defaultType
         }
@@ -76,24 +71,24 @@ class FileReader(context: Context) : FileSelector(context) {
     fun createCopyText(fileNames: List<String>, packageName: String): String? {
         try {
             val ids = getGameId(fileNames)
-            val typeName = getShareType(packageName)
-            val file = getMySetFileByTitle(typeName!!).getOrNull()
+            val mysetName = getShareMyset(packageName)
+            val file = getMySetFileByTitle(mysetName).getOrNull()
 
-            val rawJson = JSONObject(file!!.readText())
+            val mysetObject = JSONObject(file!!.readText())
 
-            val resultText = StringBuilder().apply {
+            val resultText = buildString {
                 try {
-                    val text = rawJson.getString(MySetJsonPropaty.HEAD_TEXT)
+                    val text = mysetObject.getString(MySetJsonPropaty.PREFIX_TEXT)
                     append(text)
                 } catch (e: JSONException) {
                     // do nothing
                 }
                 try {
-                    val arrayData = rawJson.getJSONArray(MySetJsonPropaty.GAME_DATA)
-                    arrayData.forEach { jsonObject: JSONObject ->
+                    val gameObject = mysetObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+                    gameObject.forEach { id: String, gameData: JSONObject ->
                         try {
-                            if (jsonObject.getString(MySetJsonPropaty.GAME_ID) in ids) {
-                                val text = jsonObject.getString(MySetJsonPropaty.GAME_TEXT)
+                            if (id in ids) {
+                                val text = gameData.getString(MySetJsonPropaty.GAME_TEXT)
                                 append(text)
                             }
                         } catch (e: JSONException) {
@@ -104,13 +99,13 @@ class FileReader(context: Context) : FileSelector(context) {
                     // do nothing
                 }
                 try {
-                    val text = rawJson.getString(MySetJsonPropaty.TAIL_TEXT)
+                    val text = mysetObject.getString(MySetJsonPropaty.SUFFIX_TEXT)
                     append(text)
                 } catch (e: JSONException) {
                     // do nothing
                 }
             }
-            return resultText.toString()
+            return resultText
         } catch (e: Exception) {
             return null
         }

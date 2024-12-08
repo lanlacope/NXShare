@@ -87,7 +87,6 @@ class ConnectionManager(_context: Context) {
         password: String,
         onConnect: OnConnection,
     ) {
-
         if (SettingManager(context).getAlternativeConnectionEnabled()) {
             val wifiNetworkSuggestion = WifiNetworkSuggestion.Builder()
                 .setSsid(ssid)
