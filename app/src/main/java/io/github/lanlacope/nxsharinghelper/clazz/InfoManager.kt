@@ -46,7 +46,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     ) {
         private val fileReader = FileReader(context)
         val shareEnabled = fileReader.getShareEnabled(packageName)
-        val type = fileReader.getShareMyset(packageName) ?: AppJsonPropaty.MYSET_NONE
+        val type = fileReader.getShareMyset(packageName)
         val types = fileReader.getMysetNames().toImmutableList()
     }
 
