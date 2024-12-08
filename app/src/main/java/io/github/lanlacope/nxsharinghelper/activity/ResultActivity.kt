@@ -36,7 +36,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import io.github.lanlacope.compose.effect.rememberPermissionGrantResult
 import io.github.lanlacope.compose.ui.animation.SlideInAnimated
-import io.github.lanlacope.compose.ui.button.FloatingActionButton
+import io.github.lanlacope.compose.ui.button.CombinedFloatingActionButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiEnableResult
@@ -166,7 +166,7 @@ private fun Navigation() {
                     bottom.linkTo(saveButtonRef.top)
                 }
         ) {
-            FloatingActionButton(
+            CombinedFloatingActionButton(
                 onClick = {
                     val contentSharer = ContentSharer(context)
                     val intent =
@@ -212,7 +212,7 @@ private fun Navigation() {
                 scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }
             }
 
-            FloatingActionButton(
+            CombinedFloatingActionButton(
                 onClick = {
                     storagePermissionResult.launch()
                     scope.launch { ContentSaver(context).save(contentsData.getData().copy()) }

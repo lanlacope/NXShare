@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
+import io.github.lanlacope.compose.ui.text.input.InputTextField
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.DialogTextField
 
 @Composable
 fun GameAddDialog(
@@ -36,11 +36,11 @@ fun GameAddDialog(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
-            DialogTextField(
+            InputTextField(
                 text = id,
                 onTextChange = { id = it },
-                hint = stringResource(id = R.string.hint_game_id),
-                eroorText = stringResource(id = R.string.dialog_warning_exists),
+                hintText = stringResource(id = R.string.hint_game_id),
+                errorText = stringResource(id = R.string.dialog_warning_exists),
                 singleLine = true,
                 useLabel = true,
                 isError = isError,
@@ -49,24 +49,22 @@ fun GameAddDialog(
                     .padding(all = 8.dp)
             )
 
-            DialogTextField(
+            InputTextField(
                 text = title,
                 onTextChange = { title = it },
-                hint = stringResource(id = R.string.hint_game_title),
+                hintText = stringResource(id = R.string.hint_game_title),
                 singleLine = true,
                 useLabel = true,
-                isError = isError,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(all = 8.dp)
             )
 
-            DialogTextField(
+            InputTextField(
                 text = text,
                 onTextChange = { text = it },
-                hint = stringResource(id = R.string.hint_game_text),
+                hintText = stringResource(id = R.string.hint_game_text),
                 useLabel = true,
-                isError = isError,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(weight = 1f, fill = false)

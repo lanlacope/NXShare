@@ -19,8 +19,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
+import io.github.lanlacope.compose.ui.text.input.InputTextField
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.DialogTextField
 
 @Composable
 fun GameEditDialog(
@@ -63,10 +63,10 @@ fun GameEditDialog(
                 )
             }
 
-            DialogTextField(
+            InputTextField(
                 text = title,
                 onTextChange = { dTitle = it },
-                hint = stringResource(id = R.string.hint_game_title),
+                hintText = stringResource(id = R.string.hint_game_title),
                 singleLine = true,
                 useLabel = true,
                 modifier = Modifier
@@ -74,10 +74,10 @@ fun GameEditDialog(
                     .padding(all = 8.dp)
             )
 
-            DialogTextField(
+            InputTextField(
                 text = dText,
                 onTextChange = { dText = it },
-                hint = stringResource(id = R.string.hint_game_text),
+                hintText = stringResource(id = R.string.hint_game_text),
                 useLabel = true,
                 modifier = Modifier
                     .fillMaxWidth()

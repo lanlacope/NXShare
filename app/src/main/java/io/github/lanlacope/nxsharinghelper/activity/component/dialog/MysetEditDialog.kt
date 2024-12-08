@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
+import io.github.lanlacope.compose.ui.text.input.InputTextField
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.DialogTextField
 
 @Composable
 fun MySetEditDialog(
@@ -39,11 +39,11 @@ fun MySetEditDialog(
     ) {
         Column(modifier = Modifier.wrapContentHeight()) {
 
-            DialogTextField(
+            InputTextField(
                 text = title,
                 onTextChange = { dTitle = it },
-                hint = stringResource(id = R.string.hint_myset_title),
-                eroorText = stringResource(id = R.string.dialog_warning_exists),
+                hintText = stringResource(id = R.string.hint_myset_title),
+                errorText = stringResource(id = R.string.dialog_warning_exists),
                 singleLine = true,
                 useLabel = true,
                 modifier = Modifier
@@ -51,10 +51,10 @@ fun MySetEditDialog(
                     .padding(all = 8.dp)
             )
 
-            DialogTextField(
+            InputTextField(
                 text = dHeadText,
                 onTextChange = { dHeadText = it },
-                hint = stringResource(id = R.string.hint_myset_head),
+                hintText = stringResource(id = R.string.hint_myset_head),
                 useLabel = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,10 +62,10 @@ fun MySetEditDialog(
                     .padding(all = 8.dp)
             )
 
-            DialogTextField(
+            InputTextField(
                 text = dTailText,
                 onTextChange = { dTailText = it },
-                hint = stringResource(id = R.string.hint_myset_tail),
+                hintText = stringResource(id = R.string.hint_myset_tail),
                 useLabel = true,
                 modifier = Modifier
                     .fillMaxWidth()

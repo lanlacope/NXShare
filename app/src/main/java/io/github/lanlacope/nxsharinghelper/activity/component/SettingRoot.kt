@@ -12,8 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import io.github.lanlacope.collection.collection.toMutableStateMap
 import io.github.lanlacope.compose.ui.action.setting.SettingSwitchToggle
-import io.github.lanlacope.compose.ui.action.setting.SettingTextArea
+import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.ThemeSelectDialog
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
@@ -46,7 +47,7 @@ fun SettingRoot(navController: NavHostController) {
             }.toMutableStateMap()
         }
 
-        SettingTextArea(
+        SettingTextButton(
             text = stringResource(id = R.string.summary_theme),
             value = themes[selectedTheme]!!,
             onClick = { themeSelectDialogShown = true },
@@ -78,14 +79,14 @@ fun SettingRoot(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        SettingTextArea(
+        SettingTextButton(
             text = stringResource(id = R.string.setting_app),
             value = "",
             onClick = { navController.navigate("package") },
             modifier = Modifier.fillMaxWidth()
         )
 
-        SettingTextArea(
+        SettingTextButton(
             text = stringResource(id = R.string.setting_myset),
             value = "",
             onClick = { navController.navigate("myset") },

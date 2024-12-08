@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
+import io.github.lanlacope.compose.ui.text.input.InputTextField
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.DialogTextField
 
 @Composable
 fun MysetAddDialog(
@@ -35,11 +35,11 @@ fun MysetAddDialog(
     ) {
         Column(modifier = Modifier.wrapContentHeight()) {
 
-            DialogTextField(
+            InputTextField(
                 text = title,
                 onTextChange = { title = it },
-                hint = stringResource(id = R.string.hint_myset_title),
-                eroorText = stringResource(id = R.string.dialog_warning_exists),
+                hintText = stringResource(id = R.string.hint_myset_title),
+                errorText = stringResource(id = R.string.dialog_warning_exists),
                 singleLine = true,
                 useLabel = true,
                 isError = isError,

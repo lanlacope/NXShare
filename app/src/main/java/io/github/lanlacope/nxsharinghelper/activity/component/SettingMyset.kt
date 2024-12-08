@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,12 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated
-import io.github.lanlacope.compose.ui.button.Button
 import io.github.lanlacope.compose.ui.button.ColumnButton
-import io.github.lanlacope.compose.ui.button.FloatingActionButton
+import io.github.lanlacope.compose.ui.button.CombinedButton
+import io.github.lanlacope.compose.ui.button.CombinedFloatingActionButton
 import io.github.lanlacope.compose.ui.lazy.animatedItems
 import io.github.lanlacope.compose.ui.lazy.pager.LazyHorizontalPager
-import io.github.lanlacope.compose.ui.lazy.pager.animateditems
+import io.github.lanlacope.compose.ui.lazy.pager.animatedPages
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.GameAddDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.GameEditDialog
@@ -74,7 +75,7 @@ fun SettingMyset() {
 
         val files = remember { fileSelector.getMySetFiles().toMutableStateList() }
 
-        Button(
+        CombinedButton(
             onClick = { mysetAddDialogShown = true },
             onLongClick = { mysetImportDialogShown = true },
             modifier = Modifier
@@ -132,7 +133,7 @@ fun SettingMyset() {
             state = listState,
             modifier = Modifier.fillMaxSize()
         ) {
-            animateditems(
+            animatedPages(
                 items = files,
                 key = { it.name }
             ) { file ->
@@ -278,7 +279,7 @@ private fun GameList(
     val fileEditor = rememberFileEditor()
 
     val games = remember { infoManager.getGameInfo(file).toMutableStateList() }
-    var inportEffectKey by remember { mutableStateOf(0) }
+    var inportEffectKey by remember { mutableIntStateOf(0) }
     LaunchedEffect(inportEffectKey) {
         games.clear()
         games.addAll(infoManager.getGameInfo(file))
@@ -307,7 +308,7 @@ private fun GameList(
         var gameAddDialogShown by rememberSaveable { mutableStateOf(false) }
         var gameImportDialogShown by rememberSaveable { mutableStateOf(false) }
 
-        FloatingActionButton(
+        CombinedFloatingActionButton(
             containerColor = MaterialTheme.colorScheme.secondary,
             onClick = { gameAddDialogShown = true },
             onLongClick = { gameImportDialogShown = true },

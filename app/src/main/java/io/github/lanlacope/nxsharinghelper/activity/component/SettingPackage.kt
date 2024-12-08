@@ -36,7 +36,7 @@ import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.action.setting.SettingSwitchToggle
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated
 import io.github.lanlacope.compose.ui.busy.option.BusyOption
-import io.github.lanlacope.compose.ui.busy.option.radioButton
+import io.github.lanlacope.compose.ui.busy.option.radioButtons
 import io.github.lanlacope.compose.ui.button.RowButton
 import io.github.lanlacope.compose.ui.lazy.animatedItems
 import io.github.lanlacope.nxsharinghelper.R
@@ -213,10 +213,10 @@ private fun PackageSetting(packageName: String) {
 
             var selectedType by remember { mutableStateOf(shareInfo.type) }
             val types = remember {
-                shareInfo.types.associateWith {
-                    if (it == AppJsonPropaty.TYPE_NONE) {
-                        context.getString(R.string.summart_type_nothing)
-                    } else it
+                shareInfo.types.associateWith { type ->
+                    println(type)
+                    if (type == AppJsonPropaty.TYPE_NONE) context.getString(R.string.summart_type_nothing)
+                    else type
                 }
             }
 
@@ -225,7 +225,7 @@ private fun PackageSetting(packageName: String) {
                 contentPadding = PaddingValues(start = ComponentValue.DISPLAY_PADDING_START),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                radioButton(
+                radioButtons(
                     options = types,
                     selected = { selectedType == it },
                     onClick = {
