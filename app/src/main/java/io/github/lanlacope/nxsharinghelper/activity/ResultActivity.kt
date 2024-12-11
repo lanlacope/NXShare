@@ -119,7 +119,7 @@ private fun Navigation() {
         }
         TextButton(
             onClick = {
-                val intent = Intent(context, EditActivity::class.java)
+                val intent = Intent(context, SettingActivity::class.java)
                 context.startActivity(intent)
             },
             modifier = Modifier

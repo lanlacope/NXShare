@@ -62,7 +62,7 @@
             android:theme="@style/Theme.NXSharingHelper"
             android:noHistory="true" />
         <activity
-            android:name=".activity.EditActivity"
+            android:name=".activity.SettingActivity"
             android:exported="false"
             android:theme="@style/Theme.NXSharingHelper" />
 
