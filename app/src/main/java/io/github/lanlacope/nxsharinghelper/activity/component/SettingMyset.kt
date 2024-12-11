@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,14 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated
 import io.github.lanlacope.compose.ui.button.ColumnButton
-import io.github.lanlacope.compose.ui.button.CombinedButton
 import io.github.lanlacope.compose.ui.button.CombinedFloatingActionButton
 import io.github.lanlacope.compose.ui.lazy.animatedItems
 import io.github.lanlacope.compose.ui.lazy.pager.LazyHorizontalPager
@@ -69,8 +65,6 @@ import java.io.File
 fun SettingMyset() {
 
     Column(modifier = Modifier.fillMaxSize()) {
-
-        val BUTTON_PADDING = 20.dp
 
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
