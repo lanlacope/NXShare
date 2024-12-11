@@ -1,22 +1,27 @@
 package io.github.lanlacope.nxsharinghelper.activity.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +50,10 @@ import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /*
  * 共有可能なアプリの一覧を表示
@@ -56,29 +64,49 @@ import kotlinx.collections.immutable.toImmutableList
 fun SettingPackage() {
 
     val infoManager = rememberInfoManager()
-    val apps = infoManager.getAppInfo().toImmutableList()
+    var apps by remember { mutableStateOf<ImmutableList<AppInfo>?>(null) }
 
-    LazyColumn(
-        state = rememberLazyListState(),
-        modifier = Modifier.fillMaxSize()
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            apps = infoManager.getAppInfo().toImmutableList()
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        animatedItems(items = apps) { app ->
 
-            var isExpanded by remember { mutableStateOf(false) }
-            Column {
-                BoxButton(
-                    onClick = { isExpanded = !isExpanded },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-
+        AnimatedContent(targetState = (apps != null), label = "package") { loaded ->
+            if (loaded) {
+                LazyColumn(
+                    state = rememberLazyListState(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    PackageCard(app = app)
+                    animatedItems(items = apps!!) { app ->
+
+                        var isExpanded by remember { mutableStateOf(false) }
+                        Column {
+                            BoxButton(
+                                onClick = { isExpanded = !isExpanded },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+
+                            ) {
+                                PackageCard(app = app)
+                            }
+                            DrawUpAnimated(visible = isExpanded) {
+                                PackageSetting(
+                                    packageName = app.packageName
+                                )
+                            }
+                        }
+                    }
                 }
-                DrawUpAnimated(visible = isExpanded) {
-                    PackageSetting(
-                        packageName = app.packageName
-                    )
+            } else {
+                Box(modifier = Modifier.size(64.dp)) {
+                    CircularProgressIndicator(modifier = Modifier.fillMaxSize())
                 }
             }
         }
