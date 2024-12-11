@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
-import io.github.lanlacope.compose.ui.text.input.InputTextField
+import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
 
 @Composable
@@ -36,7 +36,7 @@ fun GameAddDialog(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = id,
                 onTextChange = { id = it },
                 hintText = stringResource(id = R.string.hint_game_id),
@@ -49,7 +49,7 @@ fun GameAddDialog(
                     .padding(all = 8.dp)
             )
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = title,
                 onTextChange = { title = it },
                 hintText = stringResource(id = R.string.hint_game_title),
@@ -60,7 +60,7 @@ fun GameAddDialog(
                     .padding(all = 8.dp)
             )
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = text,
                 onTextChange = { text = it },
                 hintText = stringResource(id = R.string.hint_game_text),

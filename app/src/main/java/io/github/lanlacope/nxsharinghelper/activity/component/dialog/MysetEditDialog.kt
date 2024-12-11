@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
-import io.github.lanlacope.compose.ui.text.input.InputTextField
+import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
 
 @Composable
@@ -39,7 +39,7 @@ fun MySetEditDialog(
     ) {
         Column(modifier = Modifier.wrapContentHeight()) {
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = title,
                 onTextChange = { dTitle = it },
                 hintText = stringResource(id = R.string.hint_myset_title),
@@ -51,7 +51,7 @@ fun MySetEditDialog(
                     .padding(all = 8.dp)
             )
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = dHeadText,
                 onTextChange = { dHeadText = it },
                 hintText = stringResource(id = R.string.hint_myset_head),
@@ -62,7 +62,7 @@ fun MySetEditDialog(
                     .padding(all = 8.dp)
             )
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = dTailText,
                 onTextChange = { dTailText = it },
                 hintText = stringResource(id = R.string.hint_myset_tail),

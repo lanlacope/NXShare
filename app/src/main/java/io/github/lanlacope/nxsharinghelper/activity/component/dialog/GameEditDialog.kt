@@ -19,7 +19,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
-import io.github.lanlacope.compose.ui.text.input.InputTextField
+import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
 
 @Composable
@@ -63,7 +63,7 @@ fun GameEditDialog(
                 )
             }
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = title,
                 onTextChange = { dTitle = it },
                 hintText = stringResource(id = R.string.hint_game_title),
@@ -74,7 +74,7 @@ fun GameEditDialog(
                     .padding(all = 8.dp)
             )
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = dText,
                 onTextChange = { dText = it },
                 hintText = stringResource(id = R.string.hint_game_text),

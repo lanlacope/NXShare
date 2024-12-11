@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
-import io.github.lanlacope.compose.ui.text.input.InputTextField
+import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberImportJsonResult
 import org.json.JSONObject
@@ -40,7 +40,7 @@ fun MySetImportDialog(
     ) {
         Column(modifier = Modifier.wrapContentHeight()) {
 
-            InputTextField(
+            OutlinedInputTextField(
                 text = title,
                 onTextChange = { title = it },
                 hintText = stringResource(id = R.string.hint_myset_title),
