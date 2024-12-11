@@ -8,7 +8,6 @@ import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.collection.json.forEach
 import io.github.lanlacope.collection.json.keyList
 import io.github.lanlacope.nxsharinghelper.R
-import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
@@ -50,7 +49,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             put(MySetJsonPropaty.MYSET_TITLE, mTitle)
             put(MySetJsonPropaty.PREFIX_TEXT, "")
             put(MySetJsonPropaty.SUFFIX_TEXT, "")
-            put(MySetJsonPropaty.GAME_DATA, JSONArray())
+            put(MySetJsonPropaty.GAME_DATA, JSONObject())
         }
         file.writeText(jsonObject.toString())
         return Result.success(file)
@@ -93,16 +92,17 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         tailText: String,
     ) {
         val file = getMySetFile(fileName)
-        val jsonObject = JSONObject(file.readText())
+        val mysetObject = JSONObject(file.readText())
         val lastTitle = try {
-            jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
+            mysetObject.getString(MySetJsonPropaty.MYSET_TITLE)
         } catch (e: Exception) {
             title
         }
-        jsonObject.put(MySetJsonPropaty.MYSET_TITLE, title)
-        jsonObject.put(MySetJsonPropaty.PREFIX_TEXT, headText)
-        jsonObject.put(MySetJsonPropaty.SUFFIX_TEXT, tailText)
-        file.writeText(jsonObject.toString())
+
+        mysetObject.put(MySetJsonPropaty.MYSET_TITLE, title)
+        mysetObject.put(MySetJsonPropaty.PREFIX_TEXT, headText)
+        mysetObject.put(MySetJsonPropaty.SUFFIX_TEXT, tailText)
+        file.writeText(mysetObject.toString())
 
         if (title != lastTitle) {
             updateShareType(headText, lastTitle)
@@ -117,11 +117,11 @@ class FileEditor(private val context: Context) : FileSelector(context) {
     ): Result<GameInfo> {
 
         val file = getMySetFile(fileName)
-        val jsonObject = JSONObject(file.readText())
+        val mysetObject = JSONObject(file.readText())
 
-        val gameObject = jsonObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
 
-        if (gameObject.optJSONObject(id) == null ) {
+        if (gameObject.optJSONObject(id) != null) {
             return Result.failure(Exception())
         }
 
@@ -135,8 +135,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         }
 
         gameObject.put(id, gameData)
-        jsonObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
-        file.writeText(jsonObject.toString())
+        mysetObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
+        file.writeText(mysetObject.toString())
         return Result.success(GameInfo(id, gameData))
     }
 
@@ -147,20 +147,18 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         text: String,
     ) {
         val file = getMySetFile(fileName)
-        val jsonObject = JSONObject(file.readText())
+        val mysetObject = JSONObject(file.readText())
 
-        val gameObject = jsonObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
 
-        val gameData = gameObject.getJSONObject(id)
-
-        gameData.apply {
+        val gameData = gameObject.getJSONObject(id).apply {
             put(MySetJsonPropaty.GAME_TITLE, title)
             put(MySetJsonPropaty.GAME_TEXT, text)
         }
 
         gameObject.put(id, gameData)
-        jsonObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
-        file.writeText(jsonObject.toString())
+        mysetObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
+        file.writeText(mysetObject.toString())
     }
 
     fun removeGameInfo(
@@ -168,14 +166,14 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         id: String,
     ) {
         val file = getMySetFile(fileName)
-        val jsonObject = JSONObject(file.readText())
+        val mysetObject = JSONObject(file.readText())
 
-        val gameObject = jsonObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+        val gameObject = mysetObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
 
         gameObject.remove(id)
 
-        jsonObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
-        file.writeText(jsonObject.toString())
+        mysetObject.put(MySetJsonPropaty.GAME_DATA, gameObject)
+        file.writeText(mysetObject.toString())
     }
 
     fun importGameInfo(
@@ -188,10 +186,11 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         val file = getMySetFile(targetFileName)
         val targetJsonObject = JSONObject(file.readText())
-        val targetGameObject = targetJsonObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+        val targetGameObject = targetJsonObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
+
         val targetIds = targetGameObject.keyList()
 
-        val joinGameObject = joinJsonObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
+        val joinGameObject = joinJsonObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
 
         joinGameObject.forEach join@{ joinId: String, joinGameData: JSONObject ->
             if (joinId in targetIds) {
@@ -259,17 +258,10 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        val packageData = packageObject.optJSONObject(packageName)
+        val packageData = packageObject.optJSONObject(packageName)?: JSONObject()
 
-        if (packageData != null) {
-            packageData.put(AppJsonPropaty.PAKCAGE_ENABLED, isEnable)
-            packageObject.put(packageName, packageData)
-        } else {
-            val jsonObject = JSONObject().apply {
-                put(AppJsonPropaty.PAKCAGE_ENABLED, isEnable)
-            }
-            packageObject.put(packageName, jsonObject)
-        }
+        packageData.put(AppJsonPropaty.PAKCAGE_ENABLED, isEnable)
+        packageObject.put(packageName, packageData)
 
         file.writeText(packageObject.toString())
     }
@@ -282,17 +274,11 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        val packageData = packageObject.optJSONObject(packageName)
+        val packageData = packageObject.optJSONObject(packageName)?: JSONObject()
 
-        if (packageData != null) {
-            packageData.put(AppJsonPropaty.PACKAGE_TYPE, name)
-            packageObject.put(packageName, packageData)
-        } else {
-            val jsonObject = JSONObject().apply {
-                put(AppJsonPropaty.PACKAGE_TYPE, name)
-            }
-            packageObject.put(packageName, jsonObject)
-        }
+        packageData.put(AppJsonPropaty.PACKAGE_TYPE, name)
+        packageObject.put(packageName, packageData)
+
 
         file.writeText(packageObject.toString())
     }

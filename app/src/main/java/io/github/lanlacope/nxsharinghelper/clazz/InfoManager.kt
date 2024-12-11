@@ -53,17 +53,9 @@ class InfoManager(private val context: Context) : FileSelector(context) {
     data class MysetInfo(
         private val jsonObject: JSONObject,
     ) {
-        val title: String = jsonObject.getString(MySetJsonPropaty.MYSET_TITLE)
-        val haedText: String = try {
-            jsonObject.getString(MySetJsonPropaty.PREFIX_TEXT)
-        } catch (e: JSONException) {
-            ""
-        }
-        val tailText: String = try {
-            jsonObject.getString(MySetJsonPropaty.SUFFIX_TEXT)
-        } catch (e: JSONException) {
-            ""
-        }
+        val title: String = jsonObject.optString(MySetJsonPropaty.MYSET_TITLE, "ERROR")
+        val prefixText: String =  jsonObject.optString(MySetJsonPropaty.PREFIX_TEXT)
+        val suffixText: String = jsonObject.optString(MySetJsonPropaty.SUFFIX_TEXT)
     }
 
 
@@ -71,16 +63,9 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         val id: String,
         private val gameData: JSONObject,
     ) {
-        val title: String = try {
-            gameData.getString(MySetJsonPropaty.GAME_TITLE)
-        } catch (e: JSONException) {
-            ""
-        }
-        val text: String = try {
-            gameData.getString(MySetJsonPropaty.GAME_TEXT)
-        } catch (e: JSONException) {
-            ""
-        }
+        val title: String = gameData.optString(MySetJsonPropaty.GAME_TITLE, "ERROR")
+        val text: String = gameData.optString(MySetJsonPropaty.GAME_TEXT)
+
     }
 
     fun getAppInfo(): List<AppInfo> {
@@ -135,10 +120,14 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
     fun getGameInfo(file: File): List<GameInfo> {
         val mysetObject = JSONObject(file.readText())
-        val gameObject = mysetObject.getJSONObject(MySetJsonPropaty.GAME_DATA)
-        val info = gameObject.map { id, gameData: JSONObject ->
-            GameInfo(id, gameData)
+        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA)
+
+        if (gameObject != null) {
+            return gameObject.map { id, gameData: JSONObject ->
+                GameInfo(id, gameData)
+            }
+        } else {
+            return emptyList()
         }
-        return info
     }
 }
