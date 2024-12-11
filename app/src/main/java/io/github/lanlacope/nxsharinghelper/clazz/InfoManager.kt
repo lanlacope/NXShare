@@ -12,7 +12,6 @@ import io.github.lanlacope.collection.json.map
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
 import kotlinx.collections.immutable.toImmutableList
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
