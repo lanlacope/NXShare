@@ -3,6 +3,8 @@ package io.github.lanlacope.nxsharinghelper.activity.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import io.github.lanlacope.collection.collection.toMutableStateMap
 import io.github.lanlacope.compose.ui.action.setting.SettingSwitchToggle
@@ -25,6 +28,8 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
  * 設定の一覧を
  * その他の基本設定を提供する
  */
+
+private val SETTING_MINHEIGHT = 80.dp
 
 @Composable
 fun SettingRoot(navController: NavHostController) {
@@ -51,7 +56,9 @@ fun SettingRoot(navController: NavHostController) {
             text = stringResource(id = R.string.summary_theme),
             value = themes[selectedTheme]!!,
             onClick = { themeSelectDialogShown = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = SETTING_MINHEIGHT)
         )
 
         ThemeSelectDialog(
@@ -76,21 +83,27 @@ fun SettingRoot(navController: NavHostController) {
                 alternativeConnectionEnabled = !alternativeConnectionEnabled
                 settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = SETTING_MINHEIGHT)
         )
 
         SettingTextButton(
             text = stringResource(id = R.string.setting_app),
             value = "",
             onClick = { navController.navigate("package") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = SETTING_MINHEIGHT)
         )
 
         SettingTextButton(
             text = stringResource(id = R.string.setting_myset),
             value = "",
             onClick = { navController.navigate("myset") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = SETTING_MINHEIGHT)
         )
     }
 }
