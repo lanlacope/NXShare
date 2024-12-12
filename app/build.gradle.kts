@@ -11,8 +11,8 @@ android {
         applicationId = "io.github.lanlacope.nxsharinghelper"
         minSdk = 23
         targetSdk = 35
-        versionCode = 135
-        versionName = "1.3.6"
+        versionCode = 20000
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
