@@ -97,8 +97,8 @@
     <string name="setting_theme_value_light">Light Theme</string>
     <string name="setting_theme_value_dark">Dark Theme</string>
 
-    <string name="setting_alternative_connection_enabled">Setting For Legacy Devices</string>
-    <string name="setting_alternative_connection_enabled_summary">Always display the panel even when Wi-Fi is enabled.</string>
+    <string name="setting_4legacy_enabled">Setting For Legacy Devices</string>
+    <string name="setting_4legacy_enabled_summary">Always display the panel even when Wi-Fi is enabled.</string>
 
 
     <!-- License -->
