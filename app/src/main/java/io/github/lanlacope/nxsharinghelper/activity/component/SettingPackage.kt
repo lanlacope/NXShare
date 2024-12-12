@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +45,7 @@ import io.github.lanlacope.compose.ui.busy.option.BusyOption
 import io.github.lanlacope.compose.ui.busy.option.radioButtons
 import io.github.lanlacope.compose.ui.button.RowButton
 import io.github.lanlacope.compose.ui.lazy.animatedItems
+import io.github.lanlacope.compose.ui.text.search.SearchTextField
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
@@ -79,27 +81,57 @@ fun SettingPackage() {
 
         AnimatedContent(targetState = (apps != null), label = "package") { loaded ->
             if (loaded) {
-                LazyColumn(
-                    state = rememberLazyListState(),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    animatedItems(items = apps!!) { app ->
+                Column(modifier = Modifier.fillMaxSize()) {
 
-                        var isExpanded by remember { mutableStateOf(false) }
-                        Column {
-                            BoxButton(
-                                onClick = { isExpanded = !isExpanded },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
+                    val searchedApps = remember { apps!!.toMutableStateList() }
+                    var searchText by remember { mutableStateOf("") }
 
-                            ) {
-                                PackageCard(app = app)
+                    SearchTextField(
+                        text = searchText,
+                        onTextChange = {
+                            searchText = it
+                            val searchList = apps!!.toMutableList().filter { app ->
+                                if (it.isNotEmpty()) {
+                                    app.packageName.contains(it)
+                                } else {
+                                    true
+                                }
                             }
-                            DrawUpAnimated(visible = isExpanded) {
-                                PackageSetting(
-                                    packageName = app.packageName
-                                )
+                            searchedApps.clear()
+                            searchedApps.addAll(searchList)
+                        },
+                        hintText = stringResource(id = R.string.package_search_hint),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                    )
+
+
+                    LazyColumn(
+                        state = rememberLazyListState(),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        animatedItems(
+                            items = searchedApps,
+                            key = { it.packageName }
+                        ) { app ->
+
+                            var isExpanded by remember { mutableStateOf(false) }
+                            Column {
+                                BoxButton(
+                                    onClick = { isExpanded = !isExpanded },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentHeight()
+
+                                ) {
+                                    PackageCard(app = app)
+                                }
+                                DrawUpAnimated(visible = isExpanded) {
+                                    PackageSetting(
+                                        packageName = app.packageName
+                                    )
+                                }
                             }
                         }
                     }
