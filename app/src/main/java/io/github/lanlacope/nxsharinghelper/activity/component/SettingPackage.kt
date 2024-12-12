@@ -92,7 +92,7 @@ fun SettingPackage() {
                             searchText = it
                             val searchList = apps!!.toMutableList().filter { app ->
                                 if (it.isNotEmpty()) {
-                                    app.packageName.contains(it)
+                                    app.name.contains(it)
                                 } else {
                                     true
                                 }
@@ -129,7 +129,7 @@ fun SettingPackage() {
                                 }
                                 DrawUpAnimated(visible = isExpanded) {
                                     PackageSetting(
-                                        packageName = app.name
+                                        packageName = app.packageName
                                     )
                                 }
                             }
