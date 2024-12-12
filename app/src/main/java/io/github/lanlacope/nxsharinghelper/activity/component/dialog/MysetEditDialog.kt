@@ -54,7 +54,7 @@ fun MySetEditDialog(
             OutlinedInputTextField(
                 text = dHeadText,
                 onTextChange = { dHeadText = it },
-                hintText = stringResource(id = R.string.hint_myset_head),
+                hintText = stringResource(id = R.string.hint_myset_prefix),
                 useLabel = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -65,7 +65,7 @@ fun MySetEditDialog(
             OutlinedInputTextField(
                 text = dTailText,
                 onTextChange = { dTailText = it },
-                hintText = stringResource(id = R.string.hint_myset_tail),
+                hintText = stringResource(id = R.string.hint_myset_suffix),
                 useLabel = true,
                 modifier = Modifier
                     .fillMaxWidth()

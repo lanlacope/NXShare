@@ -55,8 +55,8 @@
 
     <!-- TextField Message -->
     <string name="hint_myset_title">MySet Title</string>
-    <string name="hint_myset_head">Text For Head</string>
-    <string name="hint_myset_tail">Text For Tail</string>
+    <string name="hint_myset_prefix">Text For Prefix</string>
+    <string name="hint_myset_suffix">Text For Suffix</string>
     <string name="hint_game_title">Game Title</string>
     <string name="hint_game_id">Game ID</string>
     <string name="hint_game_text">Text For This</string>
@@ -68,9 +68,11 @@
     <string name="myset_search_manu_title">with Title</string>
     <string name="myset_search_manu_either">with Either</string>
 
-    <string name="myset_search_hint_id">Input any ID</string>
-    <string name="myset_search_hint_title">Input any Title</string>
-    <string name="myset_search_hint_either">Input any Title or ID</string>
+    <string name="myset_search_hint_id">Input ID</string>
+    <string name="myset_search_hint_title">Input Title</string>
+    <string name="myset_search_hint_either">Input Title or ID</string>
+
+    <string name="package_search_hint">Input App Name</string>
 
     <!-- Setting -->
     <string name="setting_cover"
