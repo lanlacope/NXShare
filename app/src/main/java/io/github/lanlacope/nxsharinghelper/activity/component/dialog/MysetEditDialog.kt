@@ -40,7 +40,7 @@ fun MySetEditDialog(
         Column(modifier = Modifier.wrapContentHeight()) {
 
             OutlinedInputTextField(
-                text = title,
+                text = dTitle,
                 onTextChange = { dTitle = it },
                 hintText = stringResource(id = R.string.hint_myset_title),
                 errorText = stringResource(id = R.string.dialog_input_warning_exists),

@@ -64,7 +64,7 @@ fun GameEditDialog(
             }
 
             OutlinedInputTextField(
-                text = title,
+                text = dTitle,
                 onTextChange = { dTitle = it },
                 hintText = stringResource(id = R.string.hint_game_title),
                 singleLine = true,
