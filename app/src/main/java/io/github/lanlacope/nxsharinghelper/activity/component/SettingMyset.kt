@@ -39,12 +39,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated
 import io.github.lanlacope.compose.ui.animation.FadeInAnimated
 import io.github.lanlacope.compose.ui.busy.manu.BusyManu
 import io.github.lanlacope.compose.ui.busy.option.texts
-import io.github.lanlacope.compose.ui.button.ColumnButton
 import io.github.lanlacope.compose.ui.button.combined.CombinedBoxButton
 import io.github.lanlacope.compose.ui.button.combined.CombinedColumnButton
 import io.github.lanlacope.compose.ui.button.combined.CombinedFloatingActionButton
@@ -313,7 +311,7 @@ object GameSerchMode {
 }
 
 @Composable
-private fun GameList(file: File, ) {
+private fun GameList(file: File) {
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -357,6 +355,7 @@ private fun GameList(file: File, ) {
                                     GameSerchMode.EITHER -> {
                                         game.id.contains(it) || game.title.contains(it)
                                     }
+
                                     else -> true
                                 }
                             } else {

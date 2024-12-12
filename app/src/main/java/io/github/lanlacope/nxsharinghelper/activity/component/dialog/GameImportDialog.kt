@@ -45,7 +45,7 @@ fun GameImportDialog(
                 isLoading = false
             }
         },
-        onFailed =  {
+        onFailed = {
             mysetObject = null
             isLoading = false
             isError = false

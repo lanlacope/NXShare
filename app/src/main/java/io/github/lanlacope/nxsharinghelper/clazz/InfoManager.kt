@@ -53,7 +53,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
         private val jsonObject: JSONObject,
     ) {
         val title: String = jsonObject.optString(MySetJsonPropaty.MYSET_TITLE, "ERROR")
-        val prefixText: String =  jsonObject.optString(MySetJsonPropaty.PREFIX_TEXT)
+        val prefixText: String = jsonObject.optString(MySetJsonPropaty.PREFIX_TEXT)
         val suffixText: String = jsonObject.optString(MySetJsonPropaty.SUFFIX_TEXT)
     }
 

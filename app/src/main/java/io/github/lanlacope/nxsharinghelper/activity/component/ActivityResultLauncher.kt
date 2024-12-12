@@ -103,7 +103,7 @@ data class ImportJsonResultLauncher(
 @Composable
 fun rememberImportJsonResult(
     onSuccess: (JSONObject) -> Unit,
-    onFailed: () -> Unit = { }
+    onFailed: () -> Unit = { },
 ): ImportJsonResultLauncher {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(

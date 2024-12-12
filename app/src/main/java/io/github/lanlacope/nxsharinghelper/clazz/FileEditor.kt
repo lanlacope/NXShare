@@ -72,7 +72,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         jsonObject.put(MySetJsonPropaty.MYSET_TITLE, mTitle)
 
-        val isExists = (getMySetFileByTitle(mTitle).isSuccess || mTitle == AppJsonPropaty.MYSET_NONE)
+        val isExists =
+            (getMySetFileByTitle(mTitle).isSuccess || mTitle == AppJsonPropaty.MYSET_NONE)
         if (isExists) {
             return Result.failure(Exception())
         }
@@ -119,7 +120,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         val mysetObject = JSONObject(file.readText())
 
-        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
+        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA) ?: JSONObject()
 
         if (gameObject.optJSONObject(id) != null) {
             return Result.failure(Exception())
@@ -149,7 +150,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         val file = getMySetFile(fileName)
         val mysetObject = JSONObject(file.readText())
 
-        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
+        val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA) ?: JSONObject()
 
         val gameData = gameObject.getJSONObject(id).apply {
             put(MySetJsonPropaty.GAME_TITLE, title)
@@ -186,11 +187,13 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
         val file = getMySetFile(targetFileName)
         val targetJsonObject = JSONObject(file.readText())
-        val targetGameObject = targetJsonObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
+        val targetGameObject =
+            targetJsonObject.optJSONObject(MySetJsonPropaty.GAME_DATA) ?: JSONObject()
 
         val targetIds = targetGameObject.keyList()
 
-        val joinGameObject = joinJsonObject.optJSONObject(MySetJsonPropaty.GAME_DATA)?: JSONObject()
+        val joinGameObject =
+            joinJsonObject.optJSONObject(MySetJsonPropaty.GAME_DATA) ?: JSONObject()
 
         joinGameObject.forEach join@{ joinId: String, joinGameData: JSONObject ->
             if (joinId in targetIds) {
@@ -258,7 +261,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        val packageData = packageObject.optJSONObject(packageName)?: JSONObject()
+        val packageData = packageObject.optJSONObject(packageName) ?: JSONObject()
 
         packageData.put(AppJsonPropaty.PAKCAGE_ENABLED, isEnable)
         packageObject.put(packageName, packageData)
@@ -274,7 +277,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        val packageData = packageObject.optJSONObject(packageName)?: JSONObject()
+        val packageData = packageObject.optJSONObject(packageName) ?: JSONObject()
 
         packageData.put(AppJsonPropaty.PACKAGE_TYPE, name)
         packageObject.put(packageName, packageData)
