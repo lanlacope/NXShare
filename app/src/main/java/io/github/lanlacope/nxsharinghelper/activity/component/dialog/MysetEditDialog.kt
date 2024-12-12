@@ -43,7 +43,7 @@ fun MySetEditDialog(
                 text = title,
                 onTextChange = { dTitle = it },
                 hintText = stringResource(id = R.string.hint_myset_title),
-                errorText = stringResource(id = R.string.dialog_warning_exists),
+                errorText = stringResource(id = R.string.dialog_input_warning_exists),
                 singleLine = true,
                 useLabel = true,
                 modifier = Modifier

@@ -40,7 +40,7 @@ fun GameAddDialog(
                 text = id,
                 onTextChange = { id = it },
                 hintText = stringResource(id = R.string.hint_game_id),
-                errorText = stringResource(id = R.string.dialog_warning_exists),
+                errorText = stringResource(id = R.string.dialog_input_warning_exists),
                 singleLine = true,
                 useLabel = true,
                 isError = isError,

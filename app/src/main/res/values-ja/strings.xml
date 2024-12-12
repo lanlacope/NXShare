@@ -48,8 +48,11 @@
     <string name="confirm_text_myset_remove">このマイセットを削除しますか？</string>
     <string name="confirm_text_game_remove">このゲームIDを削除しますか？</string>
 
-    <string name="dialog_warning_exists">既に存在しています！</string>
+    <string name="dialog_input_warning_exists">既に存在しています！</string>
+    <string name="dialog_inport_warning_unselected">ファイルを選択してください！</string>
+    <string name="dialog_inport_warning_failed">ファイルの読み取りに失敗しました……</string>
 
+    <string name="dialog_button_file">ファイルを選択</string>
     <string name="dialog_checkbox_overwrite">重複するゲームを上書き</string>
 
     <!-- TextField Message -->
