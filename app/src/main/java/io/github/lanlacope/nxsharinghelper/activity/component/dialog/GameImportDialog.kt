@@ -85,7 +85,8 @@ fun GameImportDialog(
             CompactOptionCheckBox(
                 text = stringResource(id = R.string.dialog_checkbox_overwrite),
                 checked = overwrite,
-                onClick = { overwrite = !overwrite }
+                onClick = { overwrite = !overwrite },
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
