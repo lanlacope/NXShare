@@ -1,17 +1,15 @@
 {
   "MySetTitle": "MySetTitle",
-  "HeadText": "If sharing any with this myset, copy here text.",
-  "TailText": "If sharing any with this myset, copy here text.",
-  "GameData": [ // Required
-    {
+  "PrefixText": "If sharing any with this myset, copy here text.",
+  "SuffixText": "If sharing any with this myset, copy here text.",
+  "GameData": {
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx": { // this is gameId
       "GameTitle": "THE GAME",
-      "GameID": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // Required
       "GameText": "If sharing <THE GAME> with this myset, copy here text."
     },
-    {
+    "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy": {
       "GameTitle": "The GAME2",
-      "GameID": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", // Required
       "GameText": "#TheGame2 "
     }
-  ]
+  }
 }
