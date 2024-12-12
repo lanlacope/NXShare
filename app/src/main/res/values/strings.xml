@@ -64,6 +64,14 @@
     <string name="default_myset_title">New MySet%1$d</string>
     <string name="default_game_title">Untitled Game</string>
 
+    <string name="myset_search_manu_id">with ID</string>
+    <string name="myset_search_manu_title">with Title</string>
+    <string name="myset_search_manu_either">with Either</string>
+
+    <string name="myset_search_hint_id">Input any ID</string>
+    <string name="myset_search_hint_title">Input any Title</string>
+    <string name="myset_search_hint_either">Input any Title or ID</string>
+
     <!-- Setting -->
     <string name="setting_cover"
         translatable="false">

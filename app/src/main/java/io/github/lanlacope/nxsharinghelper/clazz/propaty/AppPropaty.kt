@@ -3,6 +3,8 @@ package io.github.lanlacope.nxsharinghelper.clazz.propaty
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
+const val ERROR = "ERROR"
+
 
 object AppPropaty {
 

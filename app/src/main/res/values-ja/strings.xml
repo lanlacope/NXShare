@@ -66,6 +66,14 @@
     <string name="default_myset_title">新しいマイセット%1$d</string>
     <string name="default_game_title">タイトル未設定</string>
 
+    <string name="myset_search_manu_id">ゲームIDで検索</string>
+    <string name="myset_search_manu_title">タイトルで検索</string>
+    <string name="myset_search_manu_either">どちらかで検索</string>
+
+    <string name="myset_search_hint_id">ゲームIDを入力</string>
+    <string name="myset_search_hint_title">タイトルを入力</string>
+    <string name="myset_search_hint_either">タイトル、ゲームIDを入力</string>
+
     <!-- Setting Name -->
     <string name="setting_app">アプリ</string>
     <string name="setting_myset">マイセット</string>

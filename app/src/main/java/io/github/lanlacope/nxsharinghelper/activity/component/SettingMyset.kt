@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,12 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated
+import io.github.lanlacope.compose.ui.animation.FadeInAnimated
+import io.github.lanlacope.compose.ui.busy.manu.BusyManu
+import io.github.lanlacope.compose.ui.busy.option.texts
 import io.github.lanlacope.compose.ui.button.ColumnButton
 import io.github.lanlacope.compose.ui.button.CombinedFloatingActionButton
 import io.github.lanlacope.compose.ui.lazy.animatedItems
 import io.github.lanlacope.compose.ui.lazy.pager.LazyHorizontalPager
 import io.github.lanlacope.compose.ui.lazy.pager.animatedPages
 import io.github.lanlacope.compose.ui.lazy.pager.helper.PagerIndexHelper
+import io.github.lanlacope.compose.ui.text.manu.OutlinedTextFieldManu
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.GameAddDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.GameEditDialog
@@ -55,9 +60,11 @@ import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MySetImport
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MysetAddDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MysetRemoveDialog
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.ERROR
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileSelector
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -193,8 +200,8 @@ private fun MysetListItem(
         ) {
             GameListHeader(
                 title = title,
-                headText = headText,
-                tailText = tailText
+                prefixText = headText,
+                suffixText = tailText
             )
         }
 
@@ -235,8 +242,8 @@ private fun MysetListItem(
 @Composable
 private fun GameListHeader(
     title: String,
-    headText: String,
-    tailText: String,
+    prefixText: String,
+    suffixText: String,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -255,41 +262,52 @@ private fun GameListHeader(
 
         )
 
-        Text(
-            text = headText,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-                .padding(
-                    start = ComponentValue.DISPLAY_PADDING_START,
-                    end = ComponentValue.DISPLAY_PADDING_END
-                )
+        FadeInAnimated(visible = prefixText.isNotEmpty()) {
 
-        )
+            Text(
+                text = prefixText,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .align(Alignment.Start)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        end = ComponentValue.DISPLAY_PADDING_END
+                    )
 
-        Text(
-            text = tailText,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
-                .padding(
-                    start = ComponentValue.DISPLAY_PADDING_START,
-                    end = ComponentValue.DISPLAY_PADDING_END,
-                    bottom = 20.dp
-                )
+            )
+        }
 
-        )
+        FadeInAnimated(visible = suffixText.isNotEmpty()) {
+
+            Text(
+                text = suffixText,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .align(Alignment.Start)
+                    .padding(
+                        start = ComponentValue.DISPLAY_PADDING_START,
+                        end = ComponentValue.DISPLAY_PADDING_END,
+                        bottom = 20.dp
+                    )
+
+            )
+        }
     }
 }
 
+object GameSerchMode {
+    const val ID = "Id"
+    const val TITLE = "Title"
+    const val EITHER = "Either"
+}
+
 @Composable
-private fun GameList(
-    file: File,
-) {
+private fun GameList(file: File, ) {
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val infoManager = rememberInfoManager()
@@ -297,6 +315,7 @@ private fun GameList(
 
     val games = remember { infoManager.getGameInfo(file).toMutableStateList() }
     var inportEffectKey by remember { mutableIntStateOf(0) }
+
     LaunchedEffect(inportEffectKey) {
         games.clear()
         games.addAll(infoManager.getGameInfo(file))
@@ -304,19 +323,85 @@ private fun GameList(
     val listState = rememberLazyListState()
 
     Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
 
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            animatedItems(
-                items = games,
-                key = { it.id }
-            ) { game ->
-                GameListItem(
-                    gameInfo = game,
-                    fileName = file.name
+            var searchText by remember { mutableStateOf("") }
+            var selectedSearchMode by remember { mutableStateOf(GameSerchMode.TITLE) }
+            var searchManuExpand by remember { mutableStateOf(false) }
+
+            val searchModes = remember {
+                mutableStateListOf(
+                    GameSerchMode.ID,
+                    GameSerchMode.TITLE,
+                    GameSerchMode.EITHER
                 )
+            }
+
+            OutlinedTextFieldManu(
+                text = searchText,
+                onTextChange = {
+                    searchText = it
+                    scope.launch(Dispatchers.Default) {
+                        val searchList = infoManager.getGameInfo(file).filter { game ->
+                            if (it.isNotEmpty()) {
+                                when (selectedSearchMode) {
+                                    GameSerchMode.ID -> game.id.contains(it)
+                                    GameSerchMode.TITLE -> game.title.contains(it)
+                                    GameSerchMode.EITHER -> {
+                                        game.id.contains(it) || game.title.contains(it)
+                                    }
+                                    else -> true
+                                }
+                            } else {
+                                true
+                            }
+                        }
+                        games.clear()
+                        games.addAll(searchList)
+                    }
+                },
+                hintText = when (selectedSearchMode) {
+                    GameSerchMode.ID -> context.getString(R.string.myset_search_hint_id)
+                    GameSerchMode.TITLE -> context.getString(R.string.myset_search_hint_title)
+                    GameSerchMode.EITHER -> context.getString(R.string.myset_search_hint_either)
+                    else -> ERROR
+                },
+                onClick = { searchManuExpand = true },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
+                BusyManu(
+                    expanded = searchManuExpand,
+                    onDismissRequest = { searchManuExpand = false }
+                ) {
+                    texts(
+                        options = searchModes.associateWith { mode ->
+                            when (mode) {
+                                GameSerchMode.ID -> context.getString(R.string.myset_search_manu_id)
+                                GameSerchMode.TITLE -> context.getString(R.string.myset_search_manu_title)
+                                GameSerchMode.EITHER -> context.getString(R.string.myset_search_manu_either)
+                                else -> ERROR
+                            }
+                        },
+                        onClick = { selectedSearchMode = it }
+                    )
+                }
+            }
+
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                animatedItems(
+                    items = games,
+                    key = { it.id }
+                ) { game ->
+                    GameListItem(
+                        gameInfo = game,
+                        fileName = file.name
+                    )
+                }
             }
         }
 
@@ -435,19 +520,21 @@ private fun GameListItem(
                     )
             )
 
-            Text(
-                text = text,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.Start)
-                    .padding(
-                        start = ComponentValue.DISPLAY_PADDING_START,
-                        end = ComponentValue.DISPLAY_PADDING_END,
-                        bottom = 10.dp
-                    )
-            )
+            FadeInAnimated(visible = text.isNotEmpty()) {
+                Text(
+                    text = text,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .align(Alignment.Start)
+                        .padding(
+                            start = ComponentValue.DISPLAY_PADDING_START,
+                            end = ComponentValue.DISPLAY_PADDING_END,
+                            bottom = 10.dp
+                        )
+                )
+            }
         }
 
         GameEditDialog(
