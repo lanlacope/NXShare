@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -196,7 +197,11 @@ private fun MysetListItem(
 
         BoxButton(
             onClick = { editMysetDialogShown = true },
-            onLongClick = { removeMysetDialogShown = true }
+            onLongClick = { removeMysetDialogShown = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 80.dp)
+                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
         ) {
             GameListHeader(
                 title = title,
@@ -505,7 +510,9 @@ private fun GameListItem(
         ColumnButton(
             onClick = { gameEditDialogShown = true },
             onLongClick = { gameRemoveDialogShown = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 60.dp)
         ) {
             Text(
                 text = title,
