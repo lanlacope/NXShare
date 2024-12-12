@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
+import io.github.lanlacope.compose.ui.button.combined.CombinedBoxButton
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
 import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
@@ -46,7 +47,7 @@ fun GameEditDialog(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
 
-            BoxButton(
+            CombinedBoxButton(
                 onLongClick = {
                     clipboardManager.setText(AnnotatedString(id))
                 },

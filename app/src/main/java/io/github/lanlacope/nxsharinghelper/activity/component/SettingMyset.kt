@@ -45,7 +45,9 @@ import io.github.lanlacope.compose.ui.animation.FadeInAnimated
 import io.github.lanlacope.compose.ui.busy.manu.BusyManu
 import io.github.lanlacope.compose.ui.busy.option.texts
 import io.github.lanlacope.compose.ui.button.ColumnButton
-import io.github.lanlacope.compose.ui.button.CombinedFloatingActionButton
+import io.github.lanlacope.compose.ui.button.combined.CombinedBoxButton
+import io.github.lanlacope.compose.ui.button.combined.CombinedColumnButton
+import io.github.lanlacope.compose.ui.button.combined.CombinedFloatingActionButton
 import io.github.lanlacope.compose.ui.lazy.animatedItems
 import io.github.lanlacope.compose.ui.lazy.pager.LazyHorizontalPager
 import io.github.lanlacope.compose.ui.lazy.pager.animatedPages
@@ -97,7 +99,7 @@ fun SettingMyset() {
                 centerRange = 2
             )
 
-            BoxButton(
+            CombinedBoxButton(
                 onClick = { mysetAddDialogShown = true },
                 onLongClick = { mysetImportDialogShown = true },
                 modifier = Modifier
@@ -195,7 +197,7 @@ private fun MysetListItem(
         var headText by remember { mutableStateOf(mysetInfo.prefixText) }
         var tailText by remember { mutableStateOf(mysetInfo.suffixText) }
 
-        BoxButton(
+        CombinedBoxButton(
             onClick = { editMysetDialogShown = true },
             onLongClick = { removeMysetDialogShown = true },
             modifier = Modifier
@@ -510,7 +512,7 @@ private fun GameListItem(
         var title by remember { mutableStateOf(gameInfo.title) }
         var text by remember { mutableStateOf(gameInfo.text) }
 
-        ColumnButton(
+        CombinedColumnButton(
             onClick = { gameEditDialogShown = true },
             onLongClick = { gameRemoveDialogShown = true },
             modifier = Modifier

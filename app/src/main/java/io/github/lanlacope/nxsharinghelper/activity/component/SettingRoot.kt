@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import io.github.lanlacope.collection.collection.toMutableStateMap
-import io.github.lanlacope.compose.ui.action.setting.SettingSwitchToggle
+import io.github.lanlacope.compose.ui.action.setting.SettingSwitch
 import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.ThemeSelectDialog
@@ -75,7 +75,7 @@ fun SettingRoot(navController: NavHostController) {
 
         var alternativeConnectionEnabled by remember { mutableStateOf(settingManager.getAlternativeConnectionEnabled()) }
 
-        SettingSwitchToggle(
+        SettingSwitch(
             text = stringResource(id = R.string.setting_4legacy),
             checked = alternativeConnectionEnabled,
             summary = stringResource(id = R.string.setting_4legacy_summary),

@@ -36,7 +36,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import io.github.lanlacope.compose.effect.rememberPermissionGrantResult
 import io.github.lanlacope.compose.ui.animation.SlideInAnimated
-import io.github.lanlacope.compose.ui.button.CombinedFloatingActionButton
+import io.github.lanlacope.compose.ui.button.combined.CombinedFloatingActionButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiEnableResult

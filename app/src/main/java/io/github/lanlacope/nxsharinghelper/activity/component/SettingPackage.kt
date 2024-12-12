@@ -39,7 +39,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.drawable.toBitmap
 import io.github.lanlacope.compose.composeable.ui.click.BoxButton
-import io.github.lanlacope.compose.ui.action.setting.SettingSwitchToggle
+import io.github.lanlacope.compose.ui.action.setting.SettingSwitch
 import io.github.lanlacope.compose.ui.animation.DrawUpAnimated
 import io.github.lanlacope.compose.ui.busy.option.BusyOption
 import io.github.lanlacope.compose.ui.busy.option.radioButtons
@@ -225,7 +225,7 @@ private fun PackageSetting(packageName: String) {
         val shareInfo = ShareInfo(packageName, context)
         var cheacked by remember { mutableStateOf(shareInfo.shareEnabled) }
 
-        SettingSwitchToggle(
+        SettingSwitch(
             text = stringResource(id = R.string.setting_app_option_enabled),
             checked = cheacked,
             onClick = {
