@@ -61,7 +61,7 @@ class SettingManager(context: Context) : FileSelector(context) {
         }
 
         return try {
-            jsonObject.getBoolean(SettingJsonPropaty.ALTERNATIVE_CONNECTION_ENABlED)
+            jsonObject.getBoolean(SettingJsonPropaty.FOR_LEGACY)
         } catch (e: JSONException) {
             false
         }
@@ -75,7 +75,7 @@ class SettingManager(context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        jsonObject.put(SettingJsonPropaty.ALTERNATIVE_CONNECTION_ENABlED, isEnabled)
+        jsonObject.put(SettingJsonPropaty.FOR_LEGACY, isEnabled)
 
         file.writeText(jsonObject.toString())
     }

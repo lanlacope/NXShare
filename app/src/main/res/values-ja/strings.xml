@@ -89,8 +89,8 @@
     <string name="setting_theme_value_light">ライトテーマ</string>
     <string name="setting_theme_value_dark">ダークテーマ</string>
 
-    <string name="setting_4legacy_enabled">古い端末向けの設定</string>
-    <string name="setting_4legacy_enabled_summary">Wi-Fiが有効な場合でも、切り替えパネルを表示します</string>
+    <string name="setting_4legacy">古い端末向けの設定</string>
+    <string name="setting_4legacy_summary">Wi-Fiが有効な場合でも、切り替えパネルを表示します</string>
 
 
 </resources>

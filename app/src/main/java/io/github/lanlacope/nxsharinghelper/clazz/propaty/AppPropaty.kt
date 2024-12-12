@@ -38,7 +38,7 @@ object AppPropaty {
             THEME_LIGHT,
             THEME_DARK
         )
-        const val ALTERNATIVE_CONNECTION_ENABlED: String = "AlternativeConnectionEnabled"
+        const val FOR_LEGACY: String = "ForLegacy"
     }
 
     object AppJsonPropaty {

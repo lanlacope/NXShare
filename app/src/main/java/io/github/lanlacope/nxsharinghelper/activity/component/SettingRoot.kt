@@ -76,9 +76,9 @@ fun SettingRoot(navController: NavHostController) {
         var alternativeConnectionEnabled by remember { mutableStateOf(settingManager.getAlternativeConnectionEnabled()) }
 
         SettingSwitchToggle(
-            text = stringResource(id = R.string.setting_4legacy_enabled),
+            text = stringResource(id = R.string.setting_4legacy),
             checked = alternativeConnectionEnabled,
-            summary = stringResource(id = R.string.setting_4legacy_enabled_summary),
+            summary = stringResource(id = R.string.setting_4legacy_summary),
             onClick = {
                 alternativeConnectionEnabled = !alternativeConnectionEnabled
                 settingManager.changeAlternativeConnectionEnabled(alternativeConnectionEnabled)
