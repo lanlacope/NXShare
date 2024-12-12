@@ -129,7 +129,7 @@ fun SettingPackage() {
                                 }
                                 DrawUpAnimated(visible = isExpanded) {
                                     PackageSetting(
-                                        packageName = app.packageName
+                                        packageName = app.name
                                     )
                                 }
                             }

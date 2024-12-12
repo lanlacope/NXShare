@@ -389,7 +389,10 @@ private fun GameList(file: File, ) {
                                 else -> ERROR
                             }
                         },
-                        onClick = { selectedSearchMode = it }
+                        onClick = {
+                            selectedSearchMode = it
+                            searchManuExpand = false
+                        }
                     )
                 }
             }
