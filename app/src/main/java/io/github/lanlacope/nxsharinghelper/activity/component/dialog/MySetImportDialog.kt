@@ -14,10 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.github.lanlacope.compose.ui.button.layout.FileButton
 import io.github.lanlacope.compose.ui.dialog.GrowDialog
 import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.activity.component.other.FileSelectButton
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberImportJsonResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,7 +71,7 @@ fun MySetImportDialog(
     ) {
         Column(modifier = Modifier.wrapContentHeight()) {
 
-            FileSelectButton(
+            FileButton(
                 text = stringResource(id = R.string.dialog_button_file),
                 onClick = {
                     isLoading = true
