@@ -102,14 +102,17 @@ data class ImportJsonResultLauncher(
 
 @Composable
 fun rememberImportJsonResult(
-    onSelect: (JSONObject) -> Unit,
+    onSuccess: (JSONObject) -> Unit,
+    onFailed: () -> Unit = { }
 ): ImportJsonResultLauncher {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ImportJsonContract(context)
     ) { result ->
         if (result.isSuccess) {
-            onSelect(result.getOrNull()!!)
+            onSuccess(result.getOrNull()!!)
+        } else {
+            onFailed()
         }
     }
     return remember {
