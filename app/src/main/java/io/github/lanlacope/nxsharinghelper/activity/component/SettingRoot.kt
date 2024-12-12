@@ -44,15 +44,15 @@ fun SettingRoot(navController: NavHostController) {
         val themes = remember {
             SettingJsonPropaty.APP_THEME_LIST.associateWith { theme ->
                 when (theme) {
-                    SettingJsonPropaty.THEME_LIGHT -> context.getString(R.string.summary_theme_light)
-                    SettingJsonPropaty.THEME_DARK -> context.getString(R.string.summary_theme_dark)
-                    else -> context.getString(R.string.summary_theme_system)
+                    SettingJsonPropaty.THEME_LIGHT -> context.getString(R.string.setting_theme_value_light)
+                    SettingJsonPropaty.THEME_DARK -> context.getString(R.string.setting_theme_value_dark)
+                    else -> context.getString(R.string.setting_theme_value_system)
                 }
             }.toMutableStateMap()
         }
 
         SettingTextButton(
-            text = stringResource(id = R.string.summary_theme),
+            text = stringResource(id = R.string.setting_theme),
             value = themes[selectedTheme]!!,
             onClick = { themeSelectDialogShown = true },
             modifier = Modifier
@@ -76,7 +76,7 @@ fun SettingRoot(navController: NavHostController) {
         var alternativeConnectionEnabled by remember { mutableStateOf(settingManager.getAlternativeConnectionEnabled()) }
 
         SettingSwitchToggle(
-            text = stringResource(id = R.string.summary_alternative_connection_enabled),
+            text = stringResource(id = R.string.setting_alternative_connection_enabled),
             checked = alternativeConnectionEnabled,
             onClick = {
                 alternativeConnectionEnabled = !alternativeConnectionEnabled

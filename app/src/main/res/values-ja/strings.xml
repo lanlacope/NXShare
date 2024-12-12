@@ -78,14 +78,19 @@
 
     <!-- Setting Name -->
     <string name="setting_app">アプリ</string>
+    <string name="setting_app_option_enabled">このアプリを使う</string>
+    <string name="setting_app_option_app_type">マイセット</string>
+    <string name="setting_app_option_value_nothing">何も使わない</string>
+
     <string name="setting_myset">マイセット</string>
 
-    <string name="summary_theme">アプリテーマ</string>
-    <string name="summary_theme_system">システムのテーマに従う</string>
-    <string name="summary_theme_light">ライトテーマ</string>
-    <string name="summary_theme_dark">ダークテーマ</string>
-    <string name="summary_alternative_connection_enabled">古い端末向けの設定</string>
-    <string name="summary_app_enabled">このアプリを使う</string>
-    <string name="summary_app_type">マイセット</string>
-    <string name="summart_type_nothing">何も使わない</string>
+    <string name="setting_theme">アプリテーマ</string>
+    <string name="setting_theme_value_system">システムのテーマに従う</string>
+    <string name="setting_theme_value_light">ライトテーマ</string>
+    <string name="setting_theme_value_dark">ダークテーマ</string>
+
+    <string name="setting_alternative_connection_enabled">古い端末向けの設定</string>
+    <string name="setting_alternative_connection_enabled_summary">Wi-Fiが有効な場合でも、切り替えパネルを表示します</string>
+
+
 </resources>

@@ -82,20 +82,24 @@
 
     <!-- Setting Name -->
     <string name="setting_app">Apps</string>
-    <string name="setting_myset">MySets</string>
+    <string name="setting_app_option_enabled">Use This App</string>
+    <string name="setting_app_option_app_type">MySet</string>
+    <string name="setting_app_option_value_nothing">Use Nothing</string>
 
-    <string name="summary_theme">App Theme</string>
-    <string name="summary_theme_system">Follow the System\'s Theme</string>
-    <string name="summary_theme_light">Light Theme</string>
-    <string name="summary_theme_dark">Dark Theme</string>
-    <string name="summary_alternative_connection_enabled">Setting For Legacy Devices</string>
-    <string name="summary_app_enabled">Use This App</string>
-    <string name="summary_app_type">MySet</string>
-    <string name="summart_type_nothing">Use Nothing</string>
-    <string name="summary_myset_removed"
+    <string name="setting_myset">MySets</string>
+    <string name="myset_removed"
         translatable="false">
         Removed
     </string>
+
+    <string name="setting_theme">App Theme</string>
+    <string name="setting_theme_value_system">Follow the System\'s Theme</string>
+    <string name="setting_theme_value_light">Light Theme</string>
+    <string name="setting_theme_value_dark">Dark Theme</string>
+
+    <string name="setting_alternative_connection_enabled">Setting For Legacy Devices</string>
+    <string name="setting_alternative_connection_enabled_summary">Always display the panel even when Wi-Fi is enabled.</string>
+
 
     <!-- License -->
     <string name="license_cover"

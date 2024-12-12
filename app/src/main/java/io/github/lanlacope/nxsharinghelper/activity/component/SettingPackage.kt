@@ -226,7 +226,7 @@ private fun PackageSetting(packageName: String) {
         var cheacked by remember { mutableStateOf(shareInfo.shareEnabled) }
 
         SettingSwitchToggle(
-            text = stringResource(id = R.string.summary_app_enabled),
+            text = stringResource(id = R.string.setting_app_option_enabled),
             checked = cheacked,
             onClick = {
                 cheacked = !cheacked
@@ -246,7 +246,7 @@ private fun PackageSetting(packageName: String) {
 
         ) {
             Text(
-                text = stringResource(id = R.string.summary_app_type),
+                text = stringResource(id = R.string.setting_app_option_app_type),
                 maxLines = 1,
                 minLines = 1,
                 modifier = Modifier
@@ -275,7 +275,7 @@ private fun PackageSetting(packageName: String) {
             val types = remember {
                 shareInfo.types.associateWith { type ->
                     println(type)
-                    if (type == AppJsonPropaty.MYSET_NONE) context.getString(R.string.summart_type_nothing)
+                    if (type == AppJsonPropaty.MYSET_NONE) context.getString(R.string.setting_app_option_value_nothing)
                     else type
                 }
             }
