@@ -30,7 +30,7 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = BlueDark,
     background = Black,
     onBackground = White,
-    onError = RedLight
+    error = RedLight
 )
 
 private val updateThemeKey: MutableState<Int> = mutableStateOf(0)
