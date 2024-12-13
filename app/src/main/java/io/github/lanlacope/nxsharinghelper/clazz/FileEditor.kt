@@ -106,7 +106,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         file.writeText(mysetObject.toString())
 
         if (title != lastTitle) {
-            updateShareType(headText, lastTitle)
+            updateShareType(title, lastTitle)
         }
     }
 
@@ -296,8 +296,8 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         }
 
         packageObject.forEach { packageName: String, packageData: JSONObject ->
-            if (packageData.getString(MySetJsonPropaty.MYSET_TITLE) == lastType) {
-                packageData.put(MySetJsonPropaty.MYSET_TITLE, newType)
+            if (packageData.getString(AppJsonPropaty.PACKAGE_TYPE) == lastType) {
+                packageData.put(AppJsonPropaty.PACKAGE_TYPE, newType)
                 packageObject.put(packageName, packageObject)
             }
         }
@@ -307,10 +307,10 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
     fun createNewMySetTitle(count: Int = 1): String {
         val title = context.getString(R.string.default_myset_title, count)
-        if (getMySetFileByTitle(title).isSuccess) {
-            return createNewMySetTitle(count + 1)
+        return if (getMySetFileByTitle(title).isSuccess) {
+            createNewMySetTitle(count + 1)
         } else {
-            return title
+            title
         }
     }
 
