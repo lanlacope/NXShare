@@ -34,22 +34,24 @@ fun GameImportDialog(
     var overwrite by remember { mutableStateOf(false) }
     var mysetObject: JSONObject? by remember(expanded) { mutableStateOf(null) }
 
+    var buttonText by remember(expanded) { mutableStateOf(context.getString(R.string.dialog_button_file)) }
     var isLoading by remember(expanded) { mutableStateOf(false) }
     var isError by remember(expanded) { mutableStateOf(false) }
     var errorText by remember(expanded) { mutableStateOf("") }
 
     val jsonImportResult = rememberImportJsonResult(
         onSuccess = { jsonObject ->
-            scope.launch(Dispatchers.IO) {
-                mysetObject = jsonObject
-                isLoading = false
-            }
+            mysetObject = jsonObject
+            isLoading = false
+            isError = false
+            buttonText = context.getString(R.string.dialog_button_file_selected)
         },
         onFailed = {
             mysetObject = null
             isLoading = false
-            isError = false
+            isError = true
             errorText = context.getString(R.string.dialog_inport_warning_failed)
+            buttonText = context.getString(R.string.dialog_button_file)
         }
     )
 
@@ -62,6 +64,7 @@ fun GameImportDialog(
             } else {
                 isError = true
                 errorText = context.getString(R.string.dialog_inport_warning_unselected)
+                buttonText = context.getString(R.string.dialog_button_file)
             }
         },
         confirmText = stringResource(id = R.string.dialog_positive_import),
@@ -71,7 +74,7 @@ fun GameImportDialog(
         Column(modifier = Modifier.fillMaxWidth()) {
 
             FileButton(
-                text = stringResource(id = R.string.dialog_button_file),
+                text = buttonText,
                 onClick = {
                     isLoading = true
                     jsonImportResult.launch()

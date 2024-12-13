@@ -54,6 +54,7 @@
     <string name="dialog_inport_warning_failed">ファイルの読み取りに失敗しました……</string>
 
     <string name="dialog_button_file">ファイルを選択</string>
+    <string name="dialog_button_file_selected">選択済み</string>
     <string name="dialog_checkbox_overwrite">重複するゲームを上書き</string>
 
     <!-- TextField Message -->

@@ -52,6 +52,7 @@
     <string name="dialog_inport_warning_failed">Faild Reading File</string>
 
     <string name="dialog_button_file">select file</string>
+    <string name="dialog_button_file_selected">selected</string>
     <string name="dialog_checkbox_overwrite">Overwrite Existing</string>
 
     <!-- TextField Message -->
