@@ -37,10 +37,11 @@ fun versionName(): String? {
 }
 
 suspend fun getLatestVersion(): String? = withContext(Dispatchers.Default) {
-    return@withContext try {
-        val response = URL(AppGitHost.LATEST).readText()
+    try {
+        val response = URL(AppGitHost.LATEST_API).readText()
+        println(response)
         val jsonObject = JSONObject(response)
-        jsonObject.getString(AppGitHost.TAG)
+        return@withContext jsonObject.getString(AppGitHost.LATEST_TAG)
     } catch (e: Exception) {
         null
     }

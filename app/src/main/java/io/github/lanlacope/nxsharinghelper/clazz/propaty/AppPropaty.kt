@@ -24,7 +24,8 @@ object AppPropaty {
         const val SOURCE: String = "https://github.com/lanlacope/NXShare"
         const val LICENSE: String = "https://github.com/lanlacope/NXShare/blob/master/README.MD#license"
         const val LATEST: String = "https://github.com/lanlacope/NXShare/releases/latest"
-        const val TAG: String = "tag_name"
+        const val LATEST_API: String = "https://api.github.com/repos/lanlacope/NXShare/releases/latest"
+        const val LATEST_TAG: String = "tag_name"
     }
 
     object SwitchJsonPropaty {
