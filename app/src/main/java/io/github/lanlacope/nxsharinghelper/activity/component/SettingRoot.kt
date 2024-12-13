@@ -12,12 +12,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import io.github.lanlacope.collection.collection.toMutableStateMap
 import io.github.lanlacope.compose.ui.action.setting.SettingSwitch
 import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
+import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
+import io.github.lanlacope.nxsharinghelper.activity.SettingNavi
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.ThemeSelectDialog
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
@@ -27,8 +28,6 @@ import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
  * 設定の一覧を
  * その他の基本設定を提供する
  */
-
-private val SETTING_MINHEIGHT = 80.dp
 
 @Composable
 fun SettingRoot(navController: NavHostController) {
@@ -90,8 +89,7 @@ fun SettingRoot(navController: NavHostController) {
 
         SettingTextButton(
             text = stringResource(id = R.string.setting_app),
-            value = "",
-            onClick = { navController.navigate("package") },
+            onClick = { navController.navigate(SettingNavi.PACKAGE) },
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = SETTING_MINHEIGHT)
@@ -99,8 +97,15 @@ fun SettingRoot(navController: NavHostController) {
 
         SettingTextButton(
             text = stringResource(id = R.string.setting_myset),
-            value = "",
-            onClick = { navController.navigate("myset") },
+            onClick = { navController.navigate(SettingNavi.MYSET) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = SETTING_MINHEIGHT)
+        )
+
+        SettingTextButton(
+            text = stringResource(id = R.string.setting_about),
+            onClick = { navController.navigate(SettingNavi.ABOUT) },
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = SETTING_MINHEIGHT)

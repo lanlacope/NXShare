@@ -8,9 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.github.lanlacope.nxsharinghelper.activity.component.SettingAbout
 import io.github.lanlacope.nxsharinghelper.activity.component.SettingMyset
 import io.github.lanlacope.nxsharinghelper.activity.component.SettingPackage
 import io.github.lanlacope.nxsharinghelper.activity.component.SettingRoot
@@ -38,15 +40,25 @@ class SettingActivity : ComponentActivity() {
     }
 }
 
+object SettingNavi {
+    const val ROOT = "Root"
+    const val PACKAGE = "Package"
+    const val MYSET = "Myset"
+    const val ABOUT = "About"
+}
+
+val SETTING_MINHEIGHT = 80.dp
+
 @Composable
 fun SettingView() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = "root"
+        startDestination = SettingNavi.ROOT
     ) {
-        composable("root") { SettingRoot(navController) }
-        composable("package") { SettingPackage() }
-        composable("myset") { SettingMyset() }
+        composable(SettingNavi.ABOUT) { SettingRoot(navController) }
+        composable(SettingNavi.PACKAGE) { SettingPackage() }
+        composable(SettingNavi.MYSET) { SettingMyset() }
+        composable(SettingNavi.ABOUT) { SettingAbout() }
     }
 }

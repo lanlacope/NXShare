@@ -90,7 +90,6 @@ private fun Navigation() {
         val IMAGE_PADDING = 8.dp
 
         val (
-            licenseRef,
             settingRef,
             navigationRef,
             scanButtonRef,
@@ -98,25 +97,6 @@ private fun Navigation() {
             saveButtonRef,
         ) = createRefs()
 
-        TextButton(
-            onClick = {
-                val intent = Intent(context, LicenceActivity::class.java)
-                context.startActivity(intent)
-            },
-            modifier = Modifier
-                .constrainAs(licenseRef) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                    width = Dimension.wrapContent
-                    height = Dimension.wrapContent
-                }
-
-        ) {
-            Text(
-                text = stringResource(id = R.string.license_cover),
-                modifier = Modifier.wrapContentSize()
-            )
-        }
         TextButton(
             onClick = {
                 val intent = Intent(context, SettingActivity::class.java)

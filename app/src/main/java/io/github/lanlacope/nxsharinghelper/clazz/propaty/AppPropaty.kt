@@ -20,6 +20,13 @@ object AppPropaty {
         const val IMAGE: String = "http://192.168.0.1/img/"
     }
 
+    object AppGitHost {
+        const val SOURCE: String = "https://github.com/lanlacope/NXShare"
+        const val LICENSE: String = "https://github.com/lanlacope/NXShare/blob/master/README.MD#license"
+        const val LATEST: String = "https://github.com/lanlacope/NXShare/releases/latest"
+        const val TAG: String = "tag_name"
+    }
+
     object SwitchJsonPropaty {
         const val FILETYPE: String = "FileType"
         const val FILENAMES: String = "FileNames"

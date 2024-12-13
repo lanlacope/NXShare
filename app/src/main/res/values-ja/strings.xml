@@ -92,5 +92,10 @@
     <string name="setting_4legacy">古い端末向けの設定</string>
     <string name="setting_4legacy_summary">Wi-Fiが有効な場合でも、切り替えパネルを表示します</string>
 
+    <string name="setting_about">このアプリについて</string>
+    <string name="setting_about_licence">ライセンス</string>
+    <string name="setting_about_source">オープンソースプロジェクト</string>
+    <string name="setting_about_version">バージョン</string>
+    <string name="setting_about_version_update">アップデートがあります。</string>
 
 </resources>

@@ -1,5 +1,16 @@
 package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
+import android.app.Activity
+import android.content.pm.PackageManager
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppGitHost
+
+
 fun removeStringsForFile(value: String): String {
     return value.replace(Regex("""[\x21-\x2f\x3a-\x3f\x5b-\x5e\x60\x7b-\x7e\\]"""), "")
 }
@@ -11,5 +22,27 @@ fun getGameId(fileNames: List<String>): List<String> {
         matchResult?.groupValues?.get(1) ?: ""
     }.distinct()
     return ids
+}
+
+@Composable
+fun versionName(): String? {
+    val activity = LocalContext.current as Activity
+    val name = activity.getPackageName()
+
+    val pm: PackageManager = activity.getPackageManager()
+
+    val info = pm.getPackageInfo(name, PackageManager.GET_META_DATA)
+
+    return info.versionName
+}
+
+suspend fun getLatestVersion(): String? = withContext(Dispatchers.Default) {
+    return@withContext try {
+        val response = URL(AppGitHost.LATEST).readText()
+        val jsonObject = JSONObject(response)
+        jsonObject.getString(AppGitHost.TAG)
+    } catch (e: Exception) {
+        ""
+    }
 }
 
