@@ -21,7 +21,7 @@ fun MysetRemoveDialog(
         title = stringResource(id = R.string.dialog_title_comfirm),
         expanded = expanded,
         onConfirm = onConfirm,
-        confirmText = stringResource(id = R.string.dialog_positive_apply),
+        confirmText = stringResource(id = R.string.dialog_positive_remove),
         onCancel = onCancel,
         cancelText = stringResource(id = R.string.dialog_negative_cancel),
     ) {

@@ -30,6 +30,7 @@
     <string name="dialog_positive_apply">Apply</string>
     <string name="dialog_positive_add">Add</string>
     <string name="dialog_positive_import">Import</string>
+    <string name="dialog_positive_remove">Remove</string>
     <string name="dialog_negative_cancel">キャンセル</string>
 
     <string name="dialog_title_comfirm">Confirm</string>

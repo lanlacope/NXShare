@@ -31,6 +31,7 @@
     <string name="dialog_positive_apply">適用</string>
     <string name="dialog_positive_add">追加</string>
     <string name="dialog_positive_import">インポート</string>
+    <string name="dialog_positive_remove">削除</string>
     <string name="dialog_negative_cancel">キャンセル</string>
 
 

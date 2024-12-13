@@ -23,7 +23,7 @@ fun GameRemoveDialog(
         title = stringResource(id = R.string.dialog_title_comfirm),
         expanded = expanded,
         onConfirm = { onConfirm(id) },
-        confirmText = stringResource(id = R.string.dialog_positive_add),
+        confirmText = stringResource(id = R.string.dialog_positive_remove),
         onCancel = onCancel,
         cancelText = stringResource(id = R.string.dialog_negative_cancel)
     ) {
