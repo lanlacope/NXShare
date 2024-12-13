@@ -296,9 +296,9 @@ class FileEditor(private val context: Context) : FileSelector(context) {
         }
 
         packageObject.forEach { packageName: String, packageData: JSONObject ->
-            if (packageData.getString(AppJsonPropaty.PACKAGE_TYPE) == lastType) {
+            if (packageData.optString(AppJsonPropaty.PACKAGE_TYPE) == lastType) {
                 packageData.put(AppJsonPropaty.PACKAGE_TYPE, newType)
-                packageObject.put(packageName, packageObject)
+                packageObject.put(packageName, packageData)
             }
         }
 
