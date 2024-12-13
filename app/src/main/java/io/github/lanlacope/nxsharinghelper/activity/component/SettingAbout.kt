@@ -61,7 +61,7 @@ fun SettingAbout() {
 
         LaunchedEffect(Unit) {
             val latestVersion = getLatestVersion()
-            if (latestVersion.isNullOrEmpty() && appVersion != latestVersion) {
+            if (!latestVersion.isNullOrEmpty() && appVersion != latestVersion) {
                 latestText = context.getString(R.string.setting_about_version_update)
             }
         }
