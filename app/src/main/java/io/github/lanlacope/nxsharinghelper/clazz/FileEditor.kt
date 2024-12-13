@@ -57,6 +57,13 @@ class FileEditor(private val context: Context) : FileSelector(context) {
 
     fun removeMySet(fileName: String) {
         val file = getMySetFile(fileName)
+        val mysetObject = JSONObject(file.readText())
+        val lastTitle = mysetObject.optString(MySetJsonPropaty.MYSET_TITLE, AppJsonPropaty.MYSET_NONE)
+
+        if (lastTitle != AppJsonPropaty.MYSET_NONE) {
+            updateShareType(AppJsonPropaty.MYSET_NONE, lastTitle)
+        }
+
         file.delete()
     }
 
@@ -94,11 +101,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
     ) {
         val file = getMySetFile(fileName)
         val mysetObject = JSONObject(file.readText())
-        val lastTitle = try {
-            mysetObject.getString(MySetJsonPropaty.MYSET_TITLE)
-        } catch (e: Exception) {
-            title
-        }
+        val lastTitle = mysetObject.optString(MySetJsonPropaty.MYSET_TITLE, title)
 
         mysetObject.put(MySetJsonPropaty.MYSET_TITLE, title)
         mysetObject.put(MySetJsonPropaty.PREFIX_TEXT, headText)
