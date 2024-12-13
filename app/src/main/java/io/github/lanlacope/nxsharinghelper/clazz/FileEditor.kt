@@ -212,7 +212,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
                                 try {
                                     put(
                                         MySetJsonPropaty.GAME_TEXT,
-                                        joinGameData.getString(MySetJsonPropaty.GAME_TITLE)
+                                        joinGameData.getString(MySetJsonPropaty.GAME_TEXT)
                                     )
                                 } catch (e: JSONException) {
                                     put(MySetJsonPropaty.GAME_TEXT, "")
@@ -239,7 +239,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
                             joinGameData.getString(MySetJsonPropaty.GAME_TEXT)
                         )
                     } catch (e: JSONException) {
-                        put(MySetJsonPropaty.GAME_TITLE, "")
+                        put(MySetJsonPropaty.GAME_TEXT, "")
                     }
                 }
                 targetGameObject.put(joinId, gameData)
