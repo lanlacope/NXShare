@@ -251,8 +251,7 @@ private fun GameListHeader(
     suffixText: String,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth()
     ) {
 
         Text(
@@ -260,9 +259,6 @@ private fun GameListHeader(
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Start)
                 .padding(
                     start = ComponentValue.DISPLAY_PADDING_START,
                     end = ComponentValue.DISPLAY_PADDING_END
@@ -276,9 +272,6 @@ private fun GameListHeader(
                 text = prefixText,
                 fontSize = 12.sp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.Start)
                     .padding(
                         start = ComponentValue.DISPLAY_PADDING_START,
                         end = ComponentValue.DISPLAY_PADDING_END
@@ -293,9 +286,6 @@ private fun GameListHeader(
                 text = suffixText,
                 fontSize = 12.sp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.Start)
                     .padding(
                         start = ComponentValue.DISPLAY_PADDING_START,
                         end = ComponentValue.DISPLAY_PADDING_END,
@@ -517,7 +507,7 @@ private fun GameListItem(
         CombinedColumnButton(
             onClick = { gameEditDialogShown = true },
             onLongClick = { gameRemoveDialogShown = true },
-            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 60.dp)
@@ -526,9 +516,6 @@ private fun GameListItem(
                 text = title,
                 fontSize = 24.sp,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.Start)
                     .padding(
                         start = ComponentValue.DISPLAY_PADDING_START,
                         end = ComponentValue.DISPLAY_PADDING_END
@@ -541,9 +528,6 @@ private fun GameListItem(
                     text = text,
                     fontSize = 12.sp,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .align(Alignment.Start)
                         .padding(
                             start = ComponentValue.DISPLAY_PADDING_START,
                             end = ComponentValue.DISPLAY_PADDING_END,
