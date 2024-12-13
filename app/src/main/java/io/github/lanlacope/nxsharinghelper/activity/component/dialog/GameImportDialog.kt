@@ -77,7 +77,9 @@ fun GameImportDialog(
                 text = buttonText,
                 onClick = {
                     isLoading = true
-                    jsonImportResult.launch()
+                    scope.launch(Dispatchers.IO) {
+                        jsonImportResult.launch()
+                    }
                 },
                 errorText = errorText,
                 isError = isError,

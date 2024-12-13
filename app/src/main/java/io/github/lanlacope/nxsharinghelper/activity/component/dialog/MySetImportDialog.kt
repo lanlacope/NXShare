@@ -77,7 +77,9 @@ fun MySetImportDialog(
                 text = stringResource(id = R.string.dialog_button_file),
                 onClick = {
                     isLoading = true
-                    jsonImportResult.launch()
+                    scope.launch(Dispatchers.IO) {
+                        jsonImportResult.launch()
+                    }
                 },
                 errorText = errorText,
                 isError = isError,
