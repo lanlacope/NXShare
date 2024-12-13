@@ -56,7 +56,7 @@ fun SettingView() {
         navController = navController,
         startDestination = SettingNavi.ROOT
     ) {
-        composable(SettingNavi.ABOUT) { SettingRoot(navController) }
+        composable(SettingNavi.ROOT) { SettingRoot(navController) }
         composable(SettingNavi.PACKAGE) { SettingPackage() }
         composable(SettingNavi.MYSET) { SettingMyset() }
         composable(SettingNavi.ABOUT) { SettingAbout() }

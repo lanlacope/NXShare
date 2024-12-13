@@ -60,7 +60,7 @@ fun SettingAbout() {
         var latestText: String? by remember { mutableStateOf(null) }
 
         LaunchedEffect(Unit) {
-            if (appVersion != getLatestVersion()) {
+            if (!latestText.isNullOrEmpty() && appVersion != getLatestVersion()) {
                 latestText = context.getString(R.string.setting_about_version_update)
             }
         }

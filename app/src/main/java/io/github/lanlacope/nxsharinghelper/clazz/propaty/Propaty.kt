@@ -42,7 +42,7 @@ suspend fun getLatestVersion(): String? = withContext(Dispatchers.Default) {
         val jsonObject = JSONObject(response)
         jsonObject.getString(AppGitHost.TAG)
     } catch (e: Exception) {
-        ""
+        null
     }
 }
 
