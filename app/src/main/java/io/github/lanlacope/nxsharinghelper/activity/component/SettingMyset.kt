@@ -250,7 +250,10 @@ private fun GameListHeader(
     prefixText: String,
     suffixText: String,
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         Text(
             text = title,
@@ -514,6 +517,7 @@ private fun GameListItem(
         CombinedColumnButton(
             onClick = { gameEditDialogShown = true },
             onLongClick = { gameRemoveDialogShown = true },
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 60.dp)
@@ -532,6 +536,7 @@ private fun GameListItem(
             )
 
             FadeInAnimated(visible = text.isNotEmpty()) {
+
                 Text(
                     text = text,
                     fontSize = 12.sp,
