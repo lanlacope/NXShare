@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -240,9 +241,10 @@ private fun PackageSetting(packageName: String) {
         RowButton(
             onClick = { isExpanded = !isExpanded },
             horizontalArrangement = Arrangement.SpaceBetween,
+            innerPadding = PaddingValues(all = 10.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .heightIn(min = 48.dp)
 
         ) {
             Text(
