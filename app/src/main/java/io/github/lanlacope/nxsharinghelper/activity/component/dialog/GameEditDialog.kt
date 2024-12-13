@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -59,6 +60,7 @@ fun GameEditDialog(
                 Text(
                     text = id,
                     maxLines = 1,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                     modifier = Modifier.wrapContentSize()
                 )
             }

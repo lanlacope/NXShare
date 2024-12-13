@@ -264,7 +264,7 @@ private fun PackageSetting(packageName: String) {
                 modifier = Modifier
                     .wrapContentSize()
                     .align(Alignment.CenterVertically)
-                    .padding(end = ComponentValue.DISPLAY_PADDING_END + 40.dp)
+                    .padding(end = ComponentValue.DISPLAY_PADDING_END)
 
             )
         }

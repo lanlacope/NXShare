@@ -74,7 +74,7 @@ fun MySetImportDialog(
         Column(modifier = Modifier.wrapContentHeight()) {
 
             FileButton(
-                text = stringResource(id = R.string.dialog_button_file),
+                text = buttonText,
                 onClick = {
                     isLoading = true
                     scope.launch(Dispatchers.IO) {
@@ -90,7 +90,7 @@ fun MySetImportDialog(
             OutlinedInputTextField(
                 text = title,
                 onTextChange = { title = it },
-                hintText = buttonText,
+                hintText = stringResource(id = R.string.hint_myset_title),
                 singleLine = true,
                 useLabel = true,
                 modifier = Modifier
