@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.ThemeJsonPropaty
 
 private val LightColorScheme = lightColorScheme(
     primary = PaupleDark,
@@ -56,8 +56,8 @@ fun AppTheme(
 
 
     val colorScheme = when (theme) {
-        SettingJsonPropaty.THEME_LIGHT -> LightColorScheme
-        SettingJsonPropaty.THEME_DARK -> DarkColorScheme
+        ThemeJsonPropaty.THEME_LIGHT -> LightColorScheme
+        ThemeJsonPropaty.THEME_DARK -> DarkColorScheme
         else -> if (darkTheme) DarkColorScheme else LightColorScheme
     }
 

@@ -20,7 +20,7 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
 import io.github.lanlacope.nxsharinghelper.activity.SettingNavi
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.ThemeSelectDialog
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.ThemeJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
 
@@ -41,10 +41,10 @@ fun SettingRoot(navController: NavHostController) {
         var themeSelectDialogShown by remember { mutableStateOf(false) }
         var selectedTheme by remember { mutableStateOf(settingManager.getAppTheme()) }
         val themes = remember {
-            SettingJsonPropaty.APP_THEME_LIST.associateWith { theme ->
+            ThemeJsonPropaty.APP_THEME_LIST.associateWith { theme ->
                 when (theme) {
-                    SettingJsonPropaty.THEME_LIGHT -> context.getString(R.string.setting_theme_value_light)
-                    SettingJsonPropaty.THEME_DARK -> context.getString(R.string.setting_theme_value_dark)
+                    ThemeJsonPropaty.THEME_LIGHT -> context.getString(R.string.setting_theme_value_light)
+                    ThemeJsonPropaty.THEME_DARK -> context.getString(R.string.setting_theme_value_dark)
                     else -> context.getString(R.string.setting_theme_value_system)
                 }
             }.toMutableStateMap()

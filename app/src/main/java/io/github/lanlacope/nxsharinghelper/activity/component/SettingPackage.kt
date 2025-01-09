@@ -50,7 +50,7 @@ import io.github.lanlacope.compose.ui.text.search.SearchTextField
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.AppInfo
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.ShareInfo
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import kotlinx.collections.immutable.ImmutableList

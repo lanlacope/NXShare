@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppGitHost
 
 
 fun removeStringsForFile(value: String): String {

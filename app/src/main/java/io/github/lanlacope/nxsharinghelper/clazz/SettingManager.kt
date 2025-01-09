@@ -5,7 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SettingJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.SettingJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.ThemeJsonPropaty
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -33,9 +34,9 @@ class SettingManager(context: Context) : FileSelector(context) {
         }
 
         return try {
-            jsonObject.getString(SettingJsonPropaty.APP_THEME)
+            jsonObject.getString(ThemeJsonPropaty.APP_THEME)
         } catch (e: JSONException) {
-            SettingJsonPropaty.THEME_SYSTEM
+            ThemeJsonPropaty.THEME_SYSTEM
         }
     }
 
@@ -47,7 +48,7 @@ class SettingManager(context: Context) : FileSelector(context) {
             JSONObject()
         }
 
-        jsonObject.put(SettingJsonPropaty.APP_THEME, theme)
+        jsonObject.put(ThemeJsonPropaty.APP_THEME, theme)
 
         file.writeText(jsonObject.toString())
     }

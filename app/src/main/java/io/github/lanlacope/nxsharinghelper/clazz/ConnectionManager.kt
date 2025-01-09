@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.isAfterAndroidX
 
 @Suppress("unused")
 @Composable
@@ -57,7 +57,7 @@ class ConnectionManager(_context: Context) {
 
     fun start(config: WifiConfig, onConnection: OnConnection) {
         try {
-            if (DevicePropaty.isAfterAndroidX()) {
+            if (isAfterAndroidX()) {
                 connectSwitch(config.ssid, config.password, onConnection)
             } else {
                 connectSwitchLegacy(config.ssid, config.password, onConnection)
@@ -68,7 +68,7 @@ class ConnectionManager(_context: Context) {
     }
 
     fun disconnection() {
-        if (DevicePropaty.isAfterAndroidX()) {
+        if (isAfterAndroidX()) {
             connectivityManager.bindProcessToNetwork(null)
         } else {
             @Suppress("DEPRECATION")

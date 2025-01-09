@@ -22,8 +22,8 @@ import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.activity.SwitchCaptureActivity
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
 import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.MineType
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import org.json.JSONObject
 
@@ -130,7 +130,7 @@ data class WifiEnableResultLauncher(
     private val intent = Intent(Settings.Panel.ACTION_WIFI)
     fun launch() {
         if (!isEnabled() || settingManager.getAlternativeConnectionEnabled()) {
-            if (DevicePropaty.isAfterAndroidX()) {
+            if (isAfterAndroidX()) {
                 launcher.launch(intent)
             } else {
                 @Suppress("DEPRECATION")

@@ -6,8 +6,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.collection.json.forEach
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.MySetJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import org.json.JSONException
 import org.json.JSONObject

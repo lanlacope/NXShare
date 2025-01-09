@@ -11,9 +11,9 @@ import io.github.lanlacope.nxsharinghelper.R
 import org.json.JSONObject
 import java.io.File
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MySetJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.MySetJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.getSimpleDate
 import org.json.JSONException
 
 @Suppress("unused")
@@ -42,7 +42,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             createNewMySetTitle()
         }
 
-        val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
+        val fileName = "myset_${getSimpleDate()}.json"
         val file = createNewMySetFile(fileName)
 
         val jsonObject = JSONObject().apply {
@@ -85,7 +85,7 @@ class FileEditor(private val context: Context) : FileSelector(context) {
             return Result.failure(Exception())
         }
 
-        val fileName = "myset_${DevicePropaty.getSimpleDate()}.json"
+        val fileName = "myset_${getSimpleDate()}.json"
 
         val file = createNewMySetFile(fileName)
 

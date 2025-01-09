@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.AppGitHost
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppGitHost
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getLatestVersion
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.versionName
 /*

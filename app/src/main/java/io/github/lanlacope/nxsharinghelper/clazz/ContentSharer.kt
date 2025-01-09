@@ -19,9 +19,9 @@ import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
 import io.github.lanlacope.collection.collection.toArrayList
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.SwitchJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppPropaty.MineType
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.DevicePropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.MineType
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.isAfterAndroidX
 import java.io.File
 
 @Suppress("unused")
@@ -104,7 +104,7 @@ class ContentSharer(private val context: Context) {
                 PackageManager.MATCH_DEFAULT_ONLY
             )
 
-        if (DevicePropaty.isAfterAndroidX()) {
+        if (isAfterAndroidX()) {
 
             val chooserIntent =
                 Intent.createChooser(sendablentent, title, pendingIntent.intentSender)
