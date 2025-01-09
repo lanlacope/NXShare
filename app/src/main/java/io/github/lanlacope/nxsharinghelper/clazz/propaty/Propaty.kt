@@ -2,12 +2,25 @@ package io.github.lanlacope.nxsharinghelper.clazz.propaty
 
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+fun isAfterAndroidX(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+}
+
+fun getSimpleDate(): String {
+    val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+    return dateFormat.format(Date())
+}
 
 
 fun removeStringsForFile(value: String): String {
