@@ -45,7 +45,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentSaver
 import io.github.lanlacope.nxsharinghelper.clazz.ContentSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentData
-import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.NXShareTheme
 import kotlinx.coroutines.launch
 
 /*
@@ -57,7 +57,7 @@ class ResultActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppTheme {
+            NXShareTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

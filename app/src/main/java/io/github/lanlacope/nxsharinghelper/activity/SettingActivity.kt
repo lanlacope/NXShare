@@ -16,7 +16,7 @@ import io.github.lanlacope.nxsharinghelper.activity.component.SettingAbout
 import io.github.lanlacope.nxsharinghelper.activity.component.SettingMyset
 import io.github.lanlacope.nxsharinghelper.activity.component.SettingPackage
 import io.github.lanlacope.nxsharinghelper.activity.component.SettingRoot
-import io.github.lanlacope.nxsharinghelper.ui.theme.AppTheme
+import io.github.lanlacope.nxsharinghelper.ui.theme.NXShareTheme
 
 /*
  * 設定を変更するアクティビティ
@@ -28,7 +28,7 @@ class SettingActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppTheme {
+            NXShareTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

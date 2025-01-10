@@ -24,24 +24,27 @@ fun rememberThemeManager(): ThemeManager {
     }
 }
 
+private val Context.themeDataStore by preferencesDataStore(name = "theme")
+
 /*
  * アプリテーマの管理を行う
  *
  */
 @Stable
-class ThemeManager(private val context: Context) {
+class ThemeManager(context: Context) {
+
+    private val appContext = context.applicationContext
 
     private val THEME_KEY = stringPreferencesKey("theme_type")
-    private val Context.dataStore by preferencesDataStore(name = "theme")
 
     private val themeFile by lazy {
-        val file = File(context.filesDir, "theme.json")
+        val file = File(appContext.filesDir, "theme.json")
         file.createNewFile()
         file
     }
 
     suspend fun getAppTheme(): AppTheme = withContext(Dispatchers.IO) {
-        val themeString = context.dataStore.data.map { data ->
+        val themeString = appContext.themeDataStore.data.map { data ->
             data[THEME_KEY] ?: AppTheme.SYSTEM.toString()
         }.first()
 
@@ -49,7 +52,7 @@ class ThemeManager(private val context: Context) {
     }
 
     suspend fun changeAppTheme(theme: AppTheme) = withContext(Dispatchers.IO) {
-        context.dataStore.edit { data ->
+        appContext.themeDataStore.edit { data ->
             data[THEME_KEY] = theme.toString()
         }
     }
