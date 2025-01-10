@@ -14,8 +14,8 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.R
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.MineType
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.isAfterAndroidX
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.removeStringsForFile
 import kotlinx.coroutines.Dispatchers

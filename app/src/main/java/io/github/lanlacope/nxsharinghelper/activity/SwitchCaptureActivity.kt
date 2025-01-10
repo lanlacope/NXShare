@@ -18,7 +18,7 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.ScanOptions
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.ConnectionManager.WifiConfig
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchLocalHost
+import io.github.lanlacope.nxsharinghelper.clazz.SwitchLocalHost
 import com.google.zxing.client.android.R as zR
 
 /*

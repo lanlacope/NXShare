@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.bundleOf
 import io.github.lanlacope.collection.json.map
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchLocalHost
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -141,4 +140,10 @@ class ContentDownloader(val context: Context) {
             throw e
         }
     }
+}
+
+object SwitchLocalHost {
+    const val INDEX: String = "http://192.168.0.1/index.html"
+    const val DATA: String = "http://192.168.0.1/data.json"
+    const val IMAGE: String = "http://192.168.0.1/img/"
 }

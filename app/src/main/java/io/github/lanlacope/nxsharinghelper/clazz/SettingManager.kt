@@ -5,8 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.SettingJsonPropaty
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.ThemeJsonPropaty
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -53,4 +51,8 @@ class SettingManager(context: Context) : FileSelector(context) {
 
         file.writeText(jsonObject.toString())
     }
+}
+
+object SettingJsonPropaty {
+    const val FOR_LEGACY: String = "ForLegacy"
 }

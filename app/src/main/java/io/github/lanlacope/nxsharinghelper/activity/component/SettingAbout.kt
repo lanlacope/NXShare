@@ -1,6 +1,8 @@
 package io.github.lanlacope.nxsharinghelper.activity.component
 
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +20,11 @@ import androidx.compose.ui.res.stringResource
 import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppGitHost
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.getLatestVersion
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.versionName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.URL
+
 /*
  * このアプリの情報を表示
  */
@@ -80,5 +84,35 @@ fun SettingAbout() {
                 .heightIn(min = SETTING_MINHEIGHT)
         )
     }
+}
 
+object AppGitHost {
+    const val SOURCE: String = "https://github.com/lanlacope/NXShare"
+    const val LICENSE: String = "https://github.com/lanlacope/NXShare/blob/master/README.MD#license"
+    const val LATEST: String = "https://github.com/lanlacope/NXShare/releases/latest"
+    const val LATEST_API: String = "https://api.github.com/repos/lanlacope/NXShare/releases/latest"
+    const val LATEST_TAG: String = "tag_name"
+}
+
+@Composable
+fun versionName(): String? {
+    val activity = LocalContext.current as Activity
+    val name = activity.getPackageName()
+
+    val pm: PackageManager = activity.getPackageManager()
+
+    val info = pm.getPackageInfo(name, PackageManager.GET_META_DATA)
+
+    return info.versionName
+}
+
+suspend fun getLatestVersion(): String? = withContext(Dispatchers.Default) {
+    try {
+        val response = URL(AppGitHost.LATEST_API).readText()
+        println(response)
+        val jsonObject = JSONObject(response)
+        return@withContext jsonObject.getString(AppGitHost.LATEST_TAG)
+    } catch (e: Exception) {
+        null
+    }
 }

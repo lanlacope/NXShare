@@ -9,8 +9,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.collection.json.map
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.MySetJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
