@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,9 +22,11 @@ import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
 import io.github.lanlacope.nxsharinghelper.activity.SettingNavi
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.ThemeSelectDialog
-import io.github.lanlacope.nxsharinghelper.clazz.propaty.ThemeJsonPropaty
+import io.github.lanlacope.nxsharinghelper.clazz.AppTheme
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
+import io.github.lanlacope.nxsharinghelper.clazz.rememberThemeManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
+import kotlinx.coroutines.launch
 
 /*
  * 設定の一覧を
@@ -36,17 +40,21 @@ fun SettingRoot(navController: NavHostController) {
 
     Column(modifier = Modifier.fillMaxSize()) {
 
+        val scope = rememberCoroutineScope()
+
+        val themeManager = rememberThemeManager()
         val settingManager = rememberSettingManager()
 
         var themeSelectDialogShown by remember { mutableStateOf(false) }
-        var selectedTheme by remember { mutableStateOf(settingManager.getAppTheme()) }
+        var selectedTheme by remember { mutableStateOf(AppTheme.SYSTEM) }
+
+        LaunchedEffect(Unit) {
+            selectedTheme = themeManager.getAppTheme()
+        }
+
         val themes = remember {
-            ThemeJsonPropaty.APP_THEME_LIST.associateWith { theme ->
-                when (theme) {
-                    ThemeJsonPropaty.THEME_LIGHT -> context.getString(R.string.setting_theme_value_light)
-                    ThemeJsonPropaty.THEME_DARK -> context.getString(R.string.setting_theme_value_dark)
-                    else -> context.getString(R.string.setting_theme_value_system)
-                }
+            AppTheme.entries.associateWith { theme ->
+                theme.getStringResource(context)
             }.toMutableStateMap()
         }
 
@@ -64,10 +72,12 @@ fun SettingRoot(navController: NavHostController) {
             selectedTheme = selectedTheme,
             themes = themes,
             onConfirm = { newTheme ->
-                selectedTheme = newTheme
-                settingManager.changeAppTheme(newTheme)
-                updateTheme()
-                themeSelectDialogShown = false
+                scope.launch {
+                    selectedTheme = newTheme
+                    themeManager.changeAppTheme(newTheme)
+                    updateTheme()
+                    themeSelectDialogShown = false
+                }
             },
             onCancel = { themeSelectDialogShown = false }
         )
