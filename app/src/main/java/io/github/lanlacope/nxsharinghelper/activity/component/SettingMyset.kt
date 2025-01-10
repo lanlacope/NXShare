@@ -60,6 +60,7 @@ import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MySetEditDi
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MySetImportDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MysetAddDialog
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.MysetRemoveDialog
+import io.github.lanlacope.nxsharinghelper.clazz.InfoManager
 import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.ERROR
 import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
@@ -183,64 +184,72 @@ private fun MysetListItem(
     file: File,
     removeSelf: () -> Unit,
 ) {
-    Column {
-        val fileEditor = rememberFileEditor()
-        val infoManager = rememberInfoManager()
+    val fileEditor = rememberFileEditor()
+    val infoManager = rememberInfoManager()
 
-        var editMysetDialogShown by rememberSaveable { mutableStateOf(false) }
-        var removeMysetDialogShown by rememberSaveable { mutableStateOf(false) }
+    var mysetInfo by remember { mutableStateOf<InfoManager.MysetInfo?>(null) }
 
-        val mysetInfo by remember { mutableStateOf(infoManager.getMysetInfo(file)) }
-        var title by remember { mutableStateOf(mysetInfo.title) }
-        var headText by remember { mutableStateOf(mysetInfo.prefixText) }
-        var tailText by remember { mutableStateOf(mysetInfo.suffixText) }
+    LaunchedEffect(Unit) {
+        mysetInfo = infoManager.getMysetInfo(file)
+    }
 
-        CombinedBoxButton(
-            onClick = { editMysetDialogShown = true },
-            onLongClick = { removeMysetDialogShown = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 80.dp)
-                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
-        ) {
-            GameListHeader(
-                title = title,
-                prefixText = headText,
-                suffixText = tailText
-            )
-        }
+    FadeInAnimated(visible = mysetInfo != null) {
 
-        MySetEditDialog(
-            expanded = editMysetDialogShown,
-            title = title,
-            headText = headText,
-            tailText = tailText,
-            onConfirm = { newTitle, newHead, newTail ->
-                fileEditor.editMysetInfo(
-                    fileName = file.name,
-                    title = newTitle,
-                    headText = newHead,
-                    tailText = newTail
+        Column {
+            var editMysetDialogShown by rememberSaveable { mutableStateOf(false) }
+            var removeMysetDialogShown by rememberSaveable { mutableStateOf(false) }
+
+            var title by remember { mutableStateOf(mysetInfo!!.title) }
+            var headText by remember { mutableStateOf(mysetInfo!!.prefixText) }
+            var tailText by remember { mutableStateOf(mysetInfo!!.suffixText) }
+
+            CombinedBoxButton(
+                onClick = { editMysetDialogShown = true },
+                onLongClick = { removeMysetDialogShown = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 80.dp)
+                    .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f))
+            ) {
+                GameListHeader(
+                    title = title,
+                    prefixText = headText,
+                    suffixText = tailText
                 )
-                title = newTitle
-                headText = newHead
-                tailText = newTail
-                editMysetDialogShown = false
-            },
-            onCancel = { editMysetDialogShown = false },
-        )
+            }
 
-        MysetRemoveDialog(
-            expanded = removeMysetDialogShown,
-            onConfirm = {
-                // コールバックで自身を削除
-                removeSelf()
-                removeMysetDialogShown = false
-            },
-            onCancel = { removeMysetDialogShown = false }
-        )
+            MySetEditDialog(
+                expanded = editMysetDialogShown,
+                title = title,
+                headText = headText,
+                tailText = tailText,
+                onConfirm = { newTitle, newHead, newTail ->
+                    fileEditor.editMysetInfo(
+                        fileName = file.name,
+                        title = newTitle,
+                        headText = newHead,
+                        tailText = newTail
+                    )
+                    title = newTitle
+                    headText = newHead
+                    tailText = newTail
+                    editMysetDialogShown = false
+                },
+                onCancel = { editMysetDialogShown = false },
+            )
 
-        GameList(file = file)
+            MysetRemoveDialog(
+                expanded = removeMysetDialogShown,
+                onConfirm = {
+                    // コールバックで自身を削除
+                    removeSelf()
+                    removeMysetDialogShown = false
+                },
+                onCancel = { removeMysetDialogShown = false }
+            )
+
+            GameList(file = file)
+        }
     }
 }
 
@@ -311,16 +320,22 @@ private fun GameList(file: File) {
     val infoManager = rememberInfoManager()
     val fileEditor = rememberFileEditor()
 
-    val games = remember { infoManager.getGameInfo(file).toMutableStateList() }
-    var inportEffectKey by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(inportEffectKey) {
-        games.clear()
-        games.addAll(infoManager.getGameInfo(file))
-    }
-    val listState = rememberLazyListState()
-
     Box(modifier = Modifier.fillMaxSize()) {
+
+        val games = remember { emptyList<GameInfo>().toMutableStateList() }
+
+        var inportEffectKey by remember { mutableIntStateOf(0) }
+
+        LaunchedEffect(Unit) {
+            inportEffectKey++
+        }
+
+        LaunchedEffect(inportEffectKey) {
+            games.clear()
+            games.addAll(infoManager.getGameInfo(file))
+        }
+        val listState = rememberLazyListState()
+
         Column(modifier = Modifier.fillMaxSize()) {
 
             var searchText by remember { mutableStateOf("") }
@@ -406,7 +421,6 @@ private fun GameList(file: File) {
                 }
             }
         }
-
         val FAB_PADDING = 30.dp
 
         var gameAddDialogShown by rememberSaveable { mutableStateOf(false) }

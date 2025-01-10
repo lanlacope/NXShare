@@ -55,8 +55,6 @@ import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 /*
  * 共有可能なアプリの一覧を表示
@@ -70,9 +68,7 @@ fun SettingPackage() {
     var apps by remember { mutableStateOf<ImmutableList<AppInfo>?>(null) }
 
     LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            apps = infoManager.getAppInfo().toImmutableList()
-        }
+        apps = infoManager.getAppInfo().toImmutableList()
     }
 
     Box(

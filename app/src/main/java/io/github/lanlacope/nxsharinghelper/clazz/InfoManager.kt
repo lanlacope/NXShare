@@ -12,6 +12,8 @@ import io.github.lanlacope.collection.json.map
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.MySetJsonPropaty
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.File
 
@@ -67,7 +69,7 @@ class InfoManager(private val context: Context) : FileSelector(context) {
 
     }
 
-    fun getAppInfo(): List<AppInfo> {
+    suspend fun getAppInfo(): List<AppInfo> = withContext(Dispatchers.IO) {
         val contentSharer = ContentSharer(context)
 
         val sendJpgIntent = contentSharer.createSendableIntent(
@@ -109,24 +111,20 @@ class InfoManager(private val context: Context) : FileSelector(context) {
             AppInfo(applicationInfo, packageManager)
         }
 
-        return appInfo
+        return@withContext appInfo
     }
 
-    fun getMysetInfo(file: File): MysetInfo {
+    suspend fun getMysetInfo(file: File): MysetInfo = withContext(Dispatchers.IO) {
         val jsonObject = JSONObject(file.readText())
-        return MysetInfo(jsonObject)
+        return@withContext MysetInfo(jsonObject)
     }
 
-    fun getGameInfo(file: File): List<GameInfo> {
+    suspend fun getGameInfo(file: File): List<GameInfo> = withContext(Dispatchers.IO) {
         val mysetObject = JSONObject(file.readText())
         val gameObject = mysetObject.optJSONObject(MySetJsonPropaty.GAME_DATA)
 
-        if (gameObject != null) {
-            return gameObject.map { id, gameData: JSONObject ->
+        return@withContext gameObject?.map { id, gameData: JSONObject ->
                 GameInfo(id, gameData)
-            }
-        } else {
-            return emptyList()
-        }
+        } ?: emptyList()
     }
 }
