@@ -12,7 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.nxsharinghelper.clazz.SettingManager
+import io.github.lanlacope.nxsharinghelper.clazz.ThemeManager
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.ThemeJsonPropaty
 
 private val LightColorScheme = lightColorScheme(
@@ -44,16 +44,17 @@ fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val settingManager = SettingManager(LocalContext.current)
-    var theme by remember {
-        mutableStateOf(settingManager.getAppTheme())
-    }
+    val themeManager = ThemeManager(LocalContext.current)
 
+    var theme by remember { mutableStateOf(ThemeJsonPropaty.THEME_SYSTEM) }
+
+    LaunchedEffect(Unit) {
+        theme = themeManager.getAppTheme()
+    }
 
     LaunchedEffect(updateThemeKey.value) {
-        theme = settingManager.getAppTheme()
+        theme = themeManager.getAppTheme()
     }
-
 
     val colorScheme = when (theme) {
         ThemeJsonPropaty.THEME_LIGHT -> LightColorScheme

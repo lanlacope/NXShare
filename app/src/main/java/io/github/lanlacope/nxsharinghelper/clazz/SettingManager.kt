@@ -21,37 +21,10 @@ fun rememberSettingManager(): SettingManager {
 
 /*
  * アプリ設定の管理を行う
+ *
  */
 @Stable
 class SettingManager(context: Context) : FileSelector(context) {
-
-    fun getAppTheme(): String {
-        val file = getSettingFile()
-        val jsonObject = try {
-            JSONObject(file.readText())
-        } catch (e: JSONException) {
-            JSONObject()
-        }
-
-        return try {
-            jsonObject.getString(ThemeJsonPropaty.APP_THEME)
-        } catch (e: JSONException) {
-            ThemeJsonPropaty.THEME_SYSTEM
-        }
-    }
-
-    fun changeAppTheme(theme: String) {
-        val file = getSettingFile()
-        val jsonObject = try {
-            JSONObject(file.readText())
-        } catch (e: JSONException) {
-            JSONObject()
-        }
-
-        jsonObject.put(ThemeJsonPropaty.APP_THEME, theme)
-
-        file.writeText(jsonObject.toString())
-    }
 
     fun getAlternativeConnectionEnabled(): Boolean {
         val file = getSettingFile()
