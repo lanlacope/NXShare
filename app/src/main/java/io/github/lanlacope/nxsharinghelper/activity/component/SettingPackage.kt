@@ -26,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
@@ -55,6 +56,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.rememberFileEditor
 import io.github.lanlacope.nxsharinghelper.clazz.rememberInfoManager
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.launch
 
 /*
  * 共有可能なアプリの一覧を表示
@@ -212,6 +214,7 @@ private fun PackageCard(app: AppInfo) {
 private fun PackageSetting(packageName: String) {
 
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -226,8 +229,10 @@ private fun PackageSetting(packageName: String) {
             text = stringResource(id = R.string.setting_app_option_enabled),
             checked = cheacked,
             onClick = {
-                cheacked = !cheacked
-                fileEditor.changeShareEnabled(packageName, cheacked)
+                scope.launch {
+                    cheacked = !cheacked
+                    fileEditor.changeShareEnabled(packageName, cheacked)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -287,8 +292,10 @@ private fun PackageSetting(packageName: String) {
                     options = types,
                     selected = { selectedType == it },
                     onClick = {
-                        selectedType = it
-                        fileEditor.changeShareType(packageName, it)
+                        scope.launch {
+                            selectedType = it
+                            fileEditor.changeShareType(packageName, it)
+                        }
                     },
                 )
             }

@@ -121,14 +121,16 @@ fun SettingMyset() {
         MysetAddDialog(
             expanded = mysetAddDialogShown,
             onConfirm = { title ->
-                val result = fileEditor.addMySet(title)
-                if (result.isSuccess) {
-                    val newFile = result.getOrNull()!!
-                    files.add(newFile)
-                    scope.launch { listState.animateScrollToItem(files.size) }
-                    mysetAddDialogShown = false
-                } else {
-                    mysetAddDialogError = true
+                scope.launch {
+                    val result = fileEditor.addMySet(title)
+                    if (result.isSuccess) {
+                        val newFile = result.getOrNull()!!
+                        files.add(newFile)
+                        scope.launch { listState.animateScrollToItem(files.size) }
+                        mysetAddDialogShown = false
+                    } else {
+                        mysetAddDialogError = true
+                    }
                 }
             },
             onCancel = { mysetAddDialogShown = false },
@@ -138,18 +140,20 @@ fun SettingMyset() {
         MySetImportDialog(
             expanded = mysetImportDialogShown,
             onConfirm = { title, jsonObject ->
-                val result = fileEditor.importMyset(title, jsonObject)
-                if (result.isSuccess) {
-                    val newFile = result.getOrNull()!!
-                    files.add(newFile)
-                    scope.launch { listState.animateScrollToItem(files.size) }
-                    mysetImportDialogShown = false
-                } else {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.failed_import),
-                        Toast.LENGTH_LONG
-                    ).show()
+                scope.launch {
+                    val result = fileEditor.importMyset(title, jsonObject)
+                    if (result.isSuccess) {
+                        val newFile = result.getOrNull()!!
+                        files.add(newFile)
+                        scope.launch { listState.animateScrollToItem(files.size) }
+                        mysetImportDialogShown = false
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.failed_import),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             },
             onCancel = { mysetImportDialogShown = false },
@@ -166,8 +170,10 @@ fun SettingMyset() {
 
                 // ページを削除するためのコールバック
                 val removeMySet: () -> Unit = {
-                    fileEditor.removeMySet(file.name)
-                    files.remove(file)
+                    scope.launch {
+                        fileEditor.removeMySet(file.name)
+                        files.remove(file)
+                    }
                 }
                 MysetListItem(
                     file = file,
@@ -184,6 +190,7 @@ private fun MysetListItem(
     file: File,
     removeSelf: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     val fileEditor = rememberFileEditor()
     val infoManager = rememberInfoManager()
 
@@ -224,16 +231,18 @@ private fun MysetListItem(
                 headText = headText,
                 tailText = tailText,
                 onConfirm = { newTitle, newHead, newTail ->
-                    fileEditor.editMysetInfo(
-                        fileName = file.name,
-                        title = newTitle,
-                        headText = newHead,
+                    scope.launch {
+                        fileEditor.editMysetInfo(
+                            fileName = file.name,
+                            title = newTitle,
+                            headText = newHead,
+                            tailText = newTail
+                        )
+                        title = newTitle
+                        headText = newHead
                         tailText = newTail
-                    )
-                    title = newTitle
-                    headText = newHead
-                    tailText = newTail
-                    editMysetDialogShown = false
+                        editMysetDialogShown = false
+                    }
                 },
                 onCancel = { editMysetDialogShown = false },
             )
@@ -262,7 +271,6 @@ private fun GameListHeader(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-
         Text(
             text = title,
             fontSize = 24.sp,
@@ -454,19 +462,21 @@ private fun GameList(file: File) {
         GameAddDialog(
             expanded = gameAddDialogShown,
             onConfirm = { id, title, text ->
-                val result = fileEditor.addGameInfo(
-                    fileName = file.name,
-                    id = id,
-                    title = title,
-                    text = text
-                )
-                if (result.isSuccess) {
-                    val newGame = result.getOrNull()!!
-                    games.add(newGame)
-                    scope.launch { listState.animateScrollToItem(games.size) }
-                    gameAddDialogShown = false
-                } else {
-                    gameAddDialogError = true
+                scope.launch {
+                    val result = fileEditor.addGameInfo(
+                        fileName = file.name,
+                        id = id,
+                        title = title,
+                        text = text
+                    )
+                    if (result.isSuccess) {
+                        val newGame = result.getOrNull()!!
+                        games.add(newGame)
+                        listState.animateScrollToItem(games.size)
+                        gameAddDialogShown = false
+                    } else {
+                        gameAddDialogError = true
+                    }
                 }
             },
             onCancel = { gameAddDialogShown = false },
@@ -476,24 +486,25 @@ private fun GameList(file: File) {
         GameImportDialog(
             expanded = gameImportDialogShown,
             onConfirm = { overwrite, jsonObject ->
-                val result = fileEditor.importGameInfo(file.name, jsonObject, overwrite)
-                if (result.isSuccess) {
-                    if (overwrite) {
-                        inportEffectKey++
+                scope.launch {
+                    val result = fileEditor.importGameInfo(file.name, jsonObject, overwrite)
+                    if (result.isSuccess) {
+                        if (overwrite) {
+                            inportEffectKey++
+                        } else {
+                            val newGames = result.getOrNull()!!
+                            games.addAll(newGames)
+                            listState.animateScrollToItem(games.size)
+                        }
+                        gameImportDialogShown = false
                     } else {
-                        val newGames = result.getOrNull()!!
-                        games.addAll(newGames)
-                        scope.launch { listState.animateScrollToItem(games.size) }
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.failed_import),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-                    gameImportDialogShown = false
-                } else {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.failed_import),
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
-
             },
             onCancel = { gameImportDialogShown = false }
         )
@@ -509,6 +520,7 @@ private fun GameListItem(
 
     DrawUpAnimated(visible = !isRemoved) {
 
+        val scope = rememberCoroutineScope()
         val fileEditor = rememberFileEditor()
 
         var gameEditDialogShown by rememberSaveable { mutableStateOf(false) }
@@ -557,15 +569,17 @@ private fun GameListItem(
             title = title,
             text = text,
             onConfirm = { newTitle, newText ->
-                fileEditor.editGameInfo(
-                    fileName = fileName,
-                    id = id,
-                    title = newTitle,
-                    text = text
-                )
-                title = newTitle
-                text = newText
-                gameEditDialogShown = false
+                scope.launch {
+                    fileEditor.editGameInfo(
+                        fileName = fileName,
+                        id = id,
+                        title = newTitle,
+                        text = text
+                    )
+                    title = newTitle
+                    text = newText
+                    gameEditDialogShown = false
+                }
             },
             onCancel = { gameEditDialogShown = false }
         )
@@ -574,9 +588,11 @@ private fun GameListItem(
             expanded = gameRemoveDialogShown,
             id = id,
             onConfirm = {
-                fileEditor.removeGameInfo(fileName, id)
-                isRemoved = true
-                gameRemoveDialogShown = false
+                scope.launch {
+                    fileEditor.removeGameInfo(fileName, id)
+                    isRemoved = true
+                    gameRemoveDialogShown = false
+                }
             },
             onCancel = { gameRemoveDialogShown = false }
         )
