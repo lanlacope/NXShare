@@ -2,7 +2,7 @@
 
 [1]: https://github.com/lanlacope/NXShare/blob/master/README-ja.MD
 
-# NX Share
+# About NXShare
 For Android Application.<br>
 Support sharing for NintendoSwitch.<br>
 
