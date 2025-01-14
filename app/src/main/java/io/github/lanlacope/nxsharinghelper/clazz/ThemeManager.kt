@@ -51,6 +51,14 @@ class ThemeManager(context: Context) {
         return@withContext AppTheme.fromString(themeString)
     }
 
+    suspend fun getAppThemeMain(): AppTheme = withContext(Dispatchers.Main) {
+        val themeString = appContext.themeDataStore.data.map { data ->
+            data[THEME_KEY] ?: AppTheme.SYSTEM.toString()
+        }.first()
+
+        return@withContext AppTheme.fromString(themeString)
+    }
+
     suspend fun changeAppTheme(theme: AppTheme) = withContext(Dispatchers.IO) {
         appContext.themeDataStore.edit { data ->
             data[THEME_KEY] = theme.toString()
