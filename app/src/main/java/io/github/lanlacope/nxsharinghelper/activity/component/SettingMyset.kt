@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -49,7 +50,7 @@ import io.github.lanlacope.compose.ui.button.combined.CombinedFloatingActionButt
 import io.github.lanlacope.compose.ui.lazy.animatedItems
 import io.github.lanlacope.compose.ui.lazy.pager.LazyHorizontalPager
 import io.github.lanlacope.compose.ui.lazy.pager.animatedPages
-import io.github.lanlacope.compose.ui.lazy.pager.helper.PagerIndexHelper
+import io.github.lanlacope.compose.ui.lazy.pager.helper.RoundedPagerHelperIndexed
 import io.github.lanlacope.compose.ui.text.manu.OutlinedTextFieldManu
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.dialog.GameAddDialog
@@ -90,12 +91,15 @@ fun SettingMyset() {
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            PagerIndexHelper(
+            RoundedPagerHelperIndexed(
                 items = files,
                 state = listState,
-                centerRange = 2
+                centerRange = 1,
+                modifier = Modifier
+                    .height(48.dp)
             )
 
             CombinedBoxButton(
