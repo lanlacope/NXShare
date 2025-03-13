@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
+import io.github.lanlacope.rewheel.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
 import kotlinx.coroutines.Dispatchers

@@ -5,8 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import io.github.lanlacope.collection.json.forEach
-import io.github.lanlacope.collection.json.keyList
 import io.github.lanlacope.nxsharinghelper.R
 import org.json.JSONObject
 import java.io.File
@@ -14,6 +12,8 @@ import io.github.lanlacope.nxsharinghelper.clazz.InfoManager.GameInfo
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.AppJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.MySetJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getSimpleDate
+import io.github.lanlacope.rewheel.util.json.forEach
+import io.github.lanlacope.rewheel.util.json.keyList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONException

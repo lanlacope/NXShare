@@ -68,5 +68,12 @@ dependencies {
     implementation(libs.collections.immutable)
 
     implementation(libs.zxing.android.embedded)
-    implementation(libs.lanlacope.rewheel.compose)
+
+    implementation(libs.lanlacope.rewheel) {
+        isChanging = true
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }

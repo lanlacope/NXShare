@@ -34,9 +34,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import io.github.lanlacope.compose.effect.rememberPermissionGrantResult
-import io.github.lanlacope.compose.ui.animation.SlideInAnimated
-import io.github.lanlacope.compose.ui.button.combined.CombinedFloatingActionButton
+import io.github.lanlacope.rewheel.ui.animation.SlideInAnimated
+import io.github.lanlacope.rewheel.ui.button.combined.CombinedFloatingActionButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberCaptureResult
 import io.github.lanlacope.nxsharinghelper.activity.component.rememberWifiEnableResult
@@ -46,6 +45,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.ContentSharer
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.getGameId
 import io.github.lanlacope.nxsharinghelper.clazz.rememberContentData
 import io.github.lanlacope.nxsharinghelper.ui.theme.NXShareTheme
+import io.github.lanlacope.rewheel.launcher.rememberPermissionGrantResult
 import kotlinx.coroutines.launch
 
 /*

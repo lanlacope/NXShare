@@ -17,11 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ShareCompat
 import androidx.core.content.FileProvider
-import io.github.lanlacope.collection.collection.toArrayList
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.SwitchJsonPropaty
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.MineType
 import io.github.lanlacope.nxsharinghelper.clazz.propaty.isAfterAndroidX
+import io.github.lanlacope.rewheel.util.collection.toArrayList
 import java.io.File
 
 @Suppress("unused")

@@ -18,9 +18,9 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
-import io.github.lanlacope.compose.ui.button.combined.CombinedBoxButton
-import io.github.lanlacope.compose.ui.dialog.GrowDialog
-import io.github.lanlacope.compose.ui.text.input.OutlinedInputTextField
+import io.github.lanlacope.rewheel.ui.button.combined.CombinedBoxButton
+import io.github.lanlacope.rewheel.ui.dialog.GrowDialog
+import io.github.lanlacope.rewheel.ui.text.input.OutlinedInputTextField
 import io.github.lanlacope.nxsharinghelper.R
 
 @Composable

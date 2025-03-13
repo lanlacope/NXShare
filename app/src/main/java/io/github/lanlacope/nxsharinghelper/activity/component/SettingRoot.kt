@@ -15,9 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import io.github.lanlacope.collection.collection.toMutableStateMap
-import io.github.lanlacope.compose.ui.action.setting.SettingSwitch
-import io.github.lanlacope.compose.ui.action.setting.SettingTextButton
+import io.github.lanlacope.rewheel.ui.action.setting.SettingSwitch
+import io.github.lanlacope.rewheel.ui.action.setting.SettingTextButton
 import io.github.lanlacope.nxsharinghelper.R
 import io.github.lanlacope.nxsharinghelper.activity.SETTING_MINHEIGHT
 import io.github.lanlacope.nxsharinghelper.activity.SettingNavi
@@ -26,6 +25,7 @@ import io.github.lanlacope.nxsharinghelper.clazz.AppTheme
 import io.github.lanlacope.nxsharinghelper.clazz.rememberSettingManager
 import io.github.lanlacope.nxsharinghelper.clazz.rememberThemeManager
 import io.github.lanlacope.nxsharinghelper.ui.theme.updateTheme
+import io.github.lanlacope.rewheel.util.collection.toMutableStateMap
 import kotlinx.coroutines.launch
 
 /*
