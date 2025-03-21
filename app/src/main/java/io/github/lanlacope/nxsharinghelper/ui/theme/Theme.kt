@@ -11,9 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.AppTheme
-import io.github.lanlacope.nxsharinghelper.clazz.ThemeManager
 import io.github.lanlacope.nxsharinghelper.clazz.rememberThemeManager
 
 private val LightColorScheme = lightColorScheme(
