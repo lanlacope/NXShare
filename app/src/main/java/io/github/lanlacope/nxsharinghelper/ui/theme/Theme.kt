@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import io.github.lanlacope.nxsharinghelper.clazz.AppTheme
 import io.github.lanlacope.nxsharinghelper.clazz.ThemeManager
+import io.github.lanlacope.nxsharinghelper.clazz.rememberThemeManager
 
 private val LightColorScheme = lightColorScheme(
     primary = PaupleDark,
@@ -44,7 +45,7 @@ fun NXShareTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val themeManager = ThemeManager(LocalContext.current)
+    val themeManager = rememberThemeManager()
 
     var theme by remember { mutableStateOf(AppTheme.SYSTEM) }
 
